@@ -2246,3 +2246,174 @@ public class User {
 
 JPA can manage not only one entity but also a relationship between entities. There are four types of relationships between entities. However, one-to-many and many-to-one are the most popular types. You have learned how to deal with the unidirectional relationship by using @ManyToOne and @JoinColumn annotations. Now you also know how to deal with the bidirectional relationships by using @OneToMany annotation with the "mappedBy = " parameter. Entities can be dependent on each other, and we can handle dependencies by cascade operations. JPA has six types of cascade operations, and you have learned how to use them together with @OneToMany annotation and "cascade = " parameter that specifies the type of cascade operations.
 
+## @OneToOne Relations
+
+Let us consider an application scenario where you want to store users' information along with their addresses. We want to make sure that a user can have just one address, and an address can only be associated with a single user.
+
+![OneToOne relations Image](NotesImages/OneToOneRelations.png)
+
+The one-to-one relationship is defined by using a foreign key called user_id in the addresses table.
+
+```java 
+package com.attacomsian.jpa.one2one.domains;
+
+import javax.persistence.*;
+import java.io.Serializable;
+
+@Entity
+@Table(name = "users")
+public class User implements Serializable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String name;
+    private String email;
+    private String password;
+
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    private Address address;
+
+    public User() {
+    }
+
+    public User(String name, String email, String password) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+    }
+
+    // getters and setters, equals(), toString() .... (omitted for brevity)
+}
+```
+
+```java
+package com.attacomsian.jpa.one2one.domains;
+
+import javax.persistence.*;
+import java.io.Serializable;
+
+@Entity
+@Table(name = "addresses")
+public class Address implements Serializable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String street;
+    private String city;
+    private String state;
+    private String zipCode;
+    private String country;
+
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    public Address() {
+    }
+
+    public Address(String street, String city, String state, String zipCode,
+                   String country) {
+        this.street = street;
+        this.city = city;
+        this.state = state;
+        this.zipCode = zipCode;
+        this.country = country;
+    }
+
+    // getters and setters, equals(), toString() .... (omitted for brevity)
+}
+```
+
+The `@Table` annotation is used to specify the name of the database table that should be mapped to this entity.
+
+### @OneToOne Annotation
+
+In Spring Data JPA, a one-to-one relationship between two entities is declared by using the @OneToOne annotation. It accepts the following parameters:
+
+1. `fetch` — Defines a strategy for fetching data from the database. By default, it is EAGER which means that the data must be eagerly fetched. We have set it to LAZY to fetch the entities lazily from the database.
+2. `cascade` — Defines a set of cascadable operations that are applied to the associated entity. CascadeType.ALL means to apply all cascading operations to the related entity. Cascading operations are applied when you delete or update the parent entity.
+3. `mappedBy` — Defines the entity that owns the relationship which is the Address entity in our case.
+4. `optional` — Defines whether the relationship is optional. If set to false then a non-null relationship must always exist.
+
+In a bidirectional relationship, we have to specify the `@OneToOne` annotation in both entities. But only one entity is the owner of the association. Usually, the child entity is one that owns the relationship and the parent entity is the inverse side of the relationship.
+
+### @JoinColumn Annotation
+The `@JoinColumn` annotation is used to specify the foreign key column in the owner of the relationship. The inverse-side of the relationship sets the `@OneToOne's` mappedBy parameter to indicate that the relationship is mapped by the other entity.
+
+The @JoinColumn accepts the following two important parameters, among others:
+
+1. name — Defines the name of the foreign key column.
+2. nullable — Defines whether the foreign key column is nullable. By default, it is true.
+
+### Create Repositories 
+
+```java
+package com.attacomsian.jpa.one2one.repositories;
+
+import com.attacomsian.jpa.one2one.domains.User;
+import org.springframework.data.repository.CrudRepository;
+
+public interface UserRepository extends CrudRepository<User, Long> {
+
+}
+```
+
+```java
+package com.attacomsian.jpa.one2one.repositories;
+
+import com.attacomsian.jpa.one2one.domains.Address;
+import org.springframework.data.repository.CrudRepository;
+
+public interface AddressRepository extends CrudRepository<Address, Long> {
+
+}
+```
+```java
+package com.attacomsian.jpa;
+
+import com.attacomsian.jpa.one2one.domains.Address;
+import com.attacomsian.jpa.one2one.domains.User;
+import com.attacomsian.jpa.one2one.repositories.AddressRepository;
+import com.attacomsian.jpa.one2one.repositories.UserRepository;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+
+@SpringBootApplication
+public class Application {
+
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+
+    @Bean
+    public CommandLineRunner mappingDemo(UserRepository userRepository,
+                                         AddressRepository addressRepository) {
+        return args -> {
+
+            // create a user instance
+            User user = new User("John Doe", "john.doe@example.com", "1234abcd");
+
+            // create an address instance
+            Address address = new Address("Lake View 321", "Berlin", "Berlin",
+                    "95781", "DE");
+
+            // set child reference
+            address.setUser(user);
+
+            // set parent reference
+            user.setAddress(address);
+
+            // save the parent
+            // which will save the child (address) as well
+            userRepository.save(user);
+        };
+    }
+}
+```
