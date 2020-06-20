@@ -2067,6 +2067,28 @@ public class Application {
     }
 }
 ```
+
+### To Ignore a field from getting persisted in database :
+
+To ignore a field, annotate it with @Transient so it will not be mapped by hibernate.
+
+But then jackson will not serialize the field when converting to JSON.
+
+If you need mix JPA with JSON(omit by JPA but still include in Jackson) use @JsonInclude :
+```java
+@JsonInclude()
+@Transient
+private String token;
+```
+
+TIP:
+
+You can also use JsonInclude.Include.NON_NULL and hide fields in JSON during deserialization when token == null:
+```java
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@Transient
+private String token;
+```
 --- 
 
 # SQL :
