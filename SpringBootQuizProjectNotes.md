@@ -416,9 +416,9 @@ public class ConsumeWebService {
 
 Similar code can be done for Post, delete and put mapping.
 
-# File Handling :
+# File Handling
 
-## File upload :
+## File upload
 
 For uploading a file, you can use MultipartFile as a Request Parameter and this API should consume Multi-Part form data 
 value.
@@ -437,9 +437,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 public class FileUploadController {
-   @RequestMapping(value = "/upload", method = RequestMethod.POST, 
+   @RequestMapping(value = "/upload", method = RequestMethod.POST,
       consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-   
+
    public String fileUpload(@RequestParam("file") MultipartFile file) throws IOException {
       File convertFile = new File("/var/tmp/"+file.getOriginalFilename());
       convertFile.createNewFile();
@@ -451,7 +451,7 @@ public class FileUploadController {
 }
 ```
 
-## File downloading :
+## File downloading
 
 For file download, you should use InputStreamResource for downloading a File. We need to set the HttpHeader 
 Content-Disposition in Response and need to specify the response Media Type of the application.
@@ -479,16 +479,16 @@ public class FileDownloadController {
       File file = new File(filename);
       InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
       HttpHeaders headers = new HttpHeaders();
-      
+
       headers.add("Content-Disposition", String.format("attachment; filename=\"%s\"", file.getName()));
       headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
       headers.add("Pragma", "no-cache");
       headers.add("Expires", "0");
-      
+
       ResponseEntity<Object> 
       responseEntity = ResponseEntity.ok().headers(headers).contentLength(
          file.length()).contentType(MediaType.parseMediaType("application/txt")).body(resource);
-      
+
       return responseEntity;
    }
 }
@@ -496,7 +496,7 @@ public class FileDownloadController {
 
 ---
 
-# Service Components :
+# Service Components
 
 Service Components are the class file which contains @Service annotation. These class files are used to write business 
 logic in a different layer, separated from @RestController class file.
@@ -504,7 +504,8 @@ logic in a different layer, separated from @RestController class file.
 In the initial examples we had written all the business login in the controller class, we could use the @service
 class to store our business logic from here on.
 
-Interface contract ProductService 
+Interface contract ProductService
+
 ```java
 import java.util.Collection;
 import com.tutorialspoint.demo.model.Product;
@@ -518,6 +519,7 @@ public interface ProductService {
 ```
 
 ProductServiceImpl.java : Service class for business implementation
+
 ```java
 import java.util.Collection;
 import java.util.HashMap;
@@ -562,6 +564,7 @@ public class ProductServiceImpl implements ProductService {
 ```
 
 ProductServiceController.java : RestContoller
+
 ```java
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
