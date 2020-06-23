@@ -132,7 +132,7 @@ Add the rsa file created previously to our agent.
 5. Get the content of the id_rsa.pub and copy them to the box below title.
 6. To get the content use git bash and use `cat ~/.ssh/id_rsa.pub`.
 7. Now we have added the ssh key to the github and we have our key in the PC.
-8. Now in bash to check that we are connect and to for the first time to add the github server to the list of authenticated servers to our PC we use ` ssh -T git@github.com`.
+8. Now in bash to check that we are connect and to for the first time to add the github server to the list of authenticated servers to our PC we use `ssh -T git@github.com`.
 9. This will give have some message with our user name on github and that we have successfully authenticated with github server.
 10. This only needs to be done once and will work for all the future porjects that will use the same github account with the rsa key added to the account.
 
@@ -156,5 +156,47 @@ Add the rsa file created previously to our agent.
 4. `git push heroku master` : Push out changes to the heroku github repo.
 5. The app is now ready with all changes made.
 
-### Adding dev dependences 
-So that no package need to be installed publically : `npm install nodemon --save-dev`. 
+### Adding dev dependences
+
+So that no package need to be installed publically : `npm install nodemon --save-dev`.
+
+## Git
+
+* Hard delete unpublished commits
+If, on the other hand, you want to really get rid of everything you've done since then, there are two possibilities. One, if you haven't published any of these commits, simply reset:
+
+```bash
+# This will destroy any local modifications.
+# Don't do it if you have uncommitted work you want to keep.
+git reset --hard 0d1d7fc32
+
+# Alternatively, if there's work to keep:
+git stash
+git reset --hard 0d1d7fc32
+git stash pop
+# This saves the modifications, then reapplies that patch after resetting.
+# You could get merge conflicts, if you've modified things which were
+# changed since the commit you reset to.
+```
+
+If you mess up, you've already thrown away your local changes, but you can at least get back to where you were before by resetting again.
+
+* Hard delete unpublished commits
+
+If, on the other hand, you want to really get rid of everything you've done since then, there are two possibilities. One, if you haven't published any of these commits, simply reset:
+
+```bash
+# This will destroy any local modifications.
+# Don't do it if you have uncommitted work you want to keep.
+git reset --hard 0d1d7fc32
+
+# Alternatively, if there's work to keep:
+git stash
+git reset --hard 0d1d7fc32
+git stash pop
+# This saves the modifications, then reapplies that patch after resetting.
+# You could get merge conflicts, if you've modified things which were
+# changed since the commit you reset to.
+```
+
+If you mess up, you've already thrown away your local changes, but you can at least get back to where you were before by resetting again.

@@ -1,11 +1,10 @@
-# Jackson annotations :
+# Jackson annotations
 
 > Serialization : Convert a object to JSON String
-
 > Desrialization : Convert a json string into CustomObject
 
 1. `@JsonAnyGetter` : The @JsonAnyGetter annotation allows the flexibility of using a Map field as standard properties.
-                    
+
 ```java
 //The Object definition :
 public class ExtendableBean {
@@ -38,7 +37,7 @@ public class MyBean {
 ```
 
  `@JsonPropertyOrder(alphabetic=true)` could also be used.
- 
+
  3. For more : https://www.baeldung.com/jackson-annotations
 
  4.  `@JsonFormat(shape = JsonFormat.Shape.STRING)` OR `@JsonFormat(shape = JsonFormat.Shape.STRING, pattern= "yyyy-MM-dd")`
@@ -2075,6 +2074,7 @@ To ignore a field, annotate it with @Transient so it will not be mapped by hiber
 But then jackson will not serialize the field when converting to JSON.
 
 If you need mix JPA with JSON(omit by JPA but still include in Jackson) use @JsonInclude :
+
 ```java
 @JsonInclude()
 @Transient
@@ -2084,14 +2084,16 @@ private String token;
 TIP:
 
 You can also use JsonInclude.Include.NON_NULL and hide fields in JSON during deserialization when token == null:
+
 ```java
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Transient
 private String token;
 ```
---- 
 
-# SQL :
+---
+
+# SQL
 
 SQL (Structured Query Language) is a domain-specific programming language designed to handle data in tables.
 
@@ -2108,11 +2110,12 @@ Let's focus on the simplest and most basic functionality of data extraction from
 
 4. That simple query from the example above may be read as "select everything from customers". SQL was designed to be similar to natural language. Declarative nature of SQL hides the complexities from the user and, to some extent, you just declare your will while the system analyses the query, chooses the control flow, and executes it.
 
-# Object-Relational Mapping : ORM
+# Object-Relational Mapping
 
 Object-Relational Mapping is a concept of converting data from an object-oriented programming language to relational database representation and vice versa. It solves the problem of matching two different type systems together and synchronize the data flow between them.
 
-## Main parts of ORMs :
+## Main parts of ORMs
+
 1. Virtual Tables :
 Relational databases use tuples and tables to store data.
 
@@ -2126,9 +2129,9 @@ Let's look at the example with the class City. We match values in tables with sc
 
 As you know, a class can have attributes that represent a list of other objects. For example, a city may have a lot of streets. It contradicts attribute-to-column mapping, but the ORM provides instruments for these cases too. In terms of relational databases, the link between one object and several others is called *one-to-many relation*. It's quite similar to a list attribute of an object.
 
-   `One to Many Replations : ` : Taking above example a city might have many streets. This relation between city and street is called as One to many relation.
+   `One to Many Replations` : Taking above example a city might have many streets. This relation between city and street is called as One to many relation.
 
-2. Relations : 
+2. Relations :
 
 The relation is a link that connects a value from one table to the row in another. The database can store such links as keys. You can think about it as an object containing another object as an attribute.
 
@@ -2140,11 +2143,11 @@ You may expect that if you delete the city, you will remove it with all the appr
 
 ---
 
-# JPA Relationships :
+# JPA Relationships
 
 We've considered JPA capabilities for only one table in the database. However, in the real world, it is common to interact with several entities that are connected. There are four types of connections or relationships between two entities.
 
-## Unidirectional `@OneToMany` :
+## Unidirectional `@OneToMany`
 
 Imagine you are developing Tweeter. A Tweeter user can post a lot of tweets, and each tweet can be posted by only one user. Such a relationship between the entities User and Tweet is called a one-to-many relationship: one user can post many tweets.
 
@@ -2153,10 +2156,10 @@ For defining the one-to-many relationship between the User and Tweet entities, y
 ```java
 @Entity
 public class User {
- 
+
     @Id
     private long id;
- 
+
    /*
    The @JoinColumn annotation on top of the tweets field indicates that the Tweet table has a UserID foreign key column specifying an entity association between these tables.
 
@@ -2167,10 +2170,10 @@ public class User {
     @JoinColumn(name = "UserID", nullable = false)
     private List<Tweet> tweets = new ArrayList<>();
 }
- 
+
 @Entity
 public class Tweet {
- 
+
     @Id
     @Column(name = "TweetID")
     private long id;
@@ -2206,21 +2209,21 @@ Now we have to define another side of the relationship: the entity `User`. Once 
 ```java
 @Entity
 public class User {
- 
+
     @Id
     private long id;
- 
+
    /*
    * The mappedBy = "user" parameter specifies that the Tweet entity private User user; field contains the foreign key to the user table so that we can find all tweets for the specified user.
-   * 
+   *
    * */
     @OneToMany(mappedBy = "user")
     private List<Tweet> tweets = new ArrayList<>();
- 
+
 }
 ```
 
-## Cascade Operations :
+## Cascade Operations
 
 Now we have a bidirectional relationship between tweets and user entities, so each tweet knows about its user, and a user can refer to their tweets. Great! But let's imagine that we deleted a user, and from that moment, all their tweets should be deleted as well. Often entities that are in a relationship are dependent. It means that action that was performed on one entity should be executed for each entity that is dependent on it. As you can see, the tweets depend on the user, and the user removal entails the removal of all dependent tweets. Such operations are called cascade operations.
 
@@ -2238,13 +2241,13 @@ The cascade type is indicated in the annotation @OneToMany by "cascade = " param
 ```java
 @Entity
 public class User {
- 
+
     @Id
     private long id;
- 
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<Tweet> tweets = new ArrayList<>();
- 
+
 }
 ```
 
@@ -2365,6 +2368,7 @@ In Spring Data JPA, a one-to-one relationship between two entities is declared b
 In a bidirectional relationship, we have to specify the `@OneToOne` annotation in both entities. But only one entity is the owner of the association. Usually, the child entity is one that owns the relationship and the parent entity is the inverse side of the relationship.
 
 ### @JoinColumn Annotation
+
 The `@JoinColumn` annotation is used to specify the foreign key column in the owner of the relationship. The inverse-side of the relationship sets the `@OneToOne's` mappedBy parameter to indicate that the relationship is mapped by the other entity.
 
 The @JoinColumn accepts the following two important parameters, among others:
@@ -2395,6 +2399,7 @@ public interface AddressRepository extends CrudRepository<Address, Long> {
 
 }
 ```
+
 ```java
 package com.attacomsian.jpa;
 
@@ -2439,3 +2444,25 @@ public class Application {
     }
 }
 ```
+
+## ID Generation Strategies
+
+[Documentation On Identifiers / Primary Keys For DataBases](https://www.doctrine-project.org/projects/doctrine-orm/en/2.6/reference/basic-mapping.html#identifiers-primary-keys)
+
+The list of possible generation strategies:
+
+`AUTO` (default): Tells Doctrine to pick the strategy that is preferred by the used database platform. The preferred strategies are IDENTITY for MySQL, SQLite and MsSQL and SEQUENCE for Oracle and PostgreSQL. This strategy provides full portability.
+
+`SEQUENCE`: Tells Doctrine to use a database sequence for ID generation. This strategy does currently not provide full portability. Sequences are supported by Oracle and PostgreSql and SQL Anywhere.
+
+`IDENTITY`: Tells Doctrine to use special identity columns in the database that generate a value on insertion of a row. This strategy does currently not provide full portability and is supported by the following platforms:
+
+`MySQL/SQLite/SQL` Anywhere => `AUTO_INCREMENT`
+`MSSQL` => `IDENTITY`
+`PostgreSQL` => `SERIAL`
+`TABLE`: Tells Doctrine to use a separate table for ID generation. This strategy provides full portability. This strategy is not yet implemented!
+
+NONE: Tells Doctrine that the identifiers are assigned, and thus generated, by your code. The assignment must take place before a new entity is passed to EntityManager#persist. NONE is the same as leaving off the @GeneratedValue entirely.
+
+SINCE VERSION 2.3 :
+`UUID`: Tells Doctrine to use the built-in Universally Unique Identifier generator. This strategy provides full portability.
