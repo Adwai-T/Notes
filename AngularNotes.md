@@ -1,5 +1,14 @@
 # Angular Overview
 
+![Parts Of Angular and how they work together](./NotesImages/AngularWorkingOverview.png)
+
+* Together, a component and template define an Angular view.
+
+1. A decorator on a component class adds the metadata, including a pointer to the associated template.
+2. Directives and binding markup in a component's template modify views based on program data and logic.
+
+* The dependency injector provides services to a component, such as the router service that lets you define navigation among views.
+
 ## File Structure
 
 Type Script is automatically compiled/Converted to js by Angular Cli.
@@ -8,22 +17,80 @@ index.html : Contains `<app-root>` that is the entry point for our angular proje
 
 polyfills.ts : Used for older browser that might not support the newer functions of javascript.
 
-### Module
+## Module
 
 Split code into files that work independenly of each other.
 
-app.module.ts : This file is used to register all the component that we will use in our project.
+*app.module.ts* : This file is used to register all the component that we will use in our project.
 
-### BootStrap
+You launch your app by bootstrapping the root NgModule.
 
-AppModule bootstrap the angular application in the enviroment.ts file.
-When in this file we set the app to production, angular performs a lot of optimization that will make the code faster, where code clearity is not necessary.
+Organizing your code into distinct functional modules helps in managing development of complex applications, and in designing for reusability. In addition, this technique lets you take advantage of lazy-loading—that is, loading modules on demand—to minimize the amount of code that needs to be loaded at startup.
+
+### NgModule
+
+The @NgModule() decorator is a function that takes a single metadataobject, whose properties describe the module.
+
+* declarations: The components, directives, and pipes that belong to this NgModule.
+
+* exports: The subset of declarations that should be visible and usable in the component templates of other NgModules.
+
+* imports: Other modules whose exported classes are needed by component templates declared in this NgModule.
+
+* providers: Creators of services that this NgModule contributes to the global collection of services; they become accessible in all parts of the app. (You can also specify providers at the component level, which is often preferred.)
+
+* bootstrap: The main application view, called the root component, which hosts all other app views. Only the root NgModule should set the bootstrap property.
+
+### Angular libraries
+
+Angular loads as a collection of JavaScript modules. You can think of them as library modules. Each Angular library name begins with the @angular prefix. Install them with the node package manager npm and import parts of them with JavaScript import statements.
+
+For example, import Angular's Component decorator from the @angular/core library like this.
+
+```javascript
+import { Component } from '@angular/core';
+```
 
 ## Decorators
 
 What are decorator exactly?
 
-Example : `@Component`
+A Python decorator is a function that takes another function, extending the behavior of the latter function without explicitly modifying it.
+
+* Decorate a function/property inside of class.
+
+```javascript
+//basic class defination with the decorator that we define below
+class Cat{
+  @readonly
+  meow(){ return `${this.name } say Meow!`;}
+}
+
+//Evaluating this class results in installing the meow function onto `Cat.prototype`, roughly like this:
+Object.defineProperty(Cat.prototype, 'meow', {
+  value: specifiedFunction,
+  enumerable: false,
+  configurable: true,
+  writable: true
+});
+
+//We define now a decorator that will mark the function to be readOnly
+function readonly(target, key, descriptor){
+  descriptor.writable = false;
+  return descriptor;
+}
+
+//Try to change the meow function after applying the decorator
+var garfield = new Cat();
+garfield.meow = function(){
+  console.log('I want lasagne!');
+}
+//Exception : Attempt to assign to readonly property.
+```
+
+Note : For More Info on [Decorator](https://medium.com/google-developers/exploring-es7-decorators-76ecb65fb841#.x5c2ndtx0).
+
+Example : `@Component` Is an internal decorator used in Angular.
 
 ```ts
 //Here we defince the decorator function that will be used to modify the below function
@@ -113,29 +180,35 @@ class myExampleClass{
 const myClass = new myExampleClass(5, 10);
 ```
 
-## Lifecycle Hooks : Introduction
+## Lifecycle Hooks
 
-1. OnChanges : Every time there is a change lets say input property.
+Get the details of [Lifecycle Hooks](https://angular.io/guide/lifecycle-hooks)
 
-2. OnInit : Whenever a componet is initailized. The code that is in the oninit method will be fired or invoked only once.
+1. ngOnChanges : Every time there is a change lets say input property.
 
-3. DoCheck : Fired by angular when it thinks there was a change.
+2. ngOnInit : Whenever a componet is initailized. The code that is in the oninit method will be fired or invoked only once.
 
-4. AfterContentInit :
+3. ngDoCheck : Fired by angular when it thinks there was a change.
 
-5. AfterContentCheck :
+4. ngAfterContentInit :
+
+5. ngAfterContentCheck :
 
 6. AfterViewInit :
 
 7. OnDestroy : Called when some componet is destroied or removed.
 
+You don't have to implement all (or any) of the lifecycle hooks, just the ones you need.
+
 ## Components
 
 ### What is Component
 
-Lets take the example of header for a page. This header will be then usable on multiple pages. This is thus called as component is Angular.
+A component controls a patch of screen called a view.
 
-app.component.ts contains all the logic for the component that we create.
+Lets take the example of header for a page. This header will be then usable on multiple pages. This thus can be made to be a component in Angular.
+
+*app.component.ts* contains all the logic for the component that we create.
 
 Create a new component : `ng generate component hello`.
 
@@ -156,6 +229,12 @@ This is because Angular has Pipes that perform some functions with `|`.
 Also functions should not be called from Interpolation on the html page as they are called multilpe times whenever change is detected on the page.
 
 ## Data Binding
+
+![Data Bindind in Angular Image](NotesImages/DataBindingInAngular.png)
+
+*Property binding* lets you interpolate values that are computed from your application data into the HTML.
+
+*Event binding* lets your app respond to user input in the target environment by updating your application data.
 
 The following is what sets the attribute value of the text box to the value of the variable.
 
@@ -199,9 +278,9 @@ updateValue(e){
 }
 ```
 
-The above `value` and `input` are the directives that Angular provides out of the box.
+The above `value` and `input` are the directives properties that Angular provides out of the box.
 
-We could create our own directives as below.
+The `ngModel` *directive*, which implements two-way data binding, is an example of an attribute directive. `ngModel` modifies the behavior of an existing element (typically `<input>`) by setting its display value property and responding to change events.
 
 ```html
 <input type="text" [(ngModel)]="text" />
@@ -255,7 +334,24 @@ The `[ngClass]` Applies conditional class to the element in html.
 
 It is a singleton instance of a file that can be ingected into multiple components.
 
+A *component* can delegate certain tasks to services, such as fetching data from the server, validating user input, or logging directly to the console. By defining such processing tasks in an injectable *service* class, you make those tasks available to any *component*. You can also make your app more adaptable by injecting different providers of the same kind of *service*, as appropriate in different circumstances.
+
+A *service* class definition is immediately preceded bythe `@Injectable()` decorator. The decorator provides themetadata that allows other providers to be injected asdependencies into your class.
+
+### Dependency Injection
+
+*Dependency injection (DI)* lets you keep your *component* classes lean and efficient. They don't fetch data from the *server*, validate user input, or log directly to the console; they delegate such tasks to *services*.
+
+* The *injector* is the main mechanism. Angular creates an application-wide *injector* for you during the bootstrap process, and additional *injectors* as needed. You don't have to create *injectors*.
+
+* An *injector* creates *dependencies*, and maintains a *container* of dependency instances that it reuses if possible.
+
+* A *provider* is an object that tells an *injector* how to obtain or create a dependency.
+
+`constructor(private service: HeroService) { }`
+
 Example :
+
 If we want to fetch data, we can create a service to do that.
 Or if we want to create a login authentication then we can create a service for login.
 
@@ -429,7 +525,11 @@ Now that we have set the proxy we can run our program to start our developer ser
 
 ## Routing
 
-Displaying different content and different pages.
+The Angular Router NgModule provides a service that lets you define a navigation path among the different application states and view hierarchies in your app.
+
+Click the browser's back and forward buttons and the browser navigates backward and forward through the history of pages you've seen.
+
+The router interprets a link URL according to your app's view navigation rules and data state. You can navigate to new views when the user clicks a button or selects from a drop box, or in response to some other stimulus from any source. The router logs activity in the browser's history, so the back and forward buttons work as well.
 
 Need routing for displaying large amount of content in chunks on the website, or for creating special authorized access-only pages.
 
@@ -625,4 +725,143 @@ export class LoginComponent implements OnInit{
 
 The above code is still very insecure as the authentication code is authenticated at runtime.
 
-### Getting data from BackEnd
+## Pipes
+
+### Inbuilt Pipes
+
+1. Date
+2. UpperCase
+3. LowerCase
+4. Currency
+5. Percent
+
+### Custom Pipes
+
+`ng generate pipe name` : Create a Pipe
+
+```ts
+
+export class ReversePipe implements PipeTransform{
+
+  transform(value: any, ...args): any {
+    let newString = value
+    if(args[0]){
+      newString += "."
+    }
+    if(args[1] == "singlequote"){
+      newString += "'" + newString + "'";
+    }
+    else if(args[1] == "doublequote"){
+      newString = '"' + newString + '"';
+    }
+
+    return newString;
+  }
+}
+
+```
+
+```html
+{{ "This is a String" | reverse:true:"doublequote" }}
+```
+
+## Directives
+
+1. Adds custom behaviour to our HTML
+
+2. They are attributes of our HTML tags.
+
+A *component* is technically a directive. However, *components* are so distinctive and central to Angular applications that Angular defines the `@Component()` decorator, which extends the `@Directive()` decorator with template-oriented features.
+
+### Inbuilt Directives
+
+### Structural directives
+
+Structural directives alter layout by adding, removing, and replacing elements in the DOM. The example template uses two built-in structural directives to add application logic to how the view is rendered.
+
+* NgIf
+
+```html
+<div *ngIf="someVariable; then trueBlock else falseblock">
+</div>
+
+<!--These are ng-templates that can be given an id directly and used in the code as done above-->
+<ng-template #trueBlock>
+  <div><h1>Yes!!</h1></div>
+</ng-template>
+
+<ng-template #falseBlock>
+  <div><h1>No!!!</h1></div>
+</ng-template>
+```
+
+```ts
+//*ngIf will evaluate the condition in the value and display content according to the evaluated value.
+export class tsComponent{
+
+  //This variable will be used to decide which block is actually shown in the html page.
+  let someVariable:boolean = true;
+
+}
+```
+
+* ngSwitch
+
+* ngNonBindable : It is used to escape the special cases such as interpolation in the html.
+
+```html
+<span ngNonBindable>{{ ThisWillNotBeEvaluatedAsAExpression }}</span> is used to Interpolate varaibles from our script to our html.
+```
+
+* ngClass
+
+```html
+<ul>
+  <span [ngClass] = "{
+    'red': info.number === 'even',
+    'blue': info.number === 'odd'
+  }">
+</ul>
+```
+
+In the above html ngClass will set the value for the class of the span according to the whether the condition is fulfilled. Multiple conditions can be fulfilled and multiple classes will be added to the tag.
+
+### Attribute directives
+
+Attribute directives alter the appearance or behavior of an existing element. In templates they look like regular HTML attributes, hence the name.
+
+The `ngModel` *directive*, which implements two-way data binding, is an example of an attribute *directive*. `ngModel` modifies the behavior of an existing element (typically `<input>`) by setting its display value property and responding to change events.
+
+### Custom Directives
+
+`ng g directive directivename`
+
+```ts
+//vs code might get the import wrong
+import { ElementRef } from '@angular/core';
+
+@Directive({
+  selector: [appDirectivename]
+})
+export class Directivename{
+
+  element: ElementRef;
+  //Get the reference to the element in our html
+  constructor(private el: ElementRef){ 
+    //We change the color of the element of which we set the custom directive.
+    el.nativeElement.style.color = "red";
+    this.element = el;
+  }
+
+  //As the directive set above will be applied before the element is actually created we dont have access to the inner html. Hence we use will place the code that access the element data in ngOnInit.
+  ngOnInit(){
+    this.element.nativeElement.innerText += "-Custom directive was used to formate this.";
+  }
+}
+```
+
+---
+
+## Other Notes
+
+### [Angular Glossary](https://angular.io/guide/glossary)

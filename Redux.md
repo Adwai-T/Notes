@@ -1,0 +1,33 @@
+# Redux
+
+## Introduction
+
+Used to manage the data flow of the application and also thus control the state of the application.
+
+We dont need redux if the applications are not very complex.
+
+Redux Simply can be thought as a store for the state of our application through which our component can retrive data so that all the components get the same data and are aware of the state of other components.
+
+In Redux, there is a single state object that's responsible for the entire state of your application. This means if you had a React app with ten components, and each component had its own local state, the entire state of your app would be defined by a single state object housed in the Redux store. This is the first important principle to understand when learning Redux: the Redux store is the single source of truth when it comes to application state.
+
+This also means that any time any piece of your app wants to update state, it must do so through the Redux store. The unidirectional data flow makes it easier to track state management in your app.
+
+## Create Redux Store
+
+The Redux `store` is an object which holds and manages application state. There is a method called `createStore()` on the Redux object, which you use to create the Redux `store`. This method takes a `reducer` function as a required argument. The `reducer` function is covered in a later challenge, and is already defined for you in the code editor. It simply takes state as an argument and returns `state`.
+
+```ts
+
+//Note: The code in the editor uses ES6 default argument syntax to initialize this state to hold a value of 5.
+const reducer = (state = 5) => {
+  return state;
+}
+
+// Redux methods are available from a Redux object
+// For example: Redux.createStore()
+// Define the store here:
+
+let store = Redux.createStore(reducer);
+```
+
+## Get State from the Redux Store
