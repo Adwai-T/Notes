@@ -9,6 +9,16 @@
 
 * The dependency injector provides services to a component, such as the router service that lets you define navigation among views.
 
+## Some Important Angular commands
+
+un `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+
+For Help Use : `ng help`
+
+The `ng serve` command builds the app, starts the development server, watches the source files, and rebuilds the app as you make changes to those files.
+
+The `--open` flag opens a browser to `http://localhost:4200/`
+
 ## File Structure
 
 Type Script is automatically compiled/Converted to js by Angular Cli.
@@ -256,7 +266,19 @@ There is also a value property to the textbox itself. If we use the following co
 <button (click)="callMyFunction()"></button>
 ```
 
+SomeBuild in function to
+
 The callMyFunction is defined in the component.ts file of the component that is being used.
+
+### `@Input` property
+
+Decorator that marks a class field as an input property and supplies configuration metadata. The input property is bound to a DOM property in the template.During change detection, Angular automatically updates the data property with the DOM property's value.
+
+Put More Simply : We used the `@Input` decorator to make the hero property available for binding by the external HeroesComponent.
+
+Yet another is setting the model property of a custom component—a great way for parent and child components to communicate:
+
+`<app-item-detail [childItem]="parentItem"></app-item-detail>`
 
 ### Two way Data Binding
 
@@ -288,7 +310,7 @@ The `ngModel` *directive*, which implements two-way data binding, is an example 
 
 `ngModel` is not a part of the basic Angular app, thus it need to be imported it in `app.module.ts` like :
 `import { FormsModule } from '@angular/forms`
-Also add `NgModel` to the imports array of the same file.
+Also add `NgModel` to the `imports` array of the same file.
 
 NgModule finally can be said as an inbuild two way databinding directive that is provided by Angular.
 
@@ -487,6 +509,18 @@ export class AppComponent {
 
 ```
 
+> Note : ? In the TypeScript is put with optional fields, as seen in the documents. So any arguments that have ? are optional.
+
+Performs HTTP requests. This service is available as an injectable class, with methods to perform HTTP requests.
+
+[HttpClient Documentation](https://angular.io/api/common/http/HttpClient#httpclient)
+
+## HttpHeaders
+
+Represents the header configuration options for an HTTP request. Instances are immutable. Modifying methods return a cloned instance with the change. The original object is never changed.
+
+[HttpHeader Documentation](https://angular.io/api/common/http/HttpHeaders)
+
 ## Proxy Configuration
 
 Cross Orgin Resource Sharing : Standard set of implementation how frontend can access other servers code.
@@ -533,7 +567,104 @@ The router interprets a link URL according to your app's view navigation rules a
 
 Need routing for displaying large amount of content in chunks on the website, or for creating special authorized access-only pages.
 
-Example:
+## Generate Routes
+
+If we have added routing when we create the project, we dont need to execute the following command to generate new files for routing as those already exist and were create when the porject was initialized/Created.
+
+`ng generate module app-routing --flat --module=app`
+
+--flat puts the file in src/app instead of its own folder.
+--module=app tells the CLI to register it in the imports array of the AppModule.
+
+Replace the generated file with the following file.
+
+```ts
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { HeroesComponent } from './heroes/heroes.component';
+
+//Modify routes accoring to the application.
+const routes: Routes = [
+  { path: 'heroes', component: HeroesComponent } //localhost:4200/heroes
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
+})
+export class AppRoutingModule { }
+```
+
+The method is called `forRoot()` because you configure the router at the application's root level. The `forRoot()` method supplies the service providers and directives needed for routing, and performs the initial navigation based on the current browser URL.
+
+### Add RouterOutlet
+
+Replace the `<app-heroes>` element with a `<router-outlet>` element.
+
+```ts
+<h1>{{title}}</h1>
+<router-outlet></router-outlet>
+<app-messages></app-messages>
+```
+
+The AppComponent template no longer needs `<app-heroes>` because the app will only display the HeroesComponent when the user navigates to it.
+
+The *RouterOutlet* is one of the router directives that became available to the AppComponent because *AppModule* imports *AppRoutingModule* which exported *RouterModule*. The `ng generate` command you ran at the start of this tutorial added this import because of the `--module=app` flag. If you manually created *app-routing.module.ts* or used a tool other than the CLI to do so, you'll need to import *AppRoutingModule* into *app.module.ts* and add it to the imports array of the *NgModule*.
+
+### Add a navigation link (routerLink)
+
+Add a `<nav>` element and, within that, an anchor element that, when clicked, triggers navigation to the HeroesComponent. The revised AppComponent template looks like this:
+
+```ts
+<h1>{{title}}</h1>
+<nav>
+  <a routerLink="/heroes">Heroes</a>
+</nav>
+<router-outlet></router-outlet>
+<app-messages></app-messages>
+```
+
+Default path set that will redirect automatically to dashboard:
+
+`{ path: '', redirectTo: '/dashboard', pathMatch: 'full' },`
+
+### Routes with varibles
+
+The colon (:) in the path indicates that :id is a placeholder for a specific hero id.
+
+`{ path: 'detail/:id', component: HeroDetailComponent }`
+
+The `import { ActivatedRoute } from '@angular/router'` holds information about the route to this instance of the HeroDetailComponent. This component is interested in the route's parameters extracted from the URL. The "id" parameter is the id of the hero to display.
+
+The `import { Location } from '@angular/common';` is an Angular service for interacting with the browser. You'll use it later to navigate back to the view that navigated here.
+
+```ts
+//These are services that need to be injected into the class that uses them in the contructor of the class
+constructor(
+  private route: ActivatedRoute,
+  private heroService: HeroService,
+  private location: Location
+) {}
+
+ngOnInit(): void {
+  this.getHero();
+}
+
+//+ is a javascript operator that converts the String into a number that our hero.id should be.
+getHero(): void {
+  const id = +this.route.snapshot.paramMap.get('id');
+  this.heroService.getHero(id)
+    .subscribe(hero => this.hero = hero);
+}
+
+//We set a button with click event that call the function goBack.
+//This function will take the user back to the previous page.
+goBack(): void {
+  this.location.back();
+}
+```
+
+Other Example:
 
 1. create two components Home and Data.
 
@@ -847,7 +978,7 @@ export class Directivename{
 
   element: ElementRef;
   //Get the reference to the element in our html
-  constructor(private el: ElementRef){ 
+  constructor(private el: ElementRef){
     //We change the color of the element of which we set the custom directive.
     el.nativeElement.style.color = "red";
     this.element = el;
