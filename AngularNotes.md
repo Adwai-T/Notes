@@ -440,6 +440,10 @@ But most of the time we want our service to be shared by multiple component in o
 
 `ngOnInit()` is a life cycle hook that run only once when the component is created. Thus it becomes a perfect place for runnning code that need to be run only one like initialize our data to be used in our application components.
 
+## HttpClientModule
+
+It needs to be added to the `import` in `app.module.ts` to use `HttpClient` as it is used to configure the Client automatically and inject `HttpClient` dependency in our app.
+
 ## HttpClient
 
 ```ts
@@ -552,6 +556,8 @@ proxyconfig.json
 ```
 
 Whatever is written at the proxyConfig path is appended at the end of the traget address.
+
+The above proxy directes any calles made to `localhost:4200/api`(default port for angular) and directs them to `localhost:8080/api`(default port for springboot).
 
 In this case we will have `http://localhost:1234/api`. So we will have to file that are to be served from the other proxyfied address will have to be placed in the folder named by the address like in our case it will be `api`. In our case the final path of the file from that was created in previous examples will be : `projectRoot/test/api/file.json` where `file.json` is the data file being served at the proxy address.
 
