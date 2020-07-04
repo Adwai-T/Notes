@@ -543,6 +543,280 @@ Useing relative path in routerLinks is not bad but we have to know that we defin
 
 Relative path for routerLink can be defined as if we were accessing a file structure in terminal using `../` and `./` as it works in terminal.
 
+* `routerLinkActive` and `routerLinkActiveOptions`:
+
+`routerLinkActive` will add the class to the anchor tag whenever the link is active.
+
+`routerLinkActiveOptions` : The '' or empty route is always avtive for all routes as it gets matcher for all routes. So want to add options to the routerLinkActive directive so that only the exact path is matched and only then the class is set to active.
+
+```html
+<li routerLinkActive="active">
+    <a routerLink="/">Home</a>
+</li>
+<li routerLinkActive="active" [routerLinkOptions]="{exact: true}">
+    <a routerLink="/servers">servers</a>
+</li>
+<li routerLinkActive="active">
+    <a routerLink="/something">something</a>
+</li>
+```
+
+* Loading Routes from Script
+
+```html
+<button class="btn btn-primary" (click)="onLoadServers()">Servers</button>
+```
+
+```ts
+//--Change 1 Use Primary path.
+
+import { Route } from '@angular/router'
+
+export class HomeComponent implements OnInit{
+    //other code here
+
+    constructor(private router: Router, private route: ActivatedRoute){}
+
+    onLoadServers(){
+        //Some algorithm here
+        this.route.navigate(['/servers'])
+    }
+
+    //In this we will use a relative route. Unline routerLink the script does not know the current route and using relative route the route is appended to the root, thus we have to specify the route we want to be relative to.
+    //this.route will give the script the currently loaded path.
+    onLoadServersSomething(){
+        this.router.navigate(['something'], {relativeTo: this.route});
+    }
+}
+```
+
+* Passing Parameter to Route
+
+`{ path: 'users/:id/:name', component: UserComponent }`
+
+In the above code `:` is used to attach a dynamic parameter to the route.
+
+Both id and name are parameters of the route.
+
+* Fetching dynamic Path segment that we create above :
+
+```ts
+//Other imports here
+import { ActiatedRoute, Params } from '@angular/router';
+
+//Metadata with @Componenet here
+export class UserComponent implements OnInit{
+
+user:{id: number, name: string};
+
+constructor(private route: ActivatedRoute){}
+}
+
+ngOnInit(){
+    this.user = {
+        id: this.route.snapshot.params['id'],
+        name: this.route.snapshot.params['name']
+    };
+
+    //The above approach is good if we know that the data from the route is not going to change form within the componenet itself as angular will not reload the page to reflect the changes as we define the code in ngOnInit.
+    //But if we have code that changes the data from within this component and we want to load the component again with that data we have to use an observable with the code defined above to know when the data on the url changes.
+    //The route.params returns an observable and can be subscribed to, to get data whenever it changes.
+    this.route.params.subscribe(
+        (params: Params) => {
+            this.user.id = params['id'];
+            this.user.name = params['name'];
+        }
+    );
+}
+
+```
+
+In the above example we do never unsubscribe from our subscriptions. It would not effect this as angular will unsubscribe for us when the component is destroied.
+
+But we can explicitly describe in our code when we want to unsubscribe, in the above case we want to unsubscribe when the component is destroied.
+
+In normal programs using rxjs we will always have to explicitly unsubscribe to our subscription.
+
+```ts
+//Only Changes to the above code
+
+//Assign the subscription to a varible
+paramsSubscription: Subscription;
+
+ngOnInit(){
+    //user code with snapshot
+    this.paramsSubscription = this.route.params.subscribe(
+        (params: Params) =>{
+            //code as above
+        }
+    )
+}
+
+ngOnDestroy(){
+    this.paramsSubscription.unsubscribe();
+}
+```
+
+* Using Query Paramters
+
+Both queryParams and fragment are properties of the routerLink itself.
+
+There can only be one fragment per routerLink but there can be multiple queryParams.
+
+```html
+<a
+    [routerLink]="['/servers',5, 'edit']"
+    [queryParams]="{allowEdit: '1'}"
+    fragement="loading"
+    href="#"
+>
+```
+
+We can get the paramters and the fragements by injecting `ActivatedRoute` and use the `route.snapshot.fragment` and `route.snapshot.queryParams` to retrive the current paramters and fragment.
+
+As discussed above we only want to use `snapshot` if we know that the data of fragment or queryParams is not going to change from within the component, and if it is going to change we want to use the subscription methods as discussed in the previous examples.
+
+* Using The QueryParams In our script file:
+
+`this.router.navigate(['edit'], {relativeTo: this.route, queryParamsHandling: 'preserve or merge'});`
+
+In the above piece of code we use the `relativeTo` to set the path `edit` relative to the current path and `queryParamsHandling` to `preserve` to preserve the same queryParameters or `merge` to add the new QueryParameters.
+
+### WildCard Routing and Redirecting
+
+* `redirectTo` :
+
+```ts
+{ path: 'not-found', component: PageNotFoundComponent },
+//With this if we visit /something path we will be redirected to /not-found path.
+{ path: 'something', redirectTo: '/not-found' },
+//Also Since the default matching strategy is "prefix" , Angular checks if the path you entered in the URL does start with the path specified in the route. Of course every path starts with ''  (Important: That's no whitespace, it's simply "nothing").This route will now ALWAYS redirect you. So we add the pathMatch to full so that angular matches the full path.
+{ path: '', redirectTo: '/somewhere-else', pathMatch: 'full' }
+//To cover all the path that are not defined we use **, it is called the Wildcard Route.
+{ path: '**', redirectTo: '/not-found' }
+//Note that we want to place the wildcard route at the last as it will match and always redirect.
+```
+
+### Child Or Nested Routers
+
+```js
+
+//In the app.module.ts file where we define routes as above
+
+const appRoutes: Routes = [
+    { path: '', component: HomeComponent },
+
+    { path: 'users', component: UserComponent, children:[
+        { path: ':id/:name', component: UserComponent }
+    ] },
+
+    { path: 'servers', component: ServersComponent, children: [
+        {path: ':id', component: ServerComponent },
+        {path: ':id/edit', component: EditServerComponent }
+    ] }
+];
+```
+
+Now we have our main `<router-outlet>` where we have entry point for our main routes and whenever we have a `<router-outlet>` in the component loaded from the main routes, they will be the entry point for our child routes.
+
+There are no special properties to the router-outlet where the child path are loaded, just the placement of thse in the component loading them is how angular determines children of which route can be loaded.
+
+### Defining route Module outside of the app.module.ts file
+
+```ts
+
+const appRoutes: Routes = [
+    //All our routes here
+]
+
+@NgModule({
+    imports: [
+        RouterModule.forRoot(appRouters)
+    ],
+    exports:[RouterModule]
+})
+export class AppRoutingModule{
+
+}
+
+//We have created our custom routing module above but it also need to be added to the app.module.ts file to the imports array.
+imports: [
+    //all other imports
+    AppRoutingModule
+]
+```
+
+## Route Guards
+
+### CanActivate
+
+```ts
+//File named auth-guard.service.ts
+
+import{ CanActivate, ActivatedRouteSnapshot, RouteStateSnapshot } from '@angular/router';
+import{ Observanle } from 'rxjs/Observable';
+
+@Injectable()
+export class AuthGuard implements CanActivate{
+
+    constructor(private authService: AuthService, private route: Router)
+
+    //The arguments to the canActivate methods are passed by angular when we try to activate the route the gurad is put on, just before it is activated.
+    canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean>| boolean{
+        return this.authService.isAuthenticated()
+            .then(
+                (authenticated: boolean) => {
+                    if(authenticated){
+                        return true;
+                    }else{
+                        this.router.navigate(['/']);
+                    }
+                }
+            );
+    }
+}
+
+//AuthService file
+export class AuthService {
+    loggedIn = false;
+
+    isAuthenticated(){
+        const promise = new Promise(
+            (resolve, reject) => {
+                setTimeout(()=>{
+                    resolve(this.loggedIn)
+                }, 800);
+            }
+        );
+        return promise;
+    }
+}
+
+//Add the services that we created to the app.module.ts to the providers array
+providers: [/*Other services*/, AuthService, AuthGuard]
+
+//AppRoutingModule
+{ path: 'servers', canActivate: [AuthGuard], component: ServerComponent, children:[/*Children path here*/]}
+
+//Not that when we put canActivate on the parent route we also add it to all the children automatically.
+```
+
+### Protecting Children
+
+In the above code we protect the parent path and the children path with it, but if we want to only protect the child route and still be able to access the parent route we can add `canActivateChild` to our AuthGuard file.
+
+```ts
+//This code adds to the above code. We keep the above code same as is.
+canActivateChild(route: ActivateRouteSnapshot. state: RouterStateSnapshot):Observable<boolean>| promise<boolean>|boolean{
+    //We use te canActivate method as the we wnat to keep the logic the same.
+    return this.canActivate(route, state);
+}
+
+//Now we want to remove the canActivate from the route and put in canActivateChild in its place
+{ path: 'servers', canActivateChild: [AuthGuard], component: ServerComponent, children: [/*Children path here*/]}
+
+```
+
 ---
 
 ## From Project : Special Use Cases
