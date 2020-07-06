@@ -817,26 +817,474 @@ canActivateChild(route: ActivateRouteSnapshot. state: RouterStateSnapshot):Obser
 
 ```
 
----
+## Observable
 
-## From Project : Special Use Cases
+Observable and Observer are provided by rxjs and not by angular itself.
 
-### Drop Down Directive
+All the observable that are given by Angular are managed by angular and Angular will unsubscribe the observable when we are done using the observable, so we dont have to explicitly unsubscribe to the Observable.
+
+* Creating our own observable
 
 ```ts
-import {Directive, ElementRef, HostBinding, HostListener} from '@angular/core';
+import { interval, Subscription } from 'rxjs'
 
-@Directive({
-  selector: '[appDropdown]'
+export class HomeComponent implements OnInit {
+    //othe code
+
+    private firstObsSubscription: Subscription;
+
+    //This is a simple observable but it is not build from ground up. It is just for an example.
+    ngOnInit(){
+        this.firstObsSubscription = interval(1000).subscribe(count => {
+            console.log(count);
+        });
+    }
+
+    ngOnDestroy(){
+        this.firstObsSubscription.unsubscribe();
+    }
+}
+```
+
+* Creating Observable from scratch
+
+Now we create our own observable from scratch that does the same task as the above example.
+
+```ts
+//All the class description code here
+
+private firstObsSubscription: Subscription;
+
+ngOnInit(){
+    const customIntervalObservable = Observable.create(observer = {
+        let count = 0;
+        setInterval(( => {
+            observer.next(count);
+            count++;
+        }, 1000);
+    });
+
+    //Here we subscribe to our observable and we get the count ever 1000ms.
+    this.firstObsSubscription = CustomIntervalObservable.subscribe(data => {
+        console.log(data);
+    });
+
+    ngOnDestroy(){
+        this.firstObsSubscription.unsubscribe();
+    }
+}
+```
+
+* Errors and Completion
+
+Whenever an error is thrown from the Observable the subscription ends.
+
+* Operterators
+
+> TODO : Add rxjs Notes.
+
+## Forms
+
+There are two Approaches that angular offeres to handle forms.
+
+1. Template Driven : Angular Infers thte form Object from the DOM.
+
+2. Reactive : From is created programmatically and synchronized with the DOM.
+
+### Template Driven Forms
+
+Import FormsModule in the NgModule -> imports[] -> FormsModule in the app.module.ts file to use the approach.
+
+Angular does not detect the form controls automatically so we have to make angular aware of the form control. This is done by using `ngModel` which is a part of FormsModule.
+
+```html
+<input type="text" id="username" class="form-control" ngModel name="username">
+```
+
+`name` is a property of the html element and not of angular. It will be used by angular to identify the element. ngModel will tell angular that this is a form control.
+
+```html
+<form (ngSubmit)= "onSubmit(f)" #f= "ngForm">
+    <!--Our html form here as shown above-->
+</form>
+```
+
+Submitting a Form.
+
+The `ngSubmit` takes over the submit functionality of the HTML form, which is present by default, and gives us the control to submit the from as we want from our script. We pass in the local reference of the form to the submit method to use it to get the values that angular parsed for us.
+
+We put a *local Reference* to the from above and assign it to the `ngForm` which will give us the access to the from object that angular created for us and makes it easy for us to access the values of the form.
+
+```ts
+import { NgFrom } from '@angular/froms';
+
+export class AppComponent{
+
+    //Other code here
+
+    onSubmit(from: NgFrom){
+        //This will print the the form object to the console and we can see all its properties.
+        console.log(form);
+    }
+}
+```
+
+* Accessing from with `@ViewChild` as we have see before to access the *Local Reference* on the form.
+
+This method of getting the form objects helps us access the data that the form contains at any time **before the from is submitted**.
+
+```ts
+export class AppComponent{
+    @ViewChild('f') signupForm: NgFrom;
+
+    onSubmit(){
+        console.log(this.signupForm);
+    }
+}
+```
+
+* **Validation**
+
+Some Build in properties of the HTML like required can be used to validate the form.
+
+There are also directive provided by angular that can be used to validate the form input such as email.
+
+The are not a definitive check though as the front end application can be tricked, there should always be validation of data on server side so that we dont get invalid data in our persistance.
+
+* [Build in validators](https://angular.io/api/forms/Validators) : These are all built-in validators, though that are the methods which actually get executed(and which can be add when using the reactive approach).
+
+* [Build in directives](https://angular.io/api?type=directive) : Everything marked with "D" is a directive and can be added to your template.
+
+Additionally, you might also want to enable HTML5 validation (by default, Angular disables it). You can do so by adding the `ngNativeValidate`  to a control in your template.
+
+* NgModel :
+
+NgModel can be used with local reference to the form control.
+
+We can also have a default value for the control including `<Select>` as shown below.
+
+`[NgModel]="pet"`
+
+The above example above shows one way binding and we can also use NgModel with two way binding.
+
+`[(ngModel)]= "answer"` : answer is a property of the script that the html element is placed on.
+
+We can then use interpolation else were where we want to print the value of the answer property.
+
+* Grouping from Controls
+
+We can put `ngModelGroup="controlGroup"` on a div that holds the form controls that need to be grouped.
+
+This will create a individual object like the form object that we get for the group and thus we can assess the validity of the from and values of the group independently.
+
+We can also put a Local Reference on the group div and get access to the group object in our script as well as other places in the template itself.
+
+* Setting an patching values
+
+We can set default valies to our from controls, by using the `patchValue` method of `form`.
+
+```ts
+
+const suggestedName = 'SuperUser';
+
+this.signupForm.form.patchValue({
+    userData: {
+        username: suggestedName
+    }
+});
+```
+
+The above approach to set the value for the form on a event will not reset the whole form, just set the value of the form element that we want to target.
+
+The Other approach might be to set the value directly by using `this.signupForm.setValue({})` and pass in the object with the values that we want ot add to our from, but it will reset the form and thus all the values that the user had entered and thus the above approach is much more convenient and useful in most cases.
+
+* Resetting Form
+
+`this.signupForm.reset();` this will reset the form to empty as if the page was reloaded and the form was never used.
+
+If we want the form to have defualt values set as we set wtih `setValues`, we could pass in the object to the reset property and the default values will be set as if we were to use the setValues property after the form is reset.
+
+### Reactive Approach
+
+In the reactive approach we create the from programatically.
+
+In NgModules we need `ReactiveFromsModule` to be added to the `imports[]`. We do not need the NgFormModule that we used in the previous template driven apprach.
+
+```ts
+import { FormGroup, FromControl } from '@angular/froms'
+
+//@Component here
+export class AppComponent implement onInit{
+
+    gender = ['male', 'female'];
+
+    signupForm: FormGroup;
+
+    //Creating our from.
+    ngOnInit(){
+        this.signupForm = new FormGroup({
+            'username': new FromControl(null),
+            'email' : new FormControl(null),
+            'gender': new FormControl('male') //Here we set a default initialization value for our form control.
+        });
+    }
+}
+```
+
+Synchronize our script from with the HTML from in our html template.
+
+```html
+<form [formGroup="signupFrom"] (ngSumbit)="onSubmit()">
+    <div>
+        <label for="username">UserName</label>
+        <input type="text" id=" username" formControlName="username" class="form-control">
+    </div>
+     <div>
+        <label for="email">Email</label>
+        <input type="text" id=" email" formControlName="email" class="form-control">
+    </div>
+    <div ckass="radio" *ngFor="let gender of genders">
+        <label>
+            <input type="radio" [value]="gender" fromControlName="gender">{{gender}}
+        </label>
+    <div>
+</form>
+```
+
+In the above html code we attached or linked our script Form object with the HTML template containing the Form control component. We use formControlName to connect the respective HTML form elements with the Object in script.
+
+* Submitting Form
+
+As we create the from object in the script it self we already have access to the from object in the script.
+
+We still add the `ngSubmit` to the form to get the final values.
+
+```ts
+onSubmit(){
+    //This is the form we created in the script above in the ngOnInit  method.
+    console.log(this.signupForm);
+}
+```
+
+* Adding Validation In the Reactive Approach
+
+As we dont configure our html form elements in our HTML template, adding validator to the HTML template code does not work in the case of reactive aproach.
+
+We can validate the input from a form control by passing an array of `Validators` as the second argument to the `FormControl` with first being the default value for that element.
+
+Validators provides us with the methods for different validations and we can get them from the Vallidators class, but we dot call them we just pass the reference to the validator methods, that is we dont add `()` at the end of them, Angular calls or executes the methods when it needs to.
+
+We import `Validators` from `@angular/froms`
+
+`'email': new FormControl(null, [Validators.required, Validators.email]);`
+
+* Showing message if the form is Invalid
+
+```html
+<span *ngIf="!signupFrom.get('email').valid && signupForm.get('email').touched" class="help-block">Please Enter a valid Email Address
+</span>
+```
+
+Note : If we want to specifically change some css for some property, the class are added to the html element accroding to its state such as `ng-untouched ng-pristine ng-invalid` and many others.
+
+* Grouping Control
+
+We can have nested from groups to create groups of from elements as we did in the Template Approach.
+
+For this we just nest `FormGroup` in the main `FromGroup` and put the properties representing the html elements in the object in this new FormGroup.
+
+We also need to add all the html element that we add to the from group in our script object to be put in a HTML element `<div formGroupName="userData">`. Here userData is the name of the group that we used in our script.
+
+* FromArray
+
+> TODO : Dynamically adding FormControl and FromArray Lecture 209
+
+* Creating Custom Validator
+
+```ts
+
+//As forbiddentNames will be called by angular to check the validity from outside of this calls the `this` keyword wont work. To bind the this keyword to this class we use bind where we call the method.
+
+'username' : new FormControl(null. [Validators.required, this.frobiddenNames.bind(this)]),
+
+//The above code is a part of the signupFrom.
+
+const forbiddenUserName = ["Adwait", "Abhi"];
+
+forbiddenNames(control: FormControl):{[s: string]: boolean}{
+    if(this.forbiddenUsernames.indexOf(control.value) !== -1){ //The value will return a -1 and -1 will be interpreted as true as a value exist by javascript. So we explicitly tell it to check if it is -1 then we want it to be false
+        return{'nameIsForbidden': true};
+    }
+    //We have to return null or empty if the validation fails. We dont wnat to pass the object above with a false value.
+    return null;
+}
+
+```
+
+* Using Error Codes
+
+In the form object angular will add the validation error in the error property of the object of the individual FormControl. Angular may or may not add it to the overall form error.
+
+To check what is contained in the error we might want to console.log the from and check for the error values of the from object.
+
+* Async Validations
+
+We sometimes want our validations to come from the server, for example check if the email already exist, in this case we want to have a asyc Validator.
+
+Async validators are passed as the third argument to a FormControl Object as an array of as many async validator as we need.
+
+If `this` is used in the validator as above, we want ot bind the this to this from our class where we use it as shown above, as angular will execute this method ourside of the class where this will not be availabe and we will have an error.
+
+```ts
+forbiddenEmails(control: FromControl): Promise<any> | Observable<any>{
+    //We create a new Promise here that will be returned by the validator. This is just an example we use setTimeout here but in real programs where we validate data at server we will have a http request that might return a promise or an Observable.
+    const promise = new Promise((resolve, reject) => {
+
+        setTimeout(()=>{
+            if(control.value === 'test@test.com'){
+                resolve({'emailIsForbidden': true});
+            }else{
+                resolve(null);
+            }
+        }, 1500);
+    });
+    return promise;
+}
+
+```
+
+* Reacting to Status and Value Changes
+
+```ts
+this.signupFrom.valueChanges.subscribe((value=>{
+    //This will print our the object that is the from every time there is a change in any of the value of any of the element in the object.
+    console.log(value);
+}))
+
+//Similar to valueChange we have status change that return ths status of the form on whether the form is valid or not.
+
+this.signupForm.statusChanges.subscribe((value=>{
+    console.log(value);
+}))
+```
+
+These can also be applied on individual from controls.
+
+* Setting and Patching Values
+
+We can update our from on our own by using setValue and patch value as we did in the Template Approach.
+
+```ts
+this.signupFrom.setValue({
+    //the whole from object with set value for example we set the gender
+    'gender' : 'male',
+    //and so on fro every property of this form object.
 })
-export class DropdownDirective {
 
-  @HostBinding('class.open') isOpen = false;
+this.signupForm.patchValue({
+    'userData' : {
+        'username': 'Anna'
+    }
+})
+```
 
-  //This will also close the dropdown if we click at any other location in our app.
-  @HostListener('document:click', ['$event']) toggleOpen(event: Event) {
-    this.isOpen = this.elRef.nativeElement.contains(event.target) ? !this.isOpen : false;
-  }
-  constructor(private elRef: ElementRef) {}
+* Reset From
+
+Like we used in the Template Approach we also can use reset as `this.signupForm.reset();` and if we want to set any values to initiate the form after it has already been cleared we can pass a object containing the values to the reset method.
+
+## Pipes
+
+Transfrom output in our template.
+
+* Adding parameters to pipe :
+
+We can add parameters to a pipe by adding `:` after the name of the pipe.
+
+`{{ server.started | date:'fullDate" }}`
+
+* Chaining Multile pipes :
+
+The order of the pipes is important. They are parsed from left to right.
+
+`{{ server.started | date:'fullDate | uppercase }}`
+
+* Create Custom pipes
+
+`ng g p shortenpipe`
+
+```ts
+//FileName : shorten.pipe.ts
+
+import { Pipetransfrom } from '@angular/core';
+
+@Pipe({
+    name: 'shorten'
+})
+export class ShortenPipe implements PipeTransfrom{
+
+//Transform gets the value of interpolated string from our HTML template.
+    transfrom(value:any, limit: number){
+        return value.substr(0,number);
+    }
+}
+
+//The limit here is a paramter for our pipe that can be passed as we saw for the inbuild pipes above.
+
+//We need to aadd pupes to declarations array of NgModules of the app.module.ts
+```
+
+* Async Pipes
+
+```js
+//this is a methods in our component string
+appStatus = new Promise((resolve)=>{
+    setTimeout(()=>{
+        resolve('stable');
+    }, 2000);
+});
+```
+
+```html
+<h2> App Status: {{ appStatus | async }}</h2>
+
+```
+
+We use the async pipe as we know after some time the promise will be resolved and the data will be assigned to appStatus.
+
+When we add a async to a object that is a promise or an Observable it automatically subscribes and in case or promises wait for the data to be resolved and then display data once the data is avaible.
+
+## HTTP Requests
+
+* BackEnd Setup with Firebase.
+
+### Post Requests
+
+> Note : Add `HttpClientModule` to `imports[]` of `@NgModule` in the file `app.module.ts` by importing it from `@angular/common/http`
+
+```ts
+import { HttpClient } from '@angular/commom/http';
+
+export class AppComponent implement OnInit{
+
+    constructor(private http: HttpClient){}
+
+    onCreatePost(postData:{ title: string; content: string}){
+
+        //Send the request
+        //We pass postData as the body and angualar will convert the object into a JSON when it is being send as REST apis need JSON data as the body.
+        //This by itself will not send the request. The http post will return a observabel and the data is not send until we subscribe to the Observable.
+        //this.http.post('https://ourURL', postData);
+        this.http.post('https://ourURL', postData).subscribe((responseData)=>{
+            console.log(responseData);
+        });
+    }
+
+}
+```
+
+### Get Requests
+
+```ts
+private fetchPosts(){
 }
 ```
