@@ -1255,7 +1255,9 @@ When we add a async to a object that is a promise or an Observable it automatica
 
 ## HTTP Requests
 
-* BackEnd Setup with Firebase.
+[Official Documents HTTP requests](https://angular.io/guide/http)
+
+* We can set up BackEnd with Firebase.
 
 ### Post Requests
 
@@ -1274,7 +1276,7 @@ export class AppComponent implement OnInit{
         //We pass postData as the body and angualar will convert the object into a JSON when it is being send as REST apis need JSON data as the body.
         //This by itself will not send the request. The http post will return a observabel and the data is not send until we subscribe to the Observable.
         //this.http.post('https://ourURL', postData);
-        this.http.post('https://ourURL', postData).subscribe((responseData)=>{
+        this.http.post('https://resourceURL', postData).subscribe((responseData)=>{
             console.log(responseData);
         });
     }
@@ -1282,9 +1284,523 @@ export class AppComponent implement OnInit{
 }
 ```
 
+Post with error handling and service.
+
+```ts
+//In our service file
+CreateAndStorePost(title: string, content: string) {
+  const postData: Post = { title: title, content: content };
+  this.http
+    .post<{ name: string }>(
+      'https://ng-complete-guide-c56d3.firebaseio.com/posts.json',
+      postData
+    )
+    .subscribe(
+      responseData => {
+        console.log(responseData);
+      },
+      //The second argument to the subscription is error handling
+      error => {
+        this.error.next(error.message);
+      }
+    );
+}
+
+//Our component file
+
+onCreatePost(postData: Post) {
+      // Send Http request
+  this.postsService.createAndStorePost(postData.title, postData.content);
+}
+```
+
 ### Get Requests
 
 ```ts
 private fetchPosts(){
+    this.http.get('https://resourceURL').subscribe((post)=>{
+        console.log(posts);
+    })
 }
 ```
+
+We could outsource our data handling to a service and then subscribe to the data in our Component as it would be easier to manage as our app gets bigger.
+
+We also handle the error that we might get
+
+```ts
+//In our service file
+import { Injectable } from '@angular/core';
+import { map, catchError } from 'rxjs/operators';
+import { Subject, throwError } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+
+fetchPosts() {
+  return this.http
+    .get<{ [key: string]: Post }>(
+      'https://ng-complete-guide-c56d3.firebaseio.com/posts.json'
+    )
+    .pipe(
+      map(responseData => {
+        const postsArray: Post[] = [];
+        for (const key in responseData) {
+          if (responseData.hasOwnProperty(key)) {
+            postsArray.push({ ...responseData[key], id: key });
+          }
+        }
+        return postsArray;
+      }),
+      catchError(errorRes => {
+        // Send to analytics server
+        return throwError(errorRes);
+      })
+    );
+}
+
+//In our component file
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { map } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
+
+//Variables
+loadedPosts: Post[] = [];
+isFetching = false;
+error = null;
+private errorSub: Subscription;
+
+onFetchPosts() {
+// Send Http request
+    this.isFetching = true;
+    this.postsService.fetchPosts().subscribe(
+      posts => {
+        this.isFetching = false;
+        this.loadedPosts = posts;
+      },
+      error => {
+        this.error = error.message;
+        console.log(error);
+      }
+    );
+}
+```
+
+### Transfroming data with Observables
+
+```ts
+import { map } from 'rxjs/operators';
+
+private fetchPosts(){
+    this.http.get('https://resourceURL').pipe(map(responseData => {
+        const postArray = [];
+        for(const key in responseData) {
+            //We wnat to check the json data that we get from the get request has a key named key.
+            if(responseData.hasOwnProperty(key)){
+                //We push the data to that is key value pairs to the array that we created by using the spread operator.
+                //Also add the id that we could use to uniquely identify the data that we get.
+                postsArray.push({ ...responseData[key], id: key });
+            }
+        }
+        return postArray;
+        //The returned value will not be forwarded to the subscribe method.
+    })).subscribe((post)=>{
+        console.log(posts);
+    })
+}
+```
+
+* Using types with HTTP Request
+
+We can add the type to the HTTP request methods by adding `post<type>` or `get<Type>`. The request methods are called as generic methods.
+
+* Sending Delete Request
+
+```ts
+
+//This is in our service file that fetches the data and we return an observable from here that we can subscribe to in our component file where we need the data.
+deletePosts(){
+
+   return this.http.delete('https://resourceURL');
+}
+
+//This is in our Component file where we want the data and we subscribe to the Observable to get the data.
+onClearPosts(){
+
+    this.postService.deletePosts().subscrbe(()=>{
+        this.loadedPosts = [];
+    });
+}
+```
+
+### Handling Errors
+
+* Directly handling error when we subscibe in the component.
+
+```ts
+onClearPosts(){
+
+    this.postService.deletePosts().subscrbe(()=>{
+        this.loadedPosts = [];
+    },
+    //Here subscribe takes a second argument that represent the error. If an error occurs we will get the error as data for our subscription here and we can handle it as we want below.
+    error=>{
+        this.error = error.message;
+        //The error might be an object depending on the backend server that we are using.
+        console.log(error);
+    });
+}
+```
+
+* HTTP Headers
+
+THe last paramter to any HTTP request like post, get, delete takes an object. The object can take query paramters, headers etc.
+
+We put our headers in that object as a key and pass in a `new HttpHeaders({key: value, key: value})` to that key.
+
+This will set our headers for our request with the required default headers if we do not specify them.
+
+* Params with HttpRequests
+
+In the last object that we pass to the request we add a `params: new HttpParams().set('print', 'pretty')`.
+
+In the above we add print as the key and pretty as the value. We can add multiple such key value pairs.
+
+* `observe`
+
+We can also pass `observe: 'response'` to the object that takes header to get the whole response with headers, status and body of the response that we get from the server. The default value of observe is body and body thus gets parsed to json.
+
+`observe` can also have a value of event, which will tell us about the event like request was 'sent', 'response' and some-others.
+
+* `responseType` Used to tell the observable what type of data we get in response.
+
+### Interceptors
+
+They can be used to change or modify a request before it is send. So for example we can change the request headers before any request is send. This might be useful if we are enforcing an authentication system and want to send a authcode in the header.
+
+We can not only interact with the outgoing request but also with the incoming response of all the request.
+
+> Note : When we have multiple interceptor the order in which the interceptor are declared in  the `providers` array will be the order that they are exected in.
+
+```ts
+//Before we can use interceptor in our application we have to configure them in our app.module.ts file.
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+//In the @NgModule
+  imports: [BrowserModule, FormsModule, HttpClientModule],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptorService,
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptorService,
+      multi: true
+    }
+  ]
+
+//In our auth-interceptor.service.ts file
+import {
+  HttpInterceptor,
+  HttpRequest,
+  HttpHandler
+} from '@angular/common/http';
+
+export class AuthInterceptorService implements HttpInterceptor {
+    //The next.handle method sends the request further to what it should have done if interceptors was not present.
+  intercept(req: HttpRequest<any>, next: HttpHandler) {
+    //As the Httprequest object that we get 'rep' in the case is immutable, hence we clone that object and then return our newly created and modified object back.
+    const modifiedRequest = req.clone({
+      headers: req.headers.append('Auth', 'xyz')
+    });
+    return next.handle(modifiedRequest);
+  }
+}
+
+//In our logging-interceptor
+export class LoggingInterceptorService implements HttpInterceptor {
+  intercept(req: HttpRequest<any>, next: HttpHandler) {
+    console.log('Outgoing request');
+    console.log(req.url);
+    console.log(req.headers);
+    return next.handle(req).pipe(
+      tap(event => {
+        if (event.type === HttpEventType.Response) {
+          console.log('Incoming response');
+          console.log(event.body);
+        }
+      })
+    );
+  }
+}
+```
+
+## Angular Modules
+
+[Official Docs](https://angular.io/guide/ngmodules)
+
+[NgModules FAQ](https://angular.io/guide/ngmodule-faq)
+
+We can split our angular app into different Angular modules to make the app leaner and more importantly to use the lazy loading features for reduced initial size of our application and loading different modules as the user needs them.
+
+> Note 1 : Browser Module needs to be imported only once in our project in the main module file. If we want to use ngFor and ngIf we `import { CommonModule } from '@angular/common'`.
+> Note 2 : Services do not need to be imported in our custom module as they are avaible app wide, that is they are all setup at the root.
+
+### Separating Modules and it Routes
+
+```ts
+//Create a module.ts file for the part of the app that need to be separated. Here we take the example of recipies.
+//recipies.module.ts
+import { NgModule } from '@angular/core';//Import to set the meta data for the module.
+import { CommonModule } from '@angular/common';//As stated above in notes, to use ngfor and similar directives.
+import { RouterModule } from '@angular/router';
+import { ReactiveFormsModule } from '@angular/forms';//As we use reactive form in the module and the reactiveforms import decalared in the app.module.ts file does carry to this file we have to put this import again in the import array for this module.
+
+import { RecipesComponent } from './recipes.component';
+import { RecipeListComponent } from './recipe-list/recipe-list.component';
+import { RecipeDetailComponent } from './recipe-detail/recipe-detail.component';
+import { RecipeItemComponent } from './recipe-list/recipe-item/recipe-item.component';
+import { RecipeStartComponent } from './recipe-start/recipe-start.component';
+import { RecipeEditComponent } from './recipe-edit/recipe-edit.component';
+
+@NgModule({
+  declarations: [
+    //All the components that are a part of the module are declared here and can be removed from the app.module.ts file.
+    RecipesComponent,
+    RecipeListComponent,
+    RecipeDetailComponent,
+    RecipeItemComponent,
+    RecipeStartComponent,
+    RecipeEditComponent
+  ],
+  //All the imports of directives, pipes and modules have to be set again in our separated component as these will be carried from the app.module.ts file that we set for our whole app.
+  //Our module is independent of the app and all imports have to be declared. Only services are app wide and do not have to be imported again. Hence the HttpClientModule does not need to be imported here again.
+  imports: [RouterModule, CommonModule, ReactiveFormsModule],
+  //We export all the components as they will be used in our main files
+  exports: [
+    //As our module has its own router we dont need to export the components our of the Module.
+    //We would only want to export the component if we were using the components outside of this module that we created or if we had set the routing for the module in our main app routing file.
+    // RecipesComponent,
+    // RecipeListComponent,
+    // RecipeDetailComponent,
+    // RecipeItemComponent,
+    // RecipeStartComponent,
+    // RecipeEditComponent
+  ]
+})
+export class RecipesModule {}
+
+//We also want to separate Routing for our module.
+//recipes-routing.module.ts
+import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
+
+import { RecipesComponent } from './recipes.component';
+import { AuthGuard } from '../auth/auth.guard';
+import { RecipeStartComponent } from './recipe-start/recipe-start.component';
+import { RecipeEditComponent } from './recipe-edit/recipe-edit.component';
+import { RecipeDetailComponent } from './recipe-detail/recipe-detail.component';
+import { RecipesResolverService } from './recipes-resolver.service';
+
+//We create routes object.
+const routes: Routes = [
+  {
+    path: 'recipes',
+    component: RecipesComponent,
+    canActivate: [AuthGuard],
+    children: [
+      { path: '', component: RecipeStartComponent },
+      { path: 'new', component: RecipeEditComponent },
+      {
+        path: ':id',
+        component: RecipeDetailComponent,
+        resolve: [RecipesResolverService]
+      },
+      {
+        path: ':id/edit',
+        component: RecipeEditComponent,
+        resolve: [RecipesResolverService]
+      }
+    ]
+  }
+];
+
+@NgModule({
+    //We export the routes object and export the route.
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
+})
+export class RecipesRoutingModule {}
+
+//recipes.component.html
+<div class="row">
+  <div class="col-md-5">
+    <app-recipe-list></app-recipe-list>
+  </div>
+  <div class="col-md-7">
+    <router-outlet></router-outlet>
+  </div>
+</div>
+
+//app.module.ts
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+
+import { AppComponent } from './app.component';
+import { HeaderComponent } from './header/header.component';
+import { ShoppingListComponent } from './shopping-list/shopping-list.component';
+import { ShoppingEditComponent } from './shopping-list/shopping-edit/shopping-edit.component';
+import { DropdownDirective } from './shared/dropdown.directive';
+import { ShoppingListService } from './shopping-list/shopping-list.service';
+import { AppRoutingModule } from './app-routing.module';
+import { RecipeService } from './recipes/recipe.service';
+import { AuthComponent } from './auth/auth.component';
+import { LoadingSpinnerComponent } from './shared/loading-spinner/loading-spinner.component';
+import { AuthInterceptorService } from './auth/auth-interceptor.service';
+import { AlertComponent } from './shared/alert/alert.component';
+import { PlaceholderDirective } from './shared/placeholder/placeholder.directive';
+import { RecipesModule } from './recipes/recipes.module';
+
+@NgModule({
+//We remove the Component of recipe from the declarations
+  declarations: [
+    AppComponent,
+    HeaderComponent,
+    ShoppingListComponent,
+    ShoppingEditComponent,
+    DropdownDirective,
+    AuthComponent,
+    LoadingSpinnerComponent,
+    AlertComponent,
+    PlaceholderDirective
+  ],
+  imports: [
+    BrowserModule,
+    FormsModule,
+    ReactiveFormsModule,
+    HttpClientModule,
+    AppRoutingModule,
+    RecipesModule
+  ],
+  providers: [
+    ShoppingListService,
+    RecipeService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptorService,
+      multi: true
+    }
+  ],
+  bootstrap: [AppComponent],
+  entryComponents: [
+    AlertComponent
+  ]
+})
+export class AppModule {}
+
+//app-routing.module.ts
+//We removed the route of all the recipe
+import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
+
+import { ShoppingListComponent } from './shopping-list/shopping-list.component';
+import { AuthComponent } from './auth/auth.component';
+
+const appRoutes: Routes = [
+  { path: '', redirectTo: '/recipes', pathMatch: 'full' },
+  { path: 'shopping-list', component: ShoppingListComponent },
+  { path: 'auth', component: AuthComponent }
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(appRoutes)],
+  exports: [RouterModule]
+})
+export class AppRoutingModule {}
+
+//app.component.html
+<app-header></app-header>
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>
+
+```
+
+### Shared Modules
+
+Shared modules are just modules as we declared above but containing the parts that are being shared by multiple modules in our project.
+
+They declare and export these parts so we can import this shared module and use these components, directives or pipes.
+
+> Note : All the components, directive, pipes and other parts that we create for our application should only be declared once in the application. So we cannot declare a component in the app.module.ts and also in shared.module.ts that we create.
+
+In such a condition we just have to have the shared modules declared in the shared modules file and import the shared modules in the app.modules.ts in imports array.
+
+### Core Module
+
+This is used to make our main app.module.ts file leaner by declaring the providers in a different file that is the Core Modules file and then importing the module in the app.module.ts file.
+
+> Note : If we are declaring a service with `@Injectable({ providedIn: 'root' }), then the service is already available everywhere in the project and is a prefered way of declaring a service, and does not need to be included in the provides of either the app.modules.ts or in Core module that we might create.
+
+## Lazy Loading And other Optimizations
+
+This is used for optimization.
+
+We need multiple modules, that is our app should be divided into multiple modules to take advantage of Lazy Loading.
+
+This will help us bundle the code in smaller parts and download only the required files when we start the code and as we use.
+
+> Note : The example below shows the modern way of declaring route for lazing loading in the appRoutes. For older version we can delcare it as `{ path: 'recipes', loadChildren: './recipes/recipes.module#RecipesModule' }`. Only use this if the using older version of angular and the new apprach does not work as this older appraoch will give errors and might even bug the application while using newer version of angular.
+
+Things to check when lazy loading component :
+
+* Declare the route path to the component that need to be lazy loaded as `{ path: 'recipes', loadChildren: ()=> import('./recipes/recipes.module').then(m=>m.RecipesModule)}`
+
+* Remove the declaration of the component we are trying to lazy load from the app.module.ts file as we are trying to lazy load it and if we have a decalaration in the main file we will be trying to also actively load it.
+
+* Now we chagne the path that point to 'recipes' in our Recipes.module.ts or recipes.routes.ts file to be ''(empty string) as we have added that route to our main routes file as shown above.
+
+### Pre-Load LazyLoaded Modules
+
+In app=routing.module.ts file where we declare our root routing we can declare a strategy on how and which modules are preloaded.
+
+```ts
+imports:[
+    RouterModule.forRoot(appRoutes, { preloadingStrategy: PreloadAllModules });
+]
+```
+
+### Services and Modules Relations
+
+Service can be declared in the following scopes and places :
+
+|Service Declaration|Available To Use At|Injector Used by Angular|When to Use|
+|---|---|---|---|
+| AppModules in providers | Service available app wide | Use root Injector | Should be default |
+| AppComponent(or Other Component) | Service availabe in the component-tree | Use Component-specific Injector| Use if service is only relevant for component tree |
+| Eager-loaded Modules | Service avaliable application wide | Use root injector | Avoid using this as it might be confusing for other developers |
+| Lazy-Loaded modules | Service avaliable in loaded module only | Angular creates and uses child injector | Use if service should be scoped to loaded module |
+
+When we use the @Injectable to declare a service in the root it has the same effect as if it was declared in AppModules providers array.
+
+## Prepare Angular project For deployment
+
+Use `ng build --prod` to compile the application and let angular perform the optimization that it can to get it production ready.
+
+### Ahead of time compilation
+
+Just-In-Time Compilation :
+
+When we are developing our app the template code that is the html has part of angular specific commands that need to be complied so that our brower can display them as they should. These commands are complied during development at the time the app runs in our browser just before it is displayed by angular template compiler which is shipped with our code while development.
+
+But this complier is big and should not be a part of our production application as it increases the size of our application significantly and thus increase load times.
+
+Thus we use Ahead of time compliation to compile these files before we upload the application to the server to make the application production ready.
+
+This removes the need for the angular just in time complier to be shipped wiht our production app making the size of our app payload significantly smaller and also does other optimization that make the overall file size of our files smaller.
