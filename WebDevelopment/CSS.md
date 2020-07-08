@@ -147,7 +147,7 @@ background-attachment: fixed;
 
 ### Media Queries
 
-https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries/Using_media_queries
+[Using_media_queries](https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries/Using_media_queries)
 
 ---
 
@@ -254,7 +254,7 @@ animation-duration: sec (Time in which one iteration of the animations in comple
 
 animation-timing-function: linear, ease-out, cubic-bezier(0.25, 0.25, 0.75, 0.75); (determines in how how the animation cycle progresses) --> for a more natural and soft movement use => animation-timing-function: cubic-bezier(0.311, 0.441, 0.444, 1.649);
 
-## CSS Flex Box :
+## CSS Flex Box
 
 * Containers :
 

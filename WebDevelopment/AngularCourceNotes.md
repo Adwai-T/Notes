@@ -1,5 +1,7 @@
 # Angular
 
+> Note all these notes are base on Maximilian Schwarzmüller course on Udemy.
+
 ## Install
 
 Requires Node for packing and optimize the project. Also npm will be used download all the dependencies and angualar cli itself.
@@ -1804,3 +1806,6 @@ But this complier is big and should not be a part of our production application 
 Thus we use Ahead of time compliation to compile these files before we upload the application to the server to make the application production ready.
 
 This removes the need for the angular just in time complier to be shipped wiht our production app making the size of our app payload significantly smaller and also does other optimization that make the overall file size of our files smaller.
+
+## Authentication
+

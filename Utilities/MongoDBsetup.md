@@ -33,3 +33,7 @@ Even when we whitelist all ips we dont need to worry as the database is protecte
 Robo 3t does not support connecting to remote mongo databases so we use the default software **mongo compass**.
 
 Link to accessdatabase : "mongodb+srv://learn:passwordHere@cluster0.dszax.mongodb.net/nameofdatabasehere?retryWrites=true&w=majority".
+
+## Access Remote Repo from Spring Application
+
+Defined in the Spring.md file.

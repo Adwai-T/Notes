@@ -27,7 +27,7 @@ function Person(name, age) {
 }
 
 // Define an object
-var you = new Person('You', 24); 
+var you = new Person('You', 24);
 // We are creating a new person named "You" aged 24.
 
 //Once Create and object can be access in simlar way as shown above

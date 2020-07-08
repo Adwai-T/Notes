@@ -10,7 +10,7 @@
 public class ExtendableBean {
     public String name;
     private Map<String, String> properties;
- 
+
     @JsonAnyGetter
     public Map<String, String> getProperties() {
         return properties;
@@ -26,7 +26,7 @@ public class ExtendableBean {
 }
 ```
 
-2. `@JsonPropertyOrder` : Orders the json as specified.
+* `@JsonPropertyOrder` : Orders the json as specified.
 
 ```java
 @JsonPropertyOrder({ "name", "id" })
@@ -38,11 +38,11 @@ public class MyBean {
 
  `@JsonPropertyOrder(alphabetic=true)` could also be used.
 
- 3. For more : https://www.baeldung.com/jackson-annotations
+* For more : [Jackson-Annotations](https://www.baeldung.com/jackson-annotations)
 
- 4.  `@JsonFormat(shape = JsonFormat.Shape.STRING)` OR `@JsonFormat(shape = JsonFormat.Shape.STRING, pattern= "yyyy-MM-dd")`
+* `@JsonFormat(shape = JsonFormat.Shape.STRING)` OR `@JsonFormat(shape = JsonFormat.Shape.STRING, pattern= "yyyy-MM-dd")`
 
- 5. `@JsonProperty("date")` : Specify custom name for the property.
+* `@JsonProperty("date")` : Specify custom name for the property.
 
 ```java
 
@@ -58,9 +58,9 @@ private Calendar someDate;
 }
 ```
 
-7. @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+* @JsonProperty(access = JsonProperty.Access.WRITE_ONLY
 
-8. Or the above acan be achieved by @JsonIgnore
+* Or the above acan be achieved by @JsonIgnore
 
 ```java
 class User {
@@ -81,7 +81,7 @@ class User {
 }
 ```
 
-6. Restricting seralizing and deseralizing : (Does not work : The getter and setters are important for some reason to start the project)
+* Restricting seralizing and deseralizing : (Does not work : The getter and setters are important for some reason to start the project)
 
 * If not getters and setters are set for the properties of a class only the properties with public access modifiers are seralized and deseralized.
 * If getters are set only those properties will be seralized and deseralized when all properties are private. Or the above rule will apply for allproperties that have public access modifier.
@@ -89,24 +89,24 @@ class User {
 
 ---
 
-# Running Spring Application In different Environments
+## Running Spring Application In different Environments
 
-## application.properties :
+### application.properties
 
 The application properties file contains all the arguments supplied to the application when the application runs.
 
 application.properties:
+
 ```properties
 server.port = 9090
 spring.application.name = demoservice
 ```
 
-The application.properties file could be stored at an external director outside of the classpath and could be 
-used when we run the application from commandline.
+The application.properties file could be stored at an external director outside of the classpath and could be used when we run the application from commandline.
 
 > -Dspring.config.location = C:\application.properties
 
-## YAML files : 
+### YAML files
 
 Instead of application.properties file we could use application.yml file to store all our properties.
 
@@ -118,7 +118,7 @@ spring:
 port: 9090
 ```
 
-## @Value :
+### @Value
 
 @Value annotation is used to read the environment in the java code.
 
@@ -143,13 +143,15 @@ public class DemoApplication {
    public String name() {
       return name;
    }
-} 
+}
 ```
-## Active Profile :
+
+### Active Profile
 
 We could either use multiple application.properties file or one yaml file to store properties for different profiles.
 
-1. Using application.properties file.
+* Using application.properties file.
+
 > application.properties
 > application-dev.properties
 > application-prod.properties
@@ -158,7 +160,7 @@ To activate a given profile we could use :
 
 `--spring-profile-active=prod`
 
-2. Use a single yaml file and add all properties to the file :
+* Use a single yaml file and add all properties to the file :
 
 ```yaml
 spring:
@@ -176,52 +178,48 @@ server:
    port: 9090
 
 ---
-spring: 
+spring:
    profiles: prod
    application:
       name: demoservice
-server: 
+server:
    port: 4431
-``` 
+```
 
 The command to activate a given profile still remains the same :
- 
+
 `--spring-profile-active=prod`
 
 ---
 
-# Logging 
+## Logging
 
-Spring Boot uses Apache Commons logging for all internal logging. Spring Boot’s default configurations provides a 
-support for the use of Java Util Logging, Log4j2, and Logback. Using these, we can configure the console logging as
-well as file logging.
+Spring Boot uses Apache Commons logging for all internal logging. Spring Boot’s default configurations provides a support for the use of Java Util Logging, Log4j2, and Logback. Using these, we can configure the console logging as well as file logging.
 
-If you are using Spring Boot Starters, Logback will provide a good support for logging. Besides, Logback also provides a 
-use of good support for Common Logging, Util Logging, Log4J, and SLF4J.
+If you are using Spring Boot Starters, Logback will provide a good support for logging. Besides, Logback also provides a use of good support for Common Logging, Util Logging, Log4J, and SLF4J.
 
 ---
 
-# Building a RestApi :
+## Building a RestApi
 
-## Annotations :
+### Annotations
 
-1. @RestController : 
+1. @RestController :
 The @RestController annotation is used to define the RESTful web services. It serves JSON, XML and custom response.
 
 2. @RequestMapping(value =  "/products") :
-The @RequestMapping annotation is used to define the Request URI to access the REST Endpoints. We can define Request 
-method to consume and produce object. The default request method is GET.
+The @RequestMapping annotation is used to define the Request URI to access the REST Endpoints. We can define Request method to consume and produce object. The default request method is GET.
 
 3. @RequestBody :
 Used to define the request body content property.
+
 ```java
 public ResponseEntity<Object> createProduct(@RequestBody Product product) {
 }
 ```  
 
-4. ResponseEntity :
-ResponseEntity represents the whole HTTP response: status code, headers, and body. Because of it, we can use it to fully 
-configure the HTTP response.
+* ResponseEntity :
+ResponseEntity represents the whole HTTP response: status code, headers, and body. Because of it, we can use it to fully configure the HTTP response.
 
 ```java
 //For different entities different response status could be send
@@ -231,12 +229,12 @@ ResponseEntity<String> age(
   
     if (isInFuture(yearOfBirth)) {
         return new ResponseEntity<>(
-          "Year of birth cannot be in the future", 
+          "Year of birth cannot be in the future",
           HttpStatus.BAD_REQUEST);
     }
- 
+
     return new ResponseEntity<>(
-      "Your age is " + calculateAge(yearOfBirth), 
+      "Your age is " + calculateAge(yearOfBirth),
       HttpStatus.OK);
 }
 
@@ -245,26 +243,25 @@ ResponseEntity<String> age(
 ResponseEntity<String> customHeader() {
     HttpHeaders headers = new HttpHeaders();
     headers.add("Custom-Header", "foo");
-         
+
     return new ResponseEntity<>(
       "Custom header set", headers, HttpStatus.OK);
 }
 ```
 
+* @PathVariable :
 
-
-4. @PathVariable :
-The @PathVariable annotation is used to define the custom or dynamic request URI. The Path variable in request URI is 
+The @PathVariable annotation is used to define the custom or dynamic request URI. The Path variable in request URI is
 defined as curly braces {}
 
 ```java
 @GetMapping("/product/{id}")
 public ResponseEntity<Object> updateProduct(@PathVariable("id") String id) {
 }
-``` 
+```
 
-5. @RequestParam :
-The @RequestParam annotation is used to read the request parameters from the Request URL. By default, it is a required 
+* @RequestParam :
+The @RequestParam annotation is used to read the request parameters from the Request URL. By default, it is a required
 parameter.
 
 ```java
@@ -273,7 +270,8 @@ public ResponseEntity<Object> getProduct(
 }
 ```
 
-## Implementation of The restApi :
+## Implementation of The restApi
+
 ```java
 import java.util.HashMap;
 import java.util.Map;
@@ -296,33 +294,33 @@ public class ProductServiceController {
       honey.setId("1");
       honey.setName("Honey");
       productRepo.put(honey.getId(), honey);
-      
+
       Product almond = new Product();
       almond.setId("2");
       almond.setName("Almond");
       productRepo.put(almond.getId(), almond);
    }
-   
+
    @RequestMapping(value = "/products/{id}", method = RequestMethod.DELETE)
-   public ResponseEntity<Object> delete(@PathVariable("id") String id) { 
+   public ResponseEntity<Object> delete(@PathVariable("id") String id) {
       productRepo.remove(id);
       return new ResponseEntity<>("Product is deleted successsfully", HttpStatus.OK);
    }
-   
+
    @RequestMapping(value = "/products/{id}", method = RequestMethod.PUT)
-   public ResponseEntity<Object> updateProduct(@PathVariable("id") String id, @RequestBody Product product) { 
+   public ResponseEntity<Object> updateProduct(@PathVariable("id") String id, @RequestBody Product product) {
       productRepo.remove(id);
       product.setId(id);
       productRepo.put(id, product);
       return new ResponseEntity<>("Product is updated successsfully", HttpStatus.OK);
    }
-   
+
    @RequestMapping(value = "/products", method = RequestMethod.POST)
    public ResponseEntity<Object> createProduct(@RequestBody Product product) {
       productRepo.put(product.getId(), product);
       return new ResponseEntity<>("Product is created successfully", HttpStatus.CREATED);
    }
-   
+
    @RequestMapping(value = "/products")
    public ResponseEntity<Object> getProduct() {
       return new ResponseEntity<>(productRepo.values(), HttpStatus.OK);
@@ -330,10 +328,11 @@ public class ProductServiceController {
 }
 ```
 
-# Exception Handling :
+## Exception Handling
 
-## Annotations :
-1. @ControllerAdvice : Is used to note the class as a global exception handling class.
+### Annotations in Spring
+
+* @ControllerAdvice : Is used to note the class as a global exception handling class.
 
 ```java
 package com.tutorialspoint.demo.exception;
@@ -345,7 +344,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 }
 ```
 
-2. @ExceptionHandler : 
+* @ExceptionHandler :
 Used to mark the methods that will handle the exceptions.
 
 ```java
@@ -363,7 +362,8 @@ public ResponseEntity<Object> exception(ProductNotfoundException exception) {
 }
 ```
 
-3. Example code :
+* Example code :
+
 ```java
 
 import org.springframework.http.HttpStatus;
@@ -380,11 +380,11 @@ public class ProductExceptionController {
 }
 ```
 
-# Spring Boot - Interceptor
+## Spring Boot - Interceptor
 
 ---
 
-# Rest Templates :
+## Rest Templates
 
 Rest Template is used to create applications that consume RESTful Web Services.
 
@@ -408,7 +408,7 @@ public class ConsumeWebService {
       HttpHeaders headers = new HttpHeaders();
       headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
       HttpEntity <String> entity = new HttpEntity<String>(headers);
-      
+
       return restTemplate.exchange("http://localhost:8080/products", HttpMethod.GET, entity, String.class).getBody();
    }
 }
@@ -416,12 +416,11 @@ public class ConsumeWebService {
 
 Similar code can be done for Post, delete and put mapping.
 
-# File Handling
+## File Handling
 
-## File upload
+### File upload
 
-For uploading a file, you can use MultipartFile as a Request Parameter and this API should consume Multi-Part form data 
-value.
+For uploading a file, you can use MultipartFile as a Request Parameter and this API should consume Multi-Part form data value.
 
 ```java
 import java.io.File;
@@ -451,10 +450,9 @@ public class FileUploadController {
 }
 ```
 
-## File downloading
+### File downloading
 
-For file download, you should use InputStreamResource for downloading a File. We need to set the HttpHeader 
-Content-Disposition in Response and need to specify the response Media Type of the application.
+For file download, you should use InputStreamResource for downloading a File. We need to set the HttpHeader Content-Disposition in Response and need to specify the response Media Type of the application.
 
 Note − In the following example, file should be available on the specified path where the application is running.
 
@@ -473,7 +471,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class FileDownloadController {
-   @RequestMapping(value = "/download", method = RequestMethod.GET) 
+   @RequestMapping(value = "/download", method = RequestMethod.GET)
    public ResponseEntity<Object> downloadFile() throws IOException  {
       String filename = "/var/tmp/mysql.png";
       File file = new File(filename);
@@ -485,7 +483,7 @@ public class FileDownloadController {
       headers.add("Pragma", "no-cache");
       headers.add("Expires", "0");
 
-      ResponseEntity<Object> 
+      ResponseEntity<Object>
       responseEntity = ResponseEntity.ok().headers(headers).contentLength(
          file.length()).contentType(MediaType.parseMediaType("application/txt")).body(resource);
 
@@ -496,10 +494,9 @@ public class FileDownloadController {
 
 ---
 
-# Service Components
+## Service Components
 
-Service Components are the class file which contains @Service annotation. These class files are used to write business 
-logic in a different layer, separated from @RestController class file.
+Service Components are the class file which contains @Service annotation. These class files are used to write business logic in a different layer, separated from @RestController class file.
 
 In the initial examples we had written all the business login in the controller class, we could use the @service
 class to store our business logic from here on.
@@ -588,9 +585,9 @@ public class ProductServiceController {
       return new ResponseEntity<>(productService.getProducts(), HttpStatus.OK);
    }
    @RequestMapping(value = "/products/{id}", method = RequestMethod.PUT)
-   public ResponseEntity<Object> 
+   public ResponseEntity<Object>
       updateProduct(@PathVariable("id") String id, @RequestBody Product product) {
-      
+
       productService.updateProduct(id, product);
       return new ResponseEntity<>("Product is updated successsfully", HttpStatus.OK);
    }
@@ -608,6 +605,7 @@ public class ProductServiceController {
 ```
 
 product.java : POJO
+
 ```java
 public class Product {
    private String id;
@@ -630,10 +628,9 @@ public class Product {
 
 ---
 
-# Thymeleaf :
+## Thymeleaf
 
-Thymeleaf is a Java-based library used to create a web application. It provides a good support for serving a XHTML/HTML5 
-in web applications.
+Thymeleaf is a Java-based library used to create a web application. It provides a good support for serving a XHTML/HTML5 in web applications.
 
 Thymeleaf converts your files into well-formed XML files :
 
@@ -644,8 +641,7 @@ Thymeleaf converts your files into well-formed XML files :
 * HTML5
 * Legacy HTML5
 
-All templates, except Legacy HTML5, are referring to well-formed valid XML files. Legacy HTML5 allows us to render the 
-HTML5 tags in web page including not closed tags.
+All templates, except Legacy HTML5, are referring to well-formed valid XML files. Legacy HTML5 allows us to render the HTML5 tags in web page including not closed tags.
 
 Dependency :
 
@@ -656,9 +652,10 @@ Dependency :
 </dependency>
 ```
 
-## Web Applications :
+### Web Applications
 
 We use the @Controller class to map the address :
+
 ```java
 package com.tutorialspoint.demo.controller;
 
@@ -674,14 +671,13 @@ public class WebController {
 }
 ```
 
-We then place all our HTML under : `src > main > resource > templates`. It is necessary the html file be placed in the 
-template class or it would not work.
+We then place all our HTML under : `src > main > resource > templates`. It is necessary the html file be placed in the template class or it would not work.
 
 All other files like the css and js scripts can be placed in the static package.
 
 ---
 
-# Consuming Rest Api Web Service Using JQuery Ajax :
+## Consuming Rest Api Web Service Using JQuery Ajax
 
 ```xml
 <dependency>
@@ -695,9 +691,10 @@ All other files like the css and js scripts can be placed in the static package.
 </dependency>
 ```
 
-Example : 
+Example :
 
 Controller class to serve the Restful Api :
+
 ```java
 @Controller
 public class ViewController {
@@ -714,7 +711,9 @@ public class ViewController {
 
 }
 ```
+
 The request ot the above controller as `http://localhost:9090/products` return the following result
+
 ```json
 [
    {
@@ -728,7 +727,8 @@ The request ot the above controller as `http://localhost:9090/products` return t
 ]
 ```
 
-view-product.html : 
+view-product.html
+
 ```html
 
 <script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -738,7 +738,7 @@ $(document).ready(function(){
    $.getJSON("http://localhost:9090/products", function(result){
       $.each(result, function(key,value) {
          $("#productsJson").append(value.id+" "+value.name+" ");
-      }); 
+      });
    });
 });
 </script>
@@ -746,6 +746,7 @@ $(document).ready(function(){
 ```
 
 add-product.html
+
 ```html
 <!DOCTYPE html>
 <html>
@@ -753,7 +754,6 @@ add-product.html
       <meta charset = "ISO-8859-1" />
       <title>Add Products</title>
       <script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-      
       <script>
          $(document).ready(function() {
             $("button").click(function() {
@@ -779,7 +779,7 @@ add-product.html
          });
       </script>
    </head>
-   
+
    <body>
       <button>Click here to submit the form</button>
    </body>
@@ -788,7 +788,7 @@ add-product.html
 
 ---
 
-# Cross Origin Resource Sharing : CORS Support
+## Cross Origin Resource Sharing : CORS Support
 
 Cross-Origin Resource Sharing (CORS) is a security concept that allows restricting the resources implemented in web browsers. It prevents the JavaScript code producing or consuming the requests against different origin.
 
@@ -798,24 +798,23 @@ Two requirements are needed to handle this issue −
 
 * RESTful web services should support the Cross-Origin Resource Sharing.
 
-* RESTful web service application should allow accessing the API(s) from the 8080 port.* 
+* RESTful web service application should allow accessing the API(s) from the 8080 port.*
 
 ---
 
-# Internationalization 
+## Internationalization
 
-Internationalization is a process that makes your application adaptable to different languages and regions without 
-engineering changes on the source code. In ither words, Internationalization is a readiness of Localization.
+Internationalization is a process that makes your application adaptable to different languages and regions without engineering changes on the source code. In ither words, Internationalization is a readiness of Localization.
 
 ---
 
-# Scheduling 
+## Scheduling
 
 Scheduling is a process of executing the tasks for the specific time period.
 
-## Fixed Rate
-Fixed Rate scheduler is used to execute the tasks at the specific time. It does not wait for the completion of previous 
-task. The values should be in milliseconds. 
+### Fixed Rate
+
+Fixed Rate scheduler is used to execute the tasks at the specific time. It does not wait for the completion of previous task. The values should be in milliseconds.
 
 ```java
 package com.tutorialspoint.demo.scheduler;
@@ -838,8 +837,9 @@ public class Scheduler {
 }
 ```
 
-## Fixed Delay
-Fixed Delay scheduler is used to execute the tasks at a specific time. It should wait for the previous task completion. 
+### Fixed Delay
+
+Fixed Delay scheduler is used to execute the tasks at a specific time. It should wait for the previous task completion.
 The values should be in milliseconds.
 
 ```java
@@ -860,37 +860,29 @@ public class Scheduler {
 }
 ```
 
-# Enabling HTTPS :
+## Enabling HTTPS
 
-https://www.tutorialspoint.com/spring_boot/spring_boot_enabling_https.htm
+[Tutorial on Enabling Https](https://www.tutorialspoint.com/spring_boot/spring_boot_enabling_https.htm)
 
 ---
-# Servers :
 
-Eureka Server is an application that holds the information about all client-service applications. Every Micro service 
-will register into the Eureka server and Eureka server knows all the client applications running on each port and IP 
-address. Eureka Server is also known as Discovery Server.
+## Servers
 
-Zuul Server is a gateway application that handles all the requests and does the dynamic routing of microservice 
-applications. The Zuul Server is also known as Edge Server.
+Eureka Server is an application that holds the information about all client-service applications. Every Micro service will register into the Eureka server and Eureka server knows all the client applications running on each port and IP address. Eureka Server is also known as Discovery Server.
 
-For Example, /api/user is mapped to the user service and /api/products is mapped to the product service and Zuul Server 
-dynamically routes the requests to the respective backend application
+Zuul Server is a gateway application that handles all the requests and does the dynamic routing of microservice applications. The Zuul Server is also known as Edge Server.
 
-Spring Cloud Configuration Server is a centralized application that manages all the application related configuration 
-properties.
+For Example, /api/user is mapped to the user service and /api/products is mapped to the product service and Zuul Server dynamically routes the requests to the respective backend application
 
-Some applications may need configuration properties that may need a change and developers may need to take them down or 
-restart the application to perform this. However, this might be lead to downtime in production and the need of 
-restarting the application. Spring Cloud Configuration Server lets developers to load the new configuration properties 
-without restarting the application and without any downtime.
- 
+Spring Cloud Configuration Server is a centralized application that manages all the application related configuration properties.
+
+Some applications may need configuration properties that may need a change and developers may need to take them down or restart the application to perform this. However, this might be lead to downtime in production and the need ofrestarting the application. Spring Cloud Configuration Server lets developers to load the new configuration properties without restarting the application and without any downtime.
+
 ---
 
-# Actuator :
+## Actuator
 
-Spring Boot Actuator provides secured endpoints for monitoring and managing your Spring Boot application. By default, 
-all actuator endpoints are secured.
+Spring Boot Actuator provides secured endpoints for monitoring and managing your Spring Boot application. By default, all actuator endpoints are secured.
 
 ```xml
 <dependency>
@@ -899,28 +891,23 @@ all actuator endpoints are secured.
 </dependency>
 ```
 
-# Admin Server :
+## Admin Server
 
-Monitoring your application by using Spring Boot Actuator Endpoint is slightly difficult. Because, if you have ‘n’ 
-number of applications, every application has separate actuator endpoints, thus making monitoring difficult. Spring Boot 
-Admin Server is an application used to manage and monitor your Microservice application.
+Monitoring your application by using Spring Boot Actuator Endpoint is slightly difficult. Because, if you have ‘n’ number of applications, every application has separate actuator endpoints, thus making monitoring difficult. Spring Boot Admin Server is an application used to manage and monitor your Microservice application.
 
-To handle such situations, CodeCentric Team provides a Spring Boot Admin UI to manage and monitor all your Spring Boot 
-application Actuator endpoints at one place.
+To handle such situations, CodeCentric Team provides a Spring Boot Admin UI to manage and monitor all your Spring Boot application Actuator endpoints at one place.
 
-# Admin Client :
-For monitoring and managing your microservice application via Spring Boot Admin Server, you should add the Spring Boot 
-Admin starter client dependency and point out the Admin Server URI into the application properties file.
+## Admin Client
 
-Note − For monitoring an application, you should enable the Spring Boot Actuator Endpoints for your Microservice 
-application.
+For monitoring and managing your microservice application via Spring Boot Admin Server, you should add the Spring Boot Admin starter client dependency and point out the Admin Server URI into the application properties file.
+
+Note − For monitoring an application, you should enable the Spring Boot Actuator Endpoints for your Microservice application.
 
 ---
 
-# Swagger2 :
+## Swagger2
 
-Swagger2 is an open source project used to generate the REST API documents for RESTful web services. It provides a user 
-interface to access our RESTful web services via the web browser.
+Swagger2 is an open source project used to generate the REST API documents for RESTful web services. It provides a user interface to access our RESTful web services via the web browser.
 
 ```xml
 <dependency>
@@ -955,16 +942,15 @@ public class SwaggerDemoApplication {
 }
 ```
 
-> We can find the documentation at : http://localhost:8080/swagger-ui.html
+> We can find the documentation at : [Swagger generated Doc Url at port 8080](http://localhost:8080/swagger-ui.html)
 
 ---
 
-# Flyway Database :
+## Flyway Database
 
 Flyway is a version control application to evolve your Database schema easily and reliably across all your instances.
 
-Many software projects use relational databases. This requires the handling of database migrations, also often called 
-schema migrations.
+Many software projects use relational databases. This requires the handling of database migrations, also often called schema migrations.
 
 ```xml
 <dependency>
@@ -994,7 +980,8 @@ schema migrations.
 </dependency>
 ```
 
-application.properties 
+application.properties
+
 ```properties
 spring.application.name = flywayapp  
 
@@ -1018,11 +1005,12 @@ flyway.password = root
 ```
 
 application.yml
+
 ```yaml
 spring:
    application:
       name: flywayapp  
-   datasource: 
+   datasource:
       driverClassName: com.mysql.jdbc.Driver
       url: "jdbc:mysql://localhost:3306/USERSERVICE?autoreconnect=true"
       password: "root"
@@ -1043,14 +1031,15 @@ flyway:
 ```
 
 Now, create a SQL file under the src/main/resources/db/migration directory. Name the SQL file as “V1__Initial.sql”
-```
+
+```sql
 CREATE TABLE USERS (ID INT AUTO_INCREMENT PRIMARY KEY, USERID VARCHAR(45));
 INSERT INTO USERS (ID, USERID) VALUES (1, 'tutorialspoint.com');
 ```
 
 ---
 
-# Sending Email :
+## Sending Email
 
 By using Spring Boot RESTful web service, you can send an email with Gmail Transport Layer Security.
 
@@ -1061,17 +1050,15 @@ By using Spring Boot RESTful web service, you can send an email with Gmail Trans
 </dependency>
 ```
 
-https://www.tutorialspoint.com/spring_boot/spring_boot_sending_email.htm
+[Sending Email Tutuorial](https://www.tutorialspoint.com/spring_boot/spring_boot_sending_email.htm)
 
 ---
 
-# Hystrix :
+## Hystrix
 
-Hystrix is a library from Netflix. Hystrix isolates the points of access between the services, stops cascading failures 
-across them and provides the fallback options.
+Hystrix is a library from Netflix. Hystrix isolates the points of access between the services, stops cascading failures across them and provides the fallback options.
 
-For example, when you are calling a 3rd party application, it takes more time to send the response. So at that time, the 
-control goes to the fallback method and returns the custom response to your application.
+For example, when you are calling a 3rd party application, it takes more time to send the response. So at that time, the control goes to the fallback method and returns the custom response to your application.
 
 ```xml
 <dependency>
@@ -1115,7 +1102,7 @@ public class HystrixappApplication {
 
 ---
 
-# Web Socket
+## Web Socket
 
 ```xml
 
@@ -1152,10 +1139,9 @@ public class HystrixappApplication {
 
 ---
 
-# Twilio : Send SMS 
+## Twilio : Send SMS
 
-Twilio is a 3rd party application used to send SMS and make voice calls from our application. It allows us to send the 
-SMS and make voice calls programmatically.
+Twilio is a 3rd party application used to send SMS and make voice calls from our application. It allows us to send the SMS and make voice calls programmatically.
 
 ```xml
 <dependency>
@@ -1167,16 +1153,15 @@ SMS and make voice calls programmatically.
 
 ```
 
-> https://www.tutorialspoint.com/spring_boot/spring_boot_twilio.htm
+> [Spring Boot Twilio Tutorial](https://www.tutorialspoint.com/spring_boot/spring_boot_twilio.htm)
 
 ---
 
-# Unit Test Cases :
+## Unit Test Cases
 
-Unit Testing is a one of the testing done by the developers to make sure individual unit or component functionalities 
-are working fine.
+Unit Testing is a one of the testing done by the developers to make sure individual unit or component functionalities are working fine.
 
-## Mockito :
+### Mockito
 
 ```xml
 
@@ -1195,13 +1180,14 @@ are working fine.
 
 ---
 
-# @Bean Validation : Validating domain objects in Spring boot :
+## @Bean Validation : Validating domain objects in Spring boot
 
 Dependency : Starting from Spring Boot 2.3 we need to explicitly add the dependency.
+
 ```xml
-<dependency> 
-    <groupId>org.springframework.boot</groupId> 
-    <artifactId>spring-boot-starter-validation</artifactId> 
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-validation</artifactId>
 </dependency>
 ```
 
@@ -1210,13 +1196,14 @@ For Gradle
 
 Spring Boot supports seamless integration with custom validators, the de-facto standard for performing validation is Hibernate Validator, the Bean Validation framework's reference implementation.
 
-> List of all annotations : https://docs.jboss.org/hibernate/beanvalidation/spec/2.0/api/javax/validation/constraints/package-summary.html
+> List of all annotations : [Hibernate Validation all annotation List](https://docs.jboss.org/hibernate/beanvalidation/spec/2.0/api/javax/validation/constraints/package-summary.html)
 
-## Validate Request Body :
+### Validate Request Body
 
 In POST and PUT requests, it’s common to pass a JSON payload within the request body. Spring automatically maps the incoming JSON to a Java object. Now, we want to check if the incoming Java object meets our requirements.
 
 Object to map json to :
+
 ```java
 class Input {
 
@@ -1232,6 +1219,7 @@ class Input {
 ```
 
 Controller class:
+
 ```java
 @RestController
 class ValidateRequestBodyController {
@@ -1246,7 +1234,7 @@ class ValidateRequestBodyController {
 
 If the validation fails, it will trigger a `MethodArgumentNotValidException`. By default, Spring will translate this exception to a HTTP status 400 (Bad Request).
 
-## Validating Request Parameter and Path Variables :
+### Validating Request Parameter and Path Variables
 
 Validating path variables and request parameters works a little differently.
 
@@ -1267,11 +1255,11 @@ class ValidateParametersController {
   
   @GetMapping("/validateRequestParameter")
   ResponseEntity<String> validateRequestParameter(
-      @RequestParam("param") @Min(5) int param) { 
+      @RequestParam("param") @Min(5) int param) {
     return ResponseEntity.ok("valid");
   }
 
-   //If we want to return a HTTP status 400 instead we can add a custom exception handler to our contoller: 
+   //If we want to return a HTTP status 400 instead we can add a custom exception handler to our contoller:
    @ExceptionHandler(ConstraintViolationException.class)
    @ResponseStatus(HttpStatus.BAD_REQUEST)
    ResponseEntity<String> handleConstraintViolationException(ConstraintViolationException e) {
@@ -1282,11 +1270,11 @@ class ValidateParametersController {
 
 In contrast to request body validation a failed validation will trigger a `ConstraintViolationException`. Spring does not register a default exception handler for this exception, so it will by default cause a response with HTTP status 500 (Internal Server Error).
 
-## Validating Input to a Spring Service Method : 
+### Validating Input to a Spring Service Method
 
 Instead of (or additionally to) validating input on the controller level, we can also validate the input to any Spring components. In order to to this, we use a combination of the @Validated and @Valid annotations:
 
-```java 
+```java
 @Service
 @Validated
 class ValidatingService{
@@ -1300,8 +1288,7 @@ class ValidatingService{
 
 Again, the @Validated annotation is only evaluated on class level, so don’t put it on a method in this use case.
 
-
-## Validating JPA Entities :
+### Validating JPA Entities
 
 The last line of defense for validation is the persistence layer. By default, Spring Data uses Hibernate underneath, which supports Bean Validation out of the box.
 
@@ -1328,6 +1315,7 @@ public class Input {
 ```
 
 We create a Spring Data repository that provides us with methods to persist and query for Input objects:
+
 ```java
 public interface ValidatingRepository extends CrudRepository<Input, Long> {}
 ```
@@ -1358,13 +1346,14 @@ class ValidatingRepositoryTest {
 }
 ```
 
-## Implementing a Custom Validator :
+### Implementing a Custom Validator
 
 In the Input class from above, we used a regular expression to validate that a String is a valid IP address. However, the regular expression is not complete: it allows octets with values greater than 255 (i.e. “111.111.111.333” would be considered valid).
 
 Let’s fix this by implementing a validator that implements this check in Java instead of with a regular expression (yes, I know that we could just use a more complex regular expression to achieve the same result, but we like to implement validations in Java, don’t we?).
 
 We Create the custom constraint annotation IpAddress.
+
 ```java
 @Target({ FIELD })
 @Retention(RUNTIME)
@@ -1386,7 +1375,7 @@ class IpAddressValidator implements ConstraintValidator<IpAddress, String> {
 
   @Override
   public boolean isValid(String value, ConstraintValidatorContext context) {
-    Pattern pattern = 
+    Pattern pattern =
       Pattern.compile("^([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})$");
     Matcher matcher = pattern.matcher(value);
     try {
@@ -1409,6 +1398,7 @@ class IpAddressValidator implements ConstraintValidator<IpAddress, String> {
 ```
 
 We can now use the @IpAddress annotation just like any other constraint annotation:
+
 ```java
 class InputWithCustomValidator {
 
@@ -1420,17 +1410,17 @@ class InputWithCustomValidator {
 }
 ```
 
-> For even more much more on validators and validation : https://reflectoring.io/bean-validation-with-spring-boot/#using-validation-groups-to-validate-objects-differently-for-different-use-cases
+> For even more much more on validators and validation : [Bean Validation with Spring-Boot](https://reflectoring.io/bean-validation-with-spring-boot/#using-validation-groups-to-validate-objects-differently-for-different-use-cases)
 
 ---
 
-# Exception Handling : 
+## Exception Handling With Spring
 
-1. Handling a particular Type of Exception - Controller Level :
+* Handling a particular Type of Exception - Controller Level :
 
 ```java
 private static final String NOT_FOUND_MESSAGE = "Flight not found for number";
- 
+
 @ExceptionHandler(IndexOutOfBoundsException.class)
 @ResponseStatus(HttpStatus.NOT_FOUND, reason = NOT_FOUND_MESSAGE)
 public HashMap<String, String> handleIndexOutOfBoundsException(Exception e) {
@@ -1441,16 +1431,17 @@ public HashMap<String, String> handleIndexOutOfBoundsException(Exception e) {
 }
 ```
 
-In this the `@ResponseStatus ` Sets the response status to be displayed.
+In this the `@ResponseStatus` Sets the response status to be displayed.
 
-2. Global Exception Handler :
+* Global Exception Handler
+
 ```java
 @RestControllerAdvice//The annotation signifies that the class be used as the global exception handler class.
 @ResponseStatus(HttpStatus.NOT_FOUND, reason = NOT_FOUND_MESSAGE)//Sends the status code with the response entity.
 public class ControllerExceptionHandler {
- 
+
     private static final String NOT_FOUND_MESSAGE = "Information not found for number";
- 
+
     @ExceptionHandler(IndexOutOfBoundsException.class)
     public HashMap<String, String> handleIndexOutOfBoundsException(Exception e) {
         HashMap<String, String> response = new HashMap<>();
@@ -1461,22 +1452,22 @@ public class ControllerExceptionHandler {
 }
 ```
 
-3. Throw an Exception at any place : 
+* Throw an Exception at any place :
 
 ```java
 @RestController
 public class AirportController {
- 
+
     private List<AirportInfo> airportInfoList = new ArrayList<>();
     private static final String SERVICE_WARNING_MESSAGE = "Berlin Schönefeld is closed for service today";
- 
+
     public AirportController() {
         airportInfoList.add(new AirportInfo("Kilimanjaro Arusha", "ARK", "HTAR"));
         airportInfoList.add(new AirportInfo("Berlin Schönefeld", "TXL", "EDDT"));
         airportInfoList.add(new AirportInfo("Delhi Indira Gandhi", "DEL", "VIDP"));
         airportInfoList.add(new AirportInfo("Tokio Haneda", "HND", "RJTT"));
     }
- 
+
     @GetMapping("airports/{id}")
     public AirportInfo getAirportInfo(@PathVariable int id) {
         AirportInfo airportInfo = airportInfoList.get(id);
@@ -1486,22 +1477,22 @@ public class AirportController {
         }
         return airportInfo;
     }
- 
+
 }
 ```
 
-4. When we have a global and a Controller level we can give prefernece to which handles the exception by giving `@Order(Ordered.HIGHEST_PRECEDENCE)` to the handler that we want to handle the exception.
+* When we have a global and a Controller level we can give prefernece to which handles the exception by giving `@Order(Ordered.HIGHEST_PRECEDENCE)` to the handler that we want to handle the exception.
 
-
-5. Creating Custom Exceptions :
+* Creating Custom Exceptions :
 
 The exception class
+
 ```java
 @ResponseStatus(code = HttpStatus.BAD_REQUEST)
 class FlightNotFoundException extends RuntimeException {}
 ```
 
-```java 
+```java
 @GetMapping("flights/{id}")
 public FlightInfo getFlightInfo(@PathVariable int id) {
     if (id > flightInfoList.size()) {
@@ -1511,7 +1502,7 @@ public FlightInfo getFlightInfo(@PathVariable int id) {
 }
 ```
 
-6. Conclusion
+* Conclusion
 
 Here you have learned different ways of handling exceptions. You can make it:
 
@@ -1522,30 +1513,31 @@ Here you have learned different ways of handling exceptions. You can make it:
 
 ---
 
-# Data-Base
+## Data-Base
 
 A database is a collection of data that is specifically organized for rapid search and retrieval processed by a computer.
 
-## Database Management System :
+### Database Management System
+
 Database Management System (DBMS) is a type of software that allows users to define, create, and control data in a database.
 
 DBMS is an mediator between a user and a database, which means that users can work with databases through the interface of DBMS.
 
 Although it sounds like all databases have different syntax, most of them actually implement common standards. Almost all relational databases use the SQL standard, so you can apply the same commands in different DBMS's.
 
-## Access to data : 
+### Access to data
 
 Databases provide schemas and metadata that allow for a quick search of the needed data.
 
 A `schema` describes how YOU organize the data. `Metadata` holds structural and statistical information.
 
-## Data Consistency :
+### Data Consistency
 
 One of the best features of databases is their ability to keep and restore the data correctly. It doesn't mean that the DBMS knows how to be correct, but once you define the correctness with the configuration or schema, you can be sure that nothing will break these rules.
 
 ---
 
-# Persistance : 
+## Persistance
 
 Persistence is a concept referring to data that stays alive even after the death of the process that had created this data. Persistence can be achieved by storing your data.
 
@@ -1553,14 +1545,13 @@ Imagine that you are developing an application that creates a shopping list, and
 
 ---
 
-# Spring Data :
+## Spring Data
 
-> https://spring.io/projects/spring-data
+> [Sprint Data Docs](https://spring.io/projects/spring-data)
 
-Note : The main distinction between data and object mapping is that object mapping not only stores data but also 
-emulates the behavior of an object and reflects changes in its source system.
+Note : The main distinction between data and object mapping is that object mapping not only stores data but also emulates the behavior of an object and reflects changes in its source system.
 
-## Java Persistence API?
+### Java Persistence API
 
 Java Persistence API is a specification that defines an object-relational mapping (ORM) standard for storing, accessing, and managing Java objects in a relational database.
 
@@ -1568,8 +1559,7 @@ While originally intended for use with relational/SQL databases only, JPA's ORM 
 
 Spring Data JPA is not a JPA provider but just an extra layer of abstraction on top of an existing JPA provider such as Hibernate. This means that it uses all features defined by the JPA specification such as the entity and association mappings, the entity lifecycle management, and JPA's query capabilities.
 
-
-## Repository Abstraction : 
+### Repository Abstraction
 
 The real strength of Spring Data JPA lies in the repository abstraction provided by the Spring Data Commons project. It hides the data store specific implementation details and allows you to write your business logic code on a higher abstraction level.
 
@@ -1582,11 +1572,11 @@ The real strength of Spring Data JPA lies in the repository abstraction provided
 
 Spring Data JPA provides the following additional repository interfaces:
 
-5. JpaRepository — JPA specific extension of Repository interface. It combines all methods declared by the Spring Data Commons repository interfaces behind a single interface.
-6. JpaSpecificationExecutor — It is not a repository interface. It allows the execution of Specifications based on the JPA criteria API.
+* JpaRepository — JPA specific extension of Repository interface. It combines all methods declared by the Spring Data Commons repository interfaces behind a single interface.
+* JpaSpecificationExecutor — It is not a repository interface. It allows the execution of Specifications based on the JPA criteria API.
 
 > Example :
-> `public interface UserRepository extends CrudRepository<User, Long> {}` 
+> `public interface UserRepository extends CrudRepository<User, Long> {}`
 
 Things you can do by using the above UserRepository interface:
 
@@ -1595,7 +1585,7 @@ Things you can do by using the above UserRepository interface:
 3. Count, get and remove all users.
 4. Check if a User exists with a given primary key.
 
-## Auto-Generated Queries :
+### Auto-Generated Queries
 
 Another cool feature of Spring Data JPA is the auto-generation of database queries based on method names. When you implement a Spring Data JPA repository interface, it analyses all the methods defined by the entity class and tries to generate the queries automatically from the method names.
 
@@ -1607,7 +1597,7 @@ public interface UserRepository extends CrudRepository<User, Long> {
 }
 ```
 
-Dependency : 
+Dependency
 
 ```xml
 <dependency>
@@ -1620,19 +1610,20 @@ Dependency :
 implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 ```
 
-## Configure Data Source :
+### Configure Data Source
 
 Spring Boot automatically configures Hibernate as a default JPA provider. So it's no longer required to explicitly configure the EntityManagerFactory bean unless we want to customize it.
 
 Similarly, if you are using an in-memory database such as H2, HSQLDB, or Apache Derby, Spring Boot will auto-configure the DataSource bean for you as well. You only need to make sure that the corresponding database dependency is available in the classpath.
 
-### H2 Configuration :
+### H2 Configuration
 
 Just add the following H2 database dependency to your Project :
 
-> Gradle : `runtimeOnly 'com.h2database:h2'`
+* Gradle : `runtimeOnly 'com.h2database:h2'`
 
-> Maven
+* Maven
+
 ```xml
 <dependency>
     <groupId>com.h2database</groupId>
@@ -1647,9 +1638,10 @@ That's it. Spring Boot will automatically configure the DataSource bean for you 
 
 1. First of all, add the following MySQL driver dependency to your project.
 
-> Gradle : runtimeOnly 'mysql:mysql-connector-java'
+* Gradle : runtimeOnly 'mysql:mysql-connector-java'
 
->Maven :
+* Maven
+
 ```xml
 <dependency>
     <groupId>mysql</groupId>
@@ -1658,9 +1650,10 @@ That's it. Spring Boot will automatically configure the DataSource bean for you 
 </dependency>
 ```
 
-2. Next, you need to define the DataSource configuration. There are two ways to do this. You can either define it as a bean in a Java class with @Configuration annotation or use the Spring Boot properties file to define data source properties.
+* Next, you need to define the DataSource configuration. There are two ways to do this. You can either define it as a bean in a Java class with @Configuration annotation or use the Spring Boot properties file to define data source properties.
 
 * Java-based data source configuration looks like in a Spring Boot project:
+
 ```java
 @Bean
 public DataSource dataSource() {
@@ -1676,6 +1669,7 @@ public DataSource dataSource() {
 ```
 
 * To configure the data source using a properties file : application.properties or application.yml
+
 ```yml or properties
 spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
 spring.datasource.username=root
@@ -1685,7 +1679,7 @@ spring.datasource.url=jdbc:mysql://localhost:3306/testdb?createDatabaseIfNotExis
 
 Spring Boot will automatically configure a DataSource bean based on the above properties.
 
-### Define an Entity : 
+### Define an Entity
 
 Define a simple entity class for storing User object :
 
@@ -1698,22 +1692,22 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 /*
-* 
+*
 * The User class annotated with Entity, indicates that is a JPA entity
 *
 * Since no @Table annotation is provided, it is assumed that this entity is mapped to a table named User.
 *
 * @Entity annotation corresponds to the table with the same name as the class name. If you want to bind the entity with a table that has a different name, you can use @Table annotation with the "name = " parameter.
-* 
+*
 */
 @Entity
 public class User {
 
    /*
    * Three attributes.
-   * 
+   *
    * The No argument constructor is only required for JPA. The other can be used for creating instace of the User to be saved to database.
-   * 
+   *
    * The id property is annotated with @Id so that JPA recognizes it as the object’s ID. The id property is also annotated with @GeneratedValue to indicate that the ID should be generated automatically.
    *  
    * The other two properties, name and email, are left unannotated. It means that they are mapped to columns that have the same names as the properties themselves.
@@ -1724,7 +1718,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     /*
-    * 
+    *
     * If you want to bind the entity field with a table column that has a different name, you can use @Column annotation with the "name = " parameter.
     *
     */
@@ -1744,7 +1738,7 @@ public class User {
 }
 ```
 
-### Create a Repository :
+### Create a Repository
 
 Create a repository interface for the above User entity:
 
@@ -1770,7 +1764,7 @@ Spring Data JPA also allows you to define other query methods by declaring their
 
 In a typical Java application, you have to write a class that implements `UserRepository` interface methods. However, it is no longer required with Spring Data JPA. It will create the repository implementation automatically, at runtime, from the repository interface. That is what makes Spring Data JPA so much powerful.
 
-### Create an Application Class :
+### Create an Application Class
 
 Let us create the Spring Boot main application class to play with the above UserRepository interface. Since we don't need the web part of Spring Boot, we will implement the `CommandLineRunner` interface to make it a console application.
 
@@ -1846,10 +1840,11 @@ public class Application {
 
 Example : Spring Data JPA with h2 DataBase :
 
-> H2 database documentation : http://www.h2database.com/html/features.html#connection_modes
+> H2 database documentation : [H2 Database Documentations](http://www.h2database.com/html/features.html#connection_modes)
 
-1. Dependencies and configuration :
-> maven 
+* Dependencies and configuration
+Maven
+
 ```xml
 <dependency>
     <groupId>org.springframework.boot</groupId>
@@ -1865,7 +1860,7 @@ Example : Spring Data JPA with h2 DataBase :
 > Gradle : implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 > runtimeOnly 'com.h2database:h2'
 
-```Properties 
+```Properties
 spring.datasource.url=jdbc:h2:mem:jpadb
 spring.datasource.driverClassName=org.h2.Driver
 spring.datasource.username=sa
@@ -1873,10 +1868,12 @@ spring.datasource.password=mypass
 spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
 ```
 
-### Properties : 
+### Properties
 
 * `spring.datasource.driverClassName=org.h2.Driver` :
+
 This parameter sets the class of the datasource driver. If you tap on the value, you will be able to see that it is a regular Java class in the org.h2 package:
+
 > public class Driver implements java.sql.Driver, JdbcDriverBackwardsCompat
 
 * `spring.datasource.url=jdbc:h2:file:~/sampleDB` :
@@ -1892,8 +1889,7 @@ As H2 is a in-memory database and is removed when the application is shut down a
 * `spring.jpa.database-platform=org.hibernate.dialect.H2Dialect` :
 You can also set the database type you are about to use. Otherwise, it will be set automatically.
 
-
-### H2 Console :
+### H2 Console
 
 Now we enable the h2 console so it can run our application and use the console functionality :
 
@@ -1903,7 +1899,6 @@ Now we enable the h2 console so it can run our application and use the console f
 The trace parameter value above hides all the H2 console trace in the application log. You can set it to true and look at how console actions are traced.
 
 > We can not get ot the h2 database at `/h2-console`.
-
 > To Change the path of the database we could use :  spring.h2.console.path=/h2
 
 Replace the JDBC URL value with the one you set at spring.datasource.url parameter and connect with the username and password you set at spring.datasource.username and spring.datasource.password parameters.
@@ -1921,18 +1916,19 @@ This parameter can get different values to change the schema creation behavior o
 
 > spring.jpa.show-sql=true :  To see what queries sql runs during runtime.
 
-### Complete code to set up H2 database :
+### Complete code to set up H2 database
+
 ```.properties
 #datasource settings
 spring.datasource.url=jdbc:h2:file:~/sampleDB
 spring.datasource.driverClassName=org.h2.Driver
 spring.datasource.username=sa
 spring.datasource.password=abc123
- 
+
 #data settings
 spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
 spring.jpa.hibernate.ddl-auto=update
- 
+
 #console settings
 spring.h2.console.enabled=true
 spring.h2.console.path=/h2
@@ -1940,7 +1936,8 @@ spring.h2.console.settings.trace=false
 spring.jpa.show-sql=true
 ```
 
-2. Create a Book entity :
+* Create a Book entity :
+
 ```java
 import javax.persistence.*;
 
@@ -1954,7 +1951,7 @@ public class Book {
     private String title;
     /*
     *
-    * The @Column annotation is used to specify the mapped column for a persistent property or field in the database. We set the unique property to true to indicate that this column is a unique key. 
+    * The @Column annotation is used to specify the mapped column for a persistent property or field in the database. We set the unique property to true to indicate that this column is a unique key.
     * In simple words, the isbn property must be unique for all books.
     *
     */
@@ -1973,8 +1970,9 @@ public class Book {
 }
 ```
 
-3. Create The Repository Interface : 
-```java 
+* Create The Repository Interface :
+
+```java
 package com.attacomsian.jpa.repositories;
 
 import com.attacomsian.jpa.domains.Book;
@@ -1990,7 +1988,8 @@ public interface BookRepository extends CrudRepository<Book, Long> {
 }
 ```
 
-4. Create the Application :
+* Create the Application :
+
 ```java
 package com.attacomsian.jpa;
 
@@ -2070,7 +2069,7 @@ public class Application {
 }
 ```
 
-### To Ignore a field from getting persisted in database :
+### To Ignore a field from getting persisted in database
 
 To ignore a field, annotate it with @Transient so it will not be mapped by hibernate.
 
@@ -2096,30 +2095,30 @@ private String token;
 
 ---
 
-# SQL
+## SQL
 
 SQL (Structured Query Language) is a domain-specific programming language designed to handle data in tables.
 
-![SQL basic operations Image here](\NotesImages\SQL1.jpeg)
+![SQL basic operations Image here](../NotesImages/SQL1.jpg)
 
-1. SQL is a language used to extract and update data structured as tables. 
+1. SQL is a language used to extract and update data structured as tables.
 
-2.  Data is organized in a bunch of tables with names, what is usually called a database.
+2. Data is organized in a bunch of tables with names, what is usually called a database.
 
 3. SQL is a programming language with a large feature set for data processing. SQL is a declarative language and thus any statement written in it is a query that states to the system what should be done or evaluated, but not how.
 Let's focus on the simplest and most basic functionality of data extraction from a table. For example, if we have a table named "Customers", a query that extracts all rows and columns is the following:
 
 `SELECT * FROM Customers;`
 
-4. That simple query from the example above may be read as "select everything from customers". SQL was designed to be similar to natural language. Declarative nature of SQL hides the complexities from the user and, to some extent, you just declare your will while the system analyses the query, chooses the control flow, and executes it.
+* That simple query from the example above may be read as "select everything from customers". SQL was designed to be similar to natural language. Declarative nature of SQL hides the complexities from the user and, to some extent, you just declare your will while the system analyses the query, chooses the control flow, and executes it.
 
-# Object-Relational Mapping
+## Object-Relational Mapping
 
 Object-Relational Mapping is a concept of converting data from an object-oriented programming language to relational database representation and vice versa. It solves the problem of matching two different type systems together and synchronize the data flow between them.
 
-## Main parts of ORMs
+### Main parts of ORMs
 
-1. Virtual Tables :
+* Virtual Tables :
 Relational databases use tuples and tables to store data.
 
 The main idea is to use classes as tables descriptions. We create a class as a virtual table for the given table in the database. We use or define methods for this class to retrieve, change and delete data
@@ -2128,29 +2127,29 @@ To represent one row from the table, we can define another class (for some libra
 
 Let's look at the example with the class City. We match values in tables with scalar attributes in the class. The name can be a string. Longitude and latitude can be real numbers.
 
-![Table in database to Class relation Image](NotesImages/table-class-relation.svg)
+![Table in database to Class relation Image](../NotesImages/table-class-relation.svg)
 
 As you know, a class can have attributes that represent a list of other objects. For example, a city may have a lot of streets. It contradicts attribute-to-column mapping, but the ORM provides instruments for these cases too. In terms of relational databases, the link between one object and several others is called *one-to-many relation*. It's quite similar to a list attribute of an object.
 
    `One to Many Replations` : Taking above example a city might have many streets. This relation between city and street is called as One to many relation.
 
-2. Relations :
+* Relations :
 
 The relation is a link that connects a value from one table to the row in another. The database can store such links as keys. You can think about it as an object containing another object as an attribute.
 
 Relations in databases are more than simple links. When you delete the root row from one table, it can imply cascade deletions of all related rows from other tables. It's not the same logic as for a programming language. If you have a link in an object, you expect that when you delete this link, only the link will disappear, not the connected object itself. On the other hand, if your database has a table "City" and London city in it, you can suppose when you delete London city from the table, all related rows from the table "Street" will disappear too. A street belongs to the city; without the city, there are no streets.
 
-![Relation-of-city-with-Street](NotesImages/City-Street-relation-One-to-Many.svg)
+![Relation-of-city-with-Street](../NotesImages/City-Street-relation-One-to-Many.svg)
 
 You may expect that if you delete the city, you will remove it with all the appropriate streets. However, if you delete the street and it has an attribute city, the city will stay in the database. It means that relations have directions. The cascade deletions imply the deletion of dependent objects, not dependent on ones.
 
 ---
 
-# JPA Relationships
+## JPA Relationships
 
 We've considered JPA capabilities for only one table in the database. However, in the real world, it is common to interact with several entities that are connected. There are four types of connections or relationships between two entities.
 
-## Unidirectional `@OneToMany`
+### Unidirectional `@OneToMany`
 
 Imagine you are developing Tweeter. A Tweeter user can post a lot of tweets, and each tweet can be posted by only one user. Such a relationship between the entities User and Tweet is called a one-to-many relationship: one user can post many tweets.
 
@@ -2185,7 +2184,7 @@ public class Tweet {
 
 The User entity has a field Tweets. In other words, the User entity "knows" about Tweets to which it refers. However, the entity Tweet doesn't have any fields that would refer to the User, so Tweet doesn't "know" to which User it refers. Such a relationship is called Unidirectional. The unidirectional relationship has only an owning side meaning the side of the relation that owns the foreign key in the database.
 
-## Bidirectional `@ManyToOne` :
+### Bidirectional `@ManyToOne`
 
 As you might have guessed, in the Bidirectional relationship, each entity "knows" about each other. It means that each entity has a field or property that refers to the other entity. The bidirectional relationship has both an owning side and an inverse side, which is the opposite side of the bidirectional relationship.
 
@@ -2196,18 +2195,18 @@ The `Tweet` entity should have a reference to the User entity and vice versa. Le
 ```java
 @Entity
 public class Tweet {
- 
+
     @Id
     @Column(name = "TweetID")
     private long id;
- 
+
     @ManyToOne
     @JoinColumn(name = "UserID")
     private User user;
 }
 ```
 
-Now we have to define another side of the relationship: the entity `User`. Once again: many `Tweets` can belong to one `User`; in other words, one `User` has many `Tweets`. It means that we can define the field `Tweets` with a type of List<Tweet> in the `User` entity. It helps us to refer to the Tweet entity using @OneToMany annotation with the `"mappedBy = " parameter`. This one indicates that the entity in this side (`User` entity) is the inverse of the relationship, and the owner resides in the "other" entity (`Tweet` entity).
+Now we have to define another side of the relationship: the entity `User`. Once again: many `Tweets` can belong to one `User`; in other words, one `User` has many `Tweets`. It means that we can define the field `Tweets` with a type of List `<Tweet>` in the `User` entity. It helps us to refer to the Tweet entity using @OneToMany annotation with the `"mappedBy = " parameter`. This one indicates that the entity in this side (`User` entity) is the inverse of the relationship, and the owner resides in the "other" entity (`Tweet` entity).
 
 ```java
 @Entity
@@ -2226,7 +2225,7 @@ public class User {
 }
 ```
 
-## Cascade Operations
+### Cascade Operations
 
 Now we have a bidirectional relationship between tweets and user entities, so each tweet knows about its user, and a user can refer to their tweets. Great! But let's imagine that we deleted a user, and from that moment, all their tweets should be deleted as well. Often entities that are in a relationship are dependent. It means that action that was performed on one entity should be executed for each entity that is dependent on it. As you can see, the tweets depend on the user, and the user removal entails the removal of all dependent tweets. Such operations are called cascade operations.
 
@@ -2261,16 +2260,17 @@ What if we want to use not all, but only two cascade types, for example, REMOVE 
 ```java
 @Entity
 public class User {
- 
+
     @Id
     private long id;
- 
+
     @OneToMany(mappedBy = "user", cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
     private List<Tweet> tweets = new ArrayList<>();
- 
+
 }
 ```
-## Conclusion :
+
+### Conclusion
 
 JPA can manage not only one entity but also a relationship between entities. There are four types of relationships between entities. However, one-to-many and many-to-one are the most popular types. You have learned how to deal with the unidirectional relationship by using @ManyToOne and @JoinColumn annotations. Now you also know how to deal with the bidirectional relationships by using @OneToMany annotation with the "mappedBy = " parameter. Entities can be dependent on each other, and we can handle dependencies by cascade operations. JPA has six types of cascade operations, and you have learned how to use them together with @OneToMany annotation and "cascade = " parameter that specifies the type of cascade operations.
 
@@ -2278,11 +2278,11 @@ JPA can manage not only one entity but also a relationship between entities. The
 
 Let us consider an application scenario where you want to store users' information along with their addresses. We want to make sure that a user can have just one address, and an address can only be associated with a single user.
 
-![OneToOne relations Image](NotesImages/OneToOneRelations.png)
+![OneToOne relations Image](../NotesImages/OneToOneRelations.png)
 
 The one-to-one relationship is defined by using a foreign key called user_id in the addresses table.
 
-```java 
+```java
 package com.attacomsian.jpa.one2one.domains;
 
 import javax.persistence.*;
@@ -2379,7 +2379,7 @@ The @JoinColumn accepts the following two important parameters, among others:
 1. name — Defines the name of the foreign key column.
 2. nullable — Defines whether the foreign key column is nullable. By default, it is true.
 
-### Create Repositories 
+### Create Repositories
 
 ```java
 package com.attacomsian.jpa.one2one.repositories;
@@ -2448,7 +2448,7 @@ public class Application {
 }
 ```
 
-## ID Generation Strategies
+### ID Generation Strategies
 
 [Documentation On Identifiers / Primary Keys For DataBases](https://www.doctrine-project.org/projects/doctrine-orm/en/2.6/reference/basic-mapping.html#identifiers-primary-keys)
 
@@ -2469,3 +2469,105 @@ NONE: Tells Doctrine that the identifiers are assigned, and thus generated, by y
 
 SINCE VERSION 2.3 :
 `UUID`: Tells Doctrine to use the built-in Universally Unique Identifier generator. This strategy provides full portability.
+
+## MongoDB With Spring
+
+### SetUp
+
+* Add the mongodb dependencies to the pom file.
+
+```xml
+<dependency>
+   <groupId>org.springframework.boot</groupId>
+   <artifactId>spring-boot-starter-data-mongodb</artifactId>
+</dependency>
+```
+
+* In application.properties
+
+```properties
+java.runtime.version=8
+
+spring.data.mongodb.uri = mongodb+srv://'databaseUserName':'Password@cluster'0.dszax.mongodb.net/'CollectionName'?retryWrites=true&w=majority
+
+spring.data.mongodb.database=test
+```
+
+All values to be added without the `''`. The best way is to just copy it from connect with mongobd site and select connect -> application -> copy url.
+
+After adding the dependencies above and adding the link to application.properties file spring will automatically complete the connection on run and set up our Remote Database.
+
+> Note : Do not forget to add the application.properties file to `.gitignore` before pushing the project to github as it contains access variables for the database.
+
+Example Project files :
+
+```java
+//Main file
+@SpringBootApplication
+public class MongodbApplication implements CommandLineRunner{
+
+   @Autowired
+   UserRepository repository;
+
+   public static void main(String[] args) {
+      SpringApplication.run(MongodbApplication.class, args);
+   }  
+   @Override
+   public void run(String... args) throws Exception {
+      deleteAll();
+      addSampleData();
+      listAll();
+      findFirst();
+   }  
+   public void deleteAll() {
+      System.out.println("Deleting all records..");
+      repository.deleteAll();
+   }  
+   public void addSampleData() {
+      System.out.println("Adding sample data");
+      repository.save(new Users("Jack Bauer", "New York", 11111d));
+      repository.save(new Users("Harvey Spectre", "London", 22222d));
+      repository.save(new Users("Mike Ross", "New Jersey", 333333d));
+      repository.save(new Users("Louise Litt", "Kathmandu", 44444d));
+   }  
+   public void listAll() {
+      System.out.println("Listing sample data");
+      repository.findAll().forEach(u -> System.out.println(u));
+   }  
+   public void findFirst() {
+      System.out.println("Finding first by Name");
+      Users u = repository.findFirstByName("Louise Litt");
+      System.out.println(u);
+   }
+}
+
+//User Repository
+public interface UserRepository extends MongoRepository<Users, String> {
+
+    Users findFirstByName(String name);
+
+    @Query("{address:'?0'}")
+    List<Users> findCustomByAddress(String address);
+
+    @Query("{address : { $regex: ?0 } }")
+    List<Users> findCustomByRegExAddress(String domain);
+}
+
+//User Object
+@Data
+@Document(collection = "users")
+public class Users {
+
+    @Id
+    private String id;
+    private String name;
+    private String address;
+    private Double salary;
+
+    public Users(String name, String address, Double salary) {
+        this.name = name;
+        this.address = address;
+        this.salary = salary;
+    }
+}
+```
