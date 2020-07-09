@@ -21,3 +21,7 @@
 * Alt+1 : Focus tool window
 
 * Esc : Focus editor
+
+* clrt + alt + v : Refactor a method or code block
+
+* clrt + o : Get the Override methods menu

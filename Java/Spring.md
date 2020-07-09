@@ -204,13 +204,52 @@ If you are using Spring Boot Starters, Logback will provide a good support for l
 
 ### Annotations
 
-1. @RestController :
+* @RestController :
 The @RestController annotation is used to define the RESTful web services. It serves JSON, XML and custom response.
 
-2. @RequestMapping(value =  "/products") :
-The @RequestMapping annotation is used to define the Request URI to access the REST Endpoints. We can define Request method to consume and produce object. The default request method is GET.
+* @RequestMapping(value =  "/products") :
+The @RequestMapping annotation is used to define the Request URI to access the REST Endpoints. We can define Request method to consume and produce object.
 
-3. @RequestBody :
+The default request method is GET, but we can also define it to be post by using `@RequestMapping(value = "/ex/foos", method = POST)`.
+
+We could also map request with particular headers bu adding headers to it like `@RequestMapping(value = "/ex/foos", headers = { "key1=val1", "key2=val2" }, method = GET)`.
+
+@RequestMapping can also be set to handle multiple paths by adding additional paths to it like `@RequestMapping(value = { "/ex/advanced/bars", "/ex/advanced/foos" }, method = GET)`.
+
+We can also define fallback paths for all the request or for get.
+
+```java
+@RequestMapping(value = "*", method = RequestMethod.GET)
+@ResponseBody
+public String getFallback() {
+    return "Fallback for GET Requests";
+}
+
+//Or even for all requests:
+@RequestMapping(
+  value = "*",
+  method = { RequestMethod.GET, RequestMethod.POST ... })
+@ResponseBody
+public String allFallback() {
+    return "Fallback for All Requests";
+}
+```
+
+If we want our whole controller to have a fixed path and all the other mappings defined in the controller to have path relative to this defined path we can define a `@RequestMapping` on top of the controller class.
+
+```java
+//Using RestController and RequestMapping
+@RestController
+@RequestMapping("api/v1")
+public class StudentController{
+   @GetMapping(path = student)
+   public Student getStudent(){
+      return new Student("Adwait");
+   }
+}
+```
+
+* @RequestBody :
 Used to define the request body content property.
 
 ```java
@@ -2571,3 +2610,5 @@ public class Users {
     }
 }
 ```
+
+## [Getting Spring Application ready for production with Heroku](https://devcenter.heroku.com/articles/preparing-a-spring-boot-app-for-production-on-heroku#rate-limit-api-calls)

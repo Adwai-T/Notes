@@ -20,6 +20,18 @@ After creating a project we can set up enviroment varibles.
 `heroku config`
 `heroku config:unset key`
 
+## Open Application
+
+After the application has been deployed we can open the application by using `heroku open`.
+
+## View Logs
+
+`heroku logs --tail`.
+
+## User profile Info and Application info
+
+`heroku pg`
+
 ## Fixing App not found
 
 * Check for the current url
@@ -30,3 +42,12 @@ After creating a project we can set up enviroment varibles.
 
 * re-add the remote url
 `git remote add heroku git@heroku.com:boiling-inlet-6957.git`
+
+## Using Enviroment Varaibles
+
+### With Java
+
+```yml
+admin:
+  password: ${ADMIN_PASSWORD}
+```
