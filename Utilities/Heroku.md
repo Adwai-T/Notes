@@ -43,6 +43,18 @@ After the application has been deployed we can open the application by using `he
 * re-add the remote url
 `git remote add heroku git@heroku.com:boiling-inlet-6957.git`
 
+## Dyno Management
+
+* List of dynos for an application : `heroku ps`
+
+* Restart all dynos : `heroku ps:restart`
+
+* Adding a name to the above will restart that dyno : `heroku ps:restart web`
+
+* View Logs : `heroku logs` or `heroku logs --tail`
+
+* Get help : `heroku ps --help`
+
 ## Using Enviroment Varaibles
 
 ### With Java

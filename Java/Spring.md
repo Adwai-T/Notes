@@ -3,7 +3,11 @@
 > Serialization : Convert a object to JSON String
 > Desrialization : Convert a json string into CustomObject
 
-1. `@JsonAnyGetter` : The @JsonAnyGetter annotation allows the flexibility of using a Map field as standard properties.
+* The `@JsonCreator` annotation can be used on constructors or factory methods for mapping incoming JSON properties to the constructor/factory method arguments. This annotation is used only during *deserialization* and can be particularly useful for immutable objects.
+
+* `@JsonIgnoreProperties(ignoreUnknown= true)`
+
+* `@JsonAnyGetter` : The @JsonAnyGetter annotation allows the flexibility of using a Map field as standard properties.
 
 ```java
 //The Object definition :
@@ -58,9 +62,9 @@ private Calendar someDate;
 }
 ```
 
-* @JsonProperty(access = JsonProperty.Access.WRITE_ONLY
+* `@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)`
 
-* Or the above acan be achieved by @JsonIgnore
+* Or the above acan be achieved by `@JsonIgnore`
 
 ```java
 class User {
@@ -89,34 +93,58 @@ class User {
 
 ---
 
-## Running Spring Application In different Environments
+## Using Environment Variables
 
-### application.properties
+In the application.properties file we could use environment variables.
 
-The application properties file contains all the arguments supplied to the application when the application runs.
+Environment variables without default value : `api.key=${API_KEY}`
 
-application.properties:
+Environment variables with default value : `api.key=${API_KEY:123abc}`
 
-```properties
-server.port = 9090
-spring.application.name = demoservice
+`@Value("${message.default.welcome}")`
+Can be used in our java program to get the values of the set environment variable.
+
+It also helps us to set a default value if this variable was not found.
+`@Value("${message.default.welcome:SomeDefaultValue}")`
+
+If our properties have some common context like the same prefix, we can use the `@ConfigurationProperties` annotation which will map these properties to Java objects:
+
+```java
+
+/*
+* @Configuration will tell Spring to create a bean of this class.
+* @ConfigurationProperties will initialize the fields with corresponding property names.
+*/
+@Configuration
+@ConfigurationProperties(prefix = "message.default")
+public class MessageProperties {
+
+    private String welcome;
+    private String goodbye;
+
+    // Getters and Setters
+}
 ```
 
-The application.properties file could be stored at an external director outside of the classpath and could be used when we run the application from commandline.
+```java
+//We can now use this bean anywhere in our project
+@Autowired
+private MessageProperties messageProperties;
 
-> -Dspring.config.location = C:\application.properties
-
-### YAML files
-
-Instead of application.properties file we could use application.yml file to store all our properties.
-
-```yaml
-spring:
-   application:
-      name: demoservice
-   server:
-port: 9090
 ```
+
+## Using Spring Profiles
+
+Following files can be defined for different environments:
+
+1. application-dev.properties
+2. application-qa.properties
+3. application-production.properties
+
+To change between these environments we have to set the environment variable: `--spring.profiles.active="dev"` while we run the program like so : `java -jar app.jar --name="Spring"`.
+
+> Note : application.properties is always loaded, irrespective of the spring.profiles.active value. If there is the same key-value present both in application.properties and `application-<environment>`.properties, the latter will override the former.
+> While Using IntelliJ IDE we can set the environment variables in Run -> Edit Configuration -> EnvironmentVariables while we run the program with IntelliJ.
 
 ### @Value
 
@@ -2522,7 +2550,7 @@ SINCE VERSION 2.3 :
 </dependency>
 ```
 
-* In application.properties
+* In `application.properties`
 
 ```properties
 java.runtime.version=8
@@ -2537,6 +2565,8 @@ All values to be added without the `''`. The best way is to just copy it from co
 After adding the dependencies above and adding the link to application.properties file spring will automatically complete the connection on run and set up our Remote Database.
 
 > Note : Do not forget to add the application.properties file to `.gitignore` before pushing the project to github as it contains access variables for the database.
+
+Uses `@Document` to define a “collection name” when you save this object. `@Document(collection = "users")` : In this case, when “user” object saves, it will save into “users” collection. The @Document is placed on the class defining the object to be saved.
 
 Example Project files :
 
@@ -2597,8 +2627,9 @@ public interface UserRepository extends MongoRepository<Users, String> {
 @Document(collection = "users")
 public class Users {
 
+   //For finer control over how the id is mapped @MongoId can be used while using MongoDB
     @Id
-    private String id;
+    private String id;//Note unlike SQL ids that are set to a Long We have set mongodb id as a string
     private String name;
     private String address;
     private Double salary;
@@ -2610,5 +2641,9 @@ public class Users {
     }
 }
 ```
+
+Some environments require a customized approach to map Id values such as data stored in MongoDB that did not run through the Spring Data mapping layer. Documents can contain _id values that can be represented either as ObjectId or as String. Reading documents from the store back to the domain type works just fine. Querying for documents via their id can be cumbersome due to the implicit ObjectId conversion. Therefore documents cannot be retrieved that way. For those cases @MongoId provides more control over the actual id mapping attempts.
+
+![@MongoId Description and Usage Image](../NotesImages/MongoIDDescription.png)
 
 ## [Getting Spring Application ready for production with Heroku](https://devcenter.heroku.com/articles/preparing-a-spring-boot-app-for-production-on-heroku#rate-limit-api-calls)

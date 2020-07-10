@@ -6,6 +6,14 @@
 
 Requires Node for packing and optimize the project. Also npm will be used download all the dependencies and angualar cli itself.
 
+`npm install -g @angular/cli` : Install angular Cli
+
+`ng new my-app` :  Create a new project
+
+`ng serve` : Serve or run the new project at port 4200 on local host with development server active, that is the server will refresh app whenever we save some files and changes are detected in those files. The `ng serve --open` flag will open the default browser at localhost:4200.
+
+As angular cli sets up the project with a package.json file and we have npm installed with node, we can set up `npm start` command with required setup.
+
 ## Bootstrap
 
 Adding bootstrap to our angular project.

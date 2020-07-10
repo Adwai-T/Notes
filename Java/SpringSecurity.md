@@ -170,4 +170,3 @@ public enum ApplicationUserPermission{
 This will set up role based authentication.
 
 ### Permission Based Authentication
-
