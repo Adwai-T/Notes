@@ -1815,5 +1815,58 @@ Thus we use Ahead of time compliation to compile these files before we upload th
 
 This removes the need for the angular just in time complier to be shipped wiht our production app making the size of our app payload significantly smaller and also does other optimization that make the overall file size of our files smaller.
 
-## Authentication
+## Setting Up Proxy Server
+
+During development we could have our backend running online or on a different localhost port. When we send a http request to our backend through our brower the browser actually sends a *Preflight Request* which is a request with a header for the backend to check if the frontend application has permissions to send the request and whether the backend will allow the operation that the request will contain.
+
+In many cases when we use Spring or many other backend frameworks this will not be supported as Spring does not allow preflight request and will give us rather the browser a CORS(Cross Origin Resource Sharing) error.
+
+> Note : Postman will not get such errors because Postman does not send preflight requests but our browsers do.
+
+To fix this we can set up a proxy server.
+
+> Note : Proxy servers will only work during developement that is they work with `ng serve` which set up a developement server and not with `ng build`. So we have to change our backend if are going to host our frontend on a different domain than that of our backend. For Spring boot it can be done by using : `@CrossOrigin(origins = "http://localhost:4200")` over our `@RequestMapping`.
+
+For an Indetail explanation on creating proxy Servers [visit](https://medium.com/better-programming/setup-a-proxy-for-api-calls-for-your-angular-cli-app-6566c02a8c4d).
+
+* Create `proxy.conf.json` in our project root that is in the same folder as `package.json`.
+
+* We write our proxy Configuration in the file.
+
+```json
+
+{
+  "/api": {
+    "target": "http://localhost:8080",
+    "secure": false
+  }
+}
+```
+
+Now to start our development server with the proxy configuration we do `ng serve --proxy-config proxy.conf.json`.
+
+We can set up `"start": "ng serve --proxy-config proxy.conf.json"` in our package.json so that we dont have to type it every time we want to start the server, we can just use `npm start` and npm will run the command for us.
+
+## `ng-eject`
+
+> From : [stackoverflow](https://stackoverflow.com/questions/44110064/what-is-the-purpose-of-ng-eject).
+
+angular-cli is something magic, everything is done in a simple and automatic way.
+
+But sometimes, you may want to act on how the package is done, add a plugin or you are simply curious to see the Webpack configuration on which it is based.
+
+When running ng eject, you generate a webpack.config.json file. Looking at the file package.json you will see that the commands to launch have slightly changed:
+
+`ng serve` --> npm start
+`ng build` --> npm run build
+`ng e2e`  --> npm run e2
+
+If you want to undo `ng eject`, you will have to edit your .angular.cli.json file and set ejected to false:
+
+```json
+"project": { 
+  ...
+  "ejected": false
+}
+```
 

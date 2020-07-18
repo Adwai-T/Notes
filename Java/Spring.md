@@ -2647,3 +2647,24 @@ Some environments require a customized approach to map Id values such as data st
 ![@MongoId Description and Usage Image](../NotesImages/MongoIDDescription.png)
 
 ## [Getting Spring Application ready for production with Heroku](https://devcenter.heroku.com/articles/preparing-a-spring-boot-app-for-production-on-heroku#rate-limit-api-calls)
+
+## Cross Origin Requests
+
+When our spring Application is hosted on a different domain than that of our frontend application, the browser will send a [PreFlightRequest](https://developer.mozilla.org/en-US/docs/Glossary/Preflight_request) which our Spring Boot Backend rejects as it is a Cross Domain Request and we get an error in our Front End Project.
+
+Consider the following example where we use HttpClient in Angular application to send a request to our Spring Application.
+
+```error
+Access to XMLHttpRequest at 'https://spring.boot.backend.link/something' from origin 'http://localhost:4200' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+```
+
+We can solve this Problem by allowing request from particualar defined domain. We use the `@CrossOrigin(origins = "http://FrontEndHostUrl.com")` annotation over the `@RequestMapping` annotation that we have set for our controller.
+
+[Guide On spring.io Website](https://spring.io/guides/gs/rest-service-cors/)
+
+If we want to temporarily allow our frontend to be able to connect with our backend locally we can set up a ProxyServer with our development server.
+
+For Angular we can solve it as show [here](https://medium.com/better-programming/setup-a-proxy-for-api-calls-for-your-angular-cli-app-6566c02a8c4d). Or for a short tutorial refer to the angular notes [here](https://github.com/Adwai-T/Notes/blob/master/WebDevelopment/AngularCourceNotes.md) and search for Proxy Server.
+
+> Please note this is only for `ng serve`, you can't use proxy in `ng build`.
+> Note: the reason it's working via postman is postman doesn't send preflight requests while your browser does.
