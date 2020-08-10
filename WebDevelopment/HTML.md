@@ -170,3 +170,5 @@ The browser default styles will display description lists with the descriptions 
 * Marking up time and dates : `<time datetime="2016-01-20">20 January 2016</time>`
 
 * BreakLine `<br>`
+
+* PreFormatted Text : `<pre>` preserves the text formating and white space and will show the text as is.

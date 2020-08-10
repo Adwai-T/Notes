@@ -1870,3 +1870,22 @@ If you want to undo `ng eject`, you will have to edit your .angular.cli.json fil
 }
 ```
 
+## Display code
+
+`<div><code><pre>{{code1}}</pre></code></div>` could be used to display code frosm the script file.
+
+Or
+
+`<div [innerText]="code1"></div>` But innerHTML might be prone to XSS attacks, especially when the code in being injected by the user or by user input.
+
+The altenative to innerHTML when we just want to render text and not execute the *markup*, we could use `textContent`. As we know we want the code to show and not have any markup execute from the html we could use this approach.
+
+```js
+// Renders a string with escaped characters
+// This would show up in the DOM as <img src=x onerror="alert('XSS Attack')"> instead of as an image element
+div.textContent = '<img src=x onerror="alert(\'XSS Attack\')">';
+```
+
+### Sanitizing content before adding it to the DOM
+
+As we might want to use innerHTML we would have to sanitize the content that is run.

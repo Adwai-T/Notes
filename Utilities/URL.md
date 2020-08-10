@@ -34,3 +34,11 @@ Layered system. A client cannot just tell whether it is connected directly to th
 
 Code on demand [Optional]. On request, the service must give executable code in the form of an applet or script to be executed on the client's side. In practice, it is very seldom used.
 
+## Escape values 
+
+{ => &#123;
+< => &lt;
+> => &gt;
+
+or try {{ }<x>} or {{ }<!>} or {{ }<!---->}
+
