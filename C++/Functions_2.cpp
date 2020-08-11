@@ -33,6 +33,11 @@ void helloFunction(std::string message = "Hello World")//--- Default arguments.
 //--- Function Templates
 //template is a keyword, typename could also be class.
 //Templatized function could be overloaded.
+/*
+    template <class type> ret-type func-name(parameter list) {
+       // body of function
+    } 
+*/
 template <typename T>
 T add(T a, T b)
 {

@@ -98,6 +98,24 @@ int main()
     char string_array[] = "This is a C style String : Array of characters";
     cout << string_array << endl;
 
+    //--- Pointers
+    //Pointers are nothing but a variable that stores the memory address of another varible
+    //The actual data type of the value of all pointers, whether integer, float, character,
+    //or otherwise, is the same, a long hexadecimal number that represents a memory address.
+    // '*' is called as unary operator.
+    int number_1 = 10; //Actual varible declared
+    int *number_1_pointer;//pointer Varible
+    number_1_pointer = &number_1;//Assign the value of address of varible to pointer.
+    cout << "Actual Variable value : " << number_1 << "\tPointer value : " << number_1_pointer << endl;
+    cout << "Getting value from the pointer variable : " << *number_1_pointer << endl;
+    //Arithematic operation can be perfromed on pointers.
+    //++ -- + and -
+    //The increment in memory address will be according to the datatype that is
+    //stored in the pointer address.
+    //Considering an int being stored in location 1000 and int being 32bit,
+    //the ++ increment operator will make the memeory address 1004.
+    //Similarly for char it would be 1001 as char are 8bit.
+
     //To get string from user input we use getline(cin, string_varible).
     //This is because the cin by itself stores the value until a white space and not complete line. 
     cout << "Please enter your full name : ";
@@ -138,5 +156,17 @@ namespace utils{
     //We can use a namespace code after it is defined similar to the functions.
 
 }
+
+/* --- Static keyword
+The static storage class instructs the compiler to keep a local variable in existence during the life-time 
+of the program instead of creating and destroying it each time it comes into and goes out of scope. 
+Therefore, making local variables static allows them to maintain their values between function calls.
+
+The static modifier may also be applied to global variables.
+When this is done, it causes that variable's scope to be restricted to the file in which it is declared.
+
+In C++, when static is used on a class data member,
+ it causes only one copy of that member to be shared by all objects of its class.
+*/
 
 //Check Functions_2.

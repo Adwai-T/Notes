@@ -5,6 +5,15 @@
 
 //There are no particular specific getters and setters keywords in C++. 
 
+//--- Class Templates
+/*
+    template <class type> class class-name {
+        .
+        .
+        .
+    }
+*/
+
 #include <iostream>
 #include <string>
 
