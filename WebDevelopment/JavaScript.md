@@ -127,3 +127,92 @@ function findGreaterOrEqual(a, b) {
 ```
 
 ## Object Oriented Programming in JavaScript
+
+```javascript
+//--- Constructor function
+//By convention constructor functions are defined with capital
+function Bird(name, color) {
+  this.name = name;
+  this.color = color;
+  this.numLegs = 2;
+}
+//Create an object from the constructor
+let blueBird = new Bird("Albert", "Red");
+blueBird.color = "Blue";
+
+//Check to see which function created the given object.
+blueBird instanceof Bird; // => true
+
+//Also this can be done by directly checking which is the contructor for the instance
+console.log(blueBird.constructor === Bird);  //prints true
+
+//---Iterate Over all properties of an Object instance created.
+for (let property in duck) {
+  if(duck.hasOwnProperty(property)) { //hasOwnProperty
+    ownProps.push(property);
+  } else {
+    prototypeProps.push(property);
+  }
+}
+
+//--- Using Prototype to reduce duplication
+//Prototype properties of a constructor function work similar to static in other programming languages.
+//All instances share the same value.
+Bird.prototype.numLegs = 2; //Variable
+Bird.prototype.eat = function() { //Function
+  console.log("nom nom nom");
+}
+
+//Prototype of a constructor function can be direclty be set to a object
+//These are easy to manage.
+Bird.prototype = {
+  constructor: Bird, // define the constructor property
+  numLegs: 2,
+  eat: function() {
+    console.log("nom nom nom");
+  },
+  describe: function() {
+    console.log("My name is " + this.name);
+  }
+}
+
+//Sequence of inheritance
+//Object -> Bird -> blueBird
+Bird.prototype.isPrototypeOf(blueBird); //returns true.
+Object.prototype.isPrototypeOf(Bird.prototype); // returns true
+
+//Create Objects from Parent
+//Animal Object/Constructor function is not shown here. Lets assume Animal.prototype has a eat function
+Bird.prototype = Object.create(Animal.prototype);
+
+let duck = new Bird("Donald");
+duck.eat(); // prints "nom nom nom"
+//duck inherits all of Animal's properties, including the eat method.
+
+//Inheritance properties and functions can be overwritten in the the proptotype of the child object.
+
+//--- Mixins
+let flyMixin = function(obj) {
+  obj.fly = function() {
+    console.log("Flying, wooosh!");
+  }
+};
+
+flyMixin(bird);
+flyMixin(plane);
+
+bird.fly(); // prints "Flying, wooosh!"
+plane.fly(); // prints "Flying, wooosh!"
+
+//---Closures to make varible private
+function Bird() {
+  let hatchedEgg = 10; // private variable
+
+  /* publicly available method that a bird object can use */
+  this.getHatchedEggCount = function() { 
+    return hatchedEgg;
+  };
+}
+let ducky = new Bird();
+ducky.getHatchedEggCount(); // returns 10
+```
