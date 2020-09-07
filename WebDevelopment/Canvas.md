@@ -532,6 +532,28 @@ As above we could also use multiple canvas to handle different things.
 
 For example a drawing canvas can have tools on top layer, the canvas itself on one and the background that mostly is static.
 
+```javascript
+<div id="stage">
+  <canvas id="ui-layer" width="480" height="320"></canvas>
+  <canvas id="game-layer" width="480" height="320"></canvas>
+  <canvas id="background-layer" width="480" height="320"></canvas>
+</div>
+ 
+<style>
+  #stage {
+    width: 480px;
+    height: 320px;
+    position: relative;
+    border: 2px solid black;
+  }
+
+  canvas { position: absolute; }
+  #ui-layer { z-index: 3; }
+  #game-layer { z-index: 2; }
+  #background-layer { z-index: 1; }
+</style>
+```
+
 ### Transparency
 
 Avoid as much as possible.
