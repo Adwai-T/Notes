@@ -216,3 +216,5 @@ function Bird() {
 let ducky = new Bird();
 ducky.getHatchedEggCount(); // returns 10
 ```
+
+## Classes
