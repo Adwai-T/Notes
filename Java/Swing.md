@@ -4,7 +4,7 @@ Refer to the class swingtesting/AGui.java to check the basics of Swing.
 
 ## MultiThreading in Swing Application
 
-We should always keep our front end on a differnet thread than the backend of the application so that it does not freeze when the user click to do some heavy tasks.
+We should always keep our front end on a different thread than the backend of the application so that it does not freeze when the user click to do some heavy tasks.
 
 ## Types of threads used in Swing
 
