@@ -27,7 +27,7 @@ MongoClient mongoClient = MongoClients.create("mongodb://hostOne:27017,hostTwo:2
 
 * Use the `MongoClient.getDatabase()` method to access a database. If a database does not exist, MongoDB creates the database when we first store data for that database.
 
-*  Use its `getCollection()` method to access a collection. If a collection does not exist, MongoBD creates the collection when we first store data for that collection.
+* Use its `getCollection()` method to access a collection. If a collection does not exist, MongoBD creates the collection when we first store data for that collection.
 
 >>Note : MongoDatabase instances are immutable.
 
@@ -74,7 +74,7 @@ for (int i = 0; i < 100; i++) {
 collection.insertMany(documents);
 ```
 
-Note : If no top-level _id field is specified in the document, MongoDB automatically adds the _id field to the inserted document.
+>>Note : If no top-level `_id` field is specified in the document, MongoDB automatically adds the `_id` field to the inserted document.
 
 * Count `Document`s in `MongoCollection` use `collection.countDocuments()`.
 
@@ -142,7 +142,4 @@ DeleteResult deleteResult = collection.deleteMany(gte("i", 100));
 System.out.println(deleteResult.getDeletedCount());
 ```
 
->> Note : https://mongodb.github.io/mongo-java-driver/3.8/driver/getting-started/quick-start/
-
-
-
+>> Note : [Getting Started Guide](https://mongodb.github.io/mongo-java-driver/3.8/driver/getting-started/quick-start/)
