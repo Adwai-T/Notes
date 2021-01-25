@@ -867,7 +867,45 @@ Two requirements are needed to handle this issue −
 
 * RESTful web service application should allow accessing the API(s) from the 8080 port.*
 
----
+### Global CORS configuration
+
+```java
+//other imports above, does not have all imports added only relevant imports.
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
+
+@EnableWebSecurity
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+ 
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.cors().and()
+            //other config
+    }
+ 
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+      CorsConfiguration config = new CorsConfiguration();
+      config.setAllowCredentials(true); //Not needed can be skipped
+      config.addAllowedOrigin("https://domain1.com");
+      config.addAllowedHeader("*"); //allows all headers
+      //If allowed methods are not added, the default methods allowed are "GET" and "HEAD".
+      config.addAllowedMethod("*"); //allow all methods eg "POST", "GET", "DELETE" ...
+      UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+      source.registerCorsConfiguration("/**", config);//For all mappings
+      return source;
+   }
+}
+```
+
+For more info and other more specific configuration of CORS :
+
+> [CORS with Spring](https://howtodoinjava.com/spring5/webmvc/spring-mvc-cors-configuration/#global-cors)
+>
+> [DOCUMENTATION](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/cors/CorsConfiguration.html#addAllowedMethod-java.lang.String-)
+>
+> [DOCS Example](https://docs.spring.io/spring-framework/docs/4.3.x/spring-framework-reference/html/cors.html)
 
 ## Internationalization
 
