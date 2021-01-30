@@ -10,3 +10,7 @@ Basic Git commands
 * `git remote` : Check all the remote repositories set for your project. For example if you deploy a project that might be a remote(like heroku) and the other can be github.
 
 * `git update-git-for-windows` : Update to the lates version of git from windows when git is already installed.
+
+* git reset HEAD --hard : This will undo any changes you've made to tracked files and restore deleted files.
+* git clean -fd : This will delete any new files that were added since the last commit. Files that are not tracked due to .gitignore are preserved; they will not be removed. The `f` is for files and `d` is for directories.
+
