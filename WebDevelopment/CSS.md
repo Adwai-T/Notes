@@ -329,3 +329,20 @@ auto-fill: auto-fit;
   }
 }
 ```
+
+## Pre Formated Text
+
+It is used to insert text that is preformated. The formating of the text does not change and thus all the indenting and white spaces are kept as is.
+
+But sometimes we want the pre tag content to wrap for mobile content. We could use following code for this.
+
+```css
+pre {
+  overflow-x: auto;
+  white-space: pre-wrap;
+  white-space: -moz-pre-wrap;
+  white-space: -pre-wrap;
+  white-space: -o-pre-wrap;
+  word-wrap: break-word;
+}
+```
