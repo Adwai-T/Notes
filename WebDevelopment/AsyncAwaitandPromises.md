@@ -162,4 +162,4 @@ fetchUsers();
 ```
 
 > Note : Promises are different that rxjs Observables in the sence that they are eager function that is they will fetch data as soon as possible, on the other hand Observables only fetch data when they are subscribed to.
-This becomes important when using frameworks like Angular.
+This becomes important when using frameworks like Angular. Also Promises work on fetch data only once where as an Observable will keep getting data over time.
