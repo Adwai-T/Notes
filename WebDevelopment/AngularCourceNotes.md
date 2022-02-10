@@ -26,6 +26,12 @@ In "styles" array add: `node_modules/bootstrap/dist/css/bootstrap.min.css"`.
 
 ## Components
 
+The angular cli helps us set up different components, modules and services to get us started.
+
+We can use `ng generate <schematic> [options]` to get started with basic code for that schematic.
+
+To generate components we use `ng generate component nameForComponent` or short `ng g c nameOfComponent`. The component is added in the `src\app` folder. We can specify a relative location with the name to add the component that location. To create a component named `image` inside `gallery` directory we will use `ng g c gallery/image`, so the new Components files will be placed in `src\app\gallery\image`.
+
 While we generate a component with the cli we can use `--skipTests true` so that the test `.spec.ts` is not created.
 
 ### HTML template

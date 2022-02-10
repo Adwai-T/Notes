@@ -11,6 +11,8 @@ Basic Git commands
 
 * `git update-git-for-windows` : Update to the lates version of git from windows when git is already installed.
 
+Following two steps can be used to reset to the last commit.
+
 * git reset HEAD --hard : This will undo any changes you've made to tracked files and restore deleted files.
-* git clean -fd : This will delete any new files that were added since the last commit. Files that are not tracked due to .gitignore are preserved; they will not be removed. The `f` is for files and `d` is for directories.
+* git clean -fd : This will delete any new files that were added since the last commit. Files that are not tracked due to .gitignore are preserved; they will not be removed. The `f` is for files and `d` is for directories. Using `x` will also delete untracked files, it is not recommended to do it as most times we would not want to do that.
 

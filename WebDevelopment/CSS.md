@@ -17,6 +17,25 @@ li {
 
 ```
 
+## Unites that can be used to represent values
+
+```css
+
+/* Most common represents the number of pixels */
+padding : 5px;
+
+/* % relative to the dimension of the parent element */
+width : 10%;
+
+/* Replative to 1% of view port. It is percentage of the view width that the item will have */
+width : 30vw;
+
+/* Similar to vw, vh Represents 1% of height of view port. */
+height : 50vh;
+
+/* Above are the most widely used, there are other less commonly used like vmin, vmax relative to view port dimension, rem relating to relative font size of the root element  and many other absolute unites can also be used. */ 
+```
+
 ### Adding a class
 
 We use the `.` selector for selecting elements with their class name.
