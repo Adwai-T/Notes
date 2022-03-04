@@ -424,7 +424,7 @@ To do that we have create a property in our child class that is of type event em
 
 `@Output()  7serverCreated = new EventEmitter<{ServerName: string, serverContent: string}>()`
 
-This will create a new object of type EventEmmitter and we also pass in the type of object that the event emitter will emit.
+This will create a new object of type EventEmitter and we also pass in the type of object that the event emitter will emit.
 
 Now that we have create the event emitter object we want to create a method that will actually emit the event from the child to be used in the parent.
 
