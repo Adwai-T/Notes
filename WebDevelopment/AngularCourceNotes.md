@@ -833,6 +833,8 @@ canActivateChild(route: ActivateRouteSnapshot. state: RouterStateSnapshot):Obser
 
 ```
 
+### Create URL Trees
+
 ## Observable
 
 Observable and Observer are provided by rxjs and not by angular itself.
@@ -1894,4 +1896,33 @@ div.textContent = '<img src=x onerror="alert(\'XSS Attack\')">';
 
 ### Sanitizing content before adding it to the DOM
 
-As we might want to use innerHTML we would have to sanitize the content that is run.
+Angular removes any content from the innerHtml that might leave our application vunnerable to arracks due to scripts executing from external sources. This is called DomSanatization.
+
+We can modify the DomSanatization strategy by using the [DomSanatizer](https://angular.io/api/platform-browser/DomSanitizer) Service provided by angular.
+
+In the following example we get a file from the server that has html and css.
+
+```ts
+private contentFromFile:string;
+private contentReady: boolean;
+private safeContent: SafeValue;
+
+constructor(private sanatizer: DomSanitizer)
+
+private getFileFromServer(filePath:string, fileType:string):void{
+  this.contentReady = false;
+  this.client.get(filePath , { responseType: 'text' }).subscribe(data => {
+    this.contentFromFile = data;
+
+    this.safeContentFromFile = this.sanatizer.bypassSecurityTrustHtml(this.contentFromFile);
+
+    this.contentReady = true;
+  },
+  (error) =>{
+    this.contentFromFile = "Sorry Could not fetch the page. \
+    Please try again after some time or try reloading. \
+    Thank you for your patience";
+    this.contentReady = true;
+  });  
+}
+```
