@@ -1926,3 +1926,22 @@ private getFileFromServer(filePath:string, fileType:string):void{
   });  
 }
 ```
+
+**innerHTML** might be used to insert text into a webpage. There is a potential for this to become a attack vector on a site.
+
+Using innerHTML might also fail security reviews, for example in chrome or mozilla extensions.
+
+> HTML5 specifies that a `<script>` tag inserted with innerHTML should not execute.
+
+The **setHTML()** method of the Element interface is used to parse and sanitize a string of HTML and then insert it into the DOM as a subtree of the element. It should be used instead of `Element.innerHTML` for inserting untrusted strings of HTML into an element.
+
+Use `setHTML(input, sanitizer)`.
+
+```js
+const unsanitized_string = "abc <script>alert(1)</script> def";  // Unsanitized string of HTML
+const sanitizer = new Sanitizer();  // Default sanitizer;
+
+// Get the Element with id "target" and set it with the sanitized string.
+document.getElementById("target").setHTML(unsanitized_string, sanitizer);
+// Result (as a string): "abc  def"
+```
