@@ -365,3 +365,54 @@ pre {
   word-wrap: break-word;
 }
 ```
+
+## Variables
+
+Variables can be set in css so that they can be used repeatedly for consistency.
+
+```css
+/* Global varible */
+:root {
+  --red-color : red;
+}
+
+* {
+  color : var(--red-color);
+}
+
+/* Local varibles */ 
+.button-gradient {
+  background: linear-gradient(var(--gradientAngle), var(--gradientStart),var(--gradientStop));
+
+  --gradientAngle: 60deg;
+  --gradientStart: lightpink;
+  --gradientStop: lightyellow;
+}
+
+.button-gradient:hover {
+  --gradientAngle: 0deg;
+}
+
+```
+
+We can add a varible to css through javascript as `document.documentElement.style.setProperty('--varName', 'propValue')`.
+
+## Hide Scroll bars
+
+```css
+#parent{
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+#child{
+    width: 100%;
+    height: 100%;
+    overflow-y: scroll;
+    padding-right: 17px; /* Increase/decrease this value for cross-browser compatibility */
+    box-sizing: content-box; /* So the width will be 100% + 17px */
+}
+```
+
+Hide Scroll bar [Stackoverflow post](https://stackoverflow.com/questions/16670931/hide-scroll-bar-but-while-still-being-able-to-scroll).
