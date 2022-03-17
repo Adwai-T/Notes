@@ -17,7 +17,7 @@ Basic Setup for webpack.
 ```js
 //webpack.config.js
 
-module.exportds = {
+module.exports = {
   entry: {
     './src/index.js'
   },
