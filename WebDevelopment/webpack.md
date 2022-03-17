@@ -12,22 +12,24 @@ But if we have a large project we use Webpack, it is tested, and is used by many
 
 ## Webpack config
 
-Basic Setup for webpack.
+Basic Setup for webpack development mode.
 
 ```js
 //webpack.config.js
 
+const path = require('path');
+
 module.exports = {
-  entry: {
-    './src/index.js'
-  },
+  entry: './index.js',
+  mode: 'development', //could be set to production default is none
   output: {
-    path: __dirname + '/dist',
-    publicPath: '/',
+    path: path.resolve(__dirname, 'dist'),
     filename: 'bundle.js'
   },
   devServer: {
-    contentBase: './dist'
+    static: path.join(__dirname, 'dist'),
+    compress : true,
+    port: 4200, //can be set to any default is 8080
   }
 }
 ```
@@ -37,9 +39,15 @@ We can add a script to out npm file so that we use webpack-server to serve our p
 ```json
 {
   "scripts" : {
-    "start" : "webpack-dev-server --config ./webpack.config.js --mode development"
+    "start" : "webpack-dev-server --config ./webpack.config.js"
   }
 }
 ```
 
 > Make webpack configuration easier and interactive at [createapp/dev](https://createapp.dev/).
+
+## Building with webpack
+
+`"build" : "webpack --config webpack.config.js"`
+
+We can have multiple configuration files for different tasks like in development, testing and production. We name them in convention like `webpack.dev.config.js` or `webpack.prod.config.js` and so on.
