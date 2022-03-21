@@ -132,6 +132,43 @@ Promise.all([promise1, promise2, promise3, promise4]).then(value=>{
 
 ## Async Await
 
+Simple and Short on **Async**
+
+```js
+async function foo() {
+   return 1
+}
+// Above behaves similar to below 
+function foo() {
+   return Promise.resolve(1)
+}
+
+// Even saying that they behave the similar to each other
+//They are not the same, consider the following
+const p = new Promise((res, rej) => {
+  res(1);
+})
+
+async function asyncReturn() {
+  return p;
+}
+
+function basicReturn() {
+  return Promise.resolve(p);
+}
+
+console.log(p === basicReturn()); // true
+console.log(p === asyncReturn()); // false 
+
+//-- Using Await
+//- In await every next await code will run after the inital is resolved. 
+async function foo() {
+   const result1 = await new Promise((resolve) => setTimeout(() => resolve('1')))
+   const result2 = await new Promise((resolve) => setTimeout(() => resolve('2')))
+}
+foo()
+```
+
 We extend on the above code and dont change it.
 
 The Promise.all code has no effect on this code. We are only concerned with the code above it.

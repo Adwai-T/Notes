@@ -217,4 +217,56 @@ let ducky = new Bird();
 ducky.getHatchedEggCount(); // returns 10
 ```
 
-## Classes
+## Fetch
+
+Fetch function replaces the older XMLHttpRequest request methods and makes it easier.
+
+Following examples shows fetching a raw file data from server with XMLHttpRequest and with fetch.
+
+```js
+//--- With XMLHttpRequest
+function readTextFile(file)
+{
+    var rawFile = new XMLHttpRequest();
+    rawFile.open("GET", file, false);
+    rawFile.onreadystatechange = function ()
+    {
+        if(rawFile.readyState === 4)
+        {
+            if(rawFile.status === 200 || rawFile.status == 0)
+            {
+                var allText = rawFile.responseText;
+                console.log(allText);//- logs text
+            }
+        }
+    }
+    rawFile.send(null);
+}
+
+readTextFile("path.txt");
+
+//--- With fetch
+function readTextFile(file) {
+  fetch(file)
+    .then(response => response.text()) //-- Details of response are described below
+    .then(text => console.log(text)) //- logs text
+} 
+
+```
+
+### [Response](https://developer.mozilla.org/en-US/docs/Web/API/Response)
+
+Response has many **properties**, the important and often used are `Response.body` - is a `ReadableStream`, `Response.headers` - `Headers` object, `Response.ok` - Status of response whether it was sucessful (200-299), `Response.status` - gives response status code.
+
+Response also has **methods** that help us process it. The response can be converted into arrayBuffers, blob, json, text etc. We use them as `Response.text()` or `Response.json()` to process the value and covert it to the desired from. These methods all return a **promise**.
+
+```js
+//--- Fetch Image
+const image = document.querySelector('.my-image');
+fetch('flowers.jpg')
+.then(response => response.blob())
+.then(blob => {
+  const objectURL = URL.createObjectURL(blob);
+  image.src = objectURL;
+});
+```

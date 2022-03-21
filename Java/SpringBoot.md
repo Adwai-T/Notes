@@ -1333,7 +1333,7 @@ class ValidateRequestBodyController {
   ResponseEntity<String> validateBody(@Valid @RequestBody Input input) {
     return ResponseEntity.ok("valid");
   }
-
+  
 }
 ```
 
