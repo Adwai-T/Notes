@@ -79,6 +79,24 @@ for (const currentValue of a) {
 |`a.splice(start, delcount[, item1[, ...[, itemN]]])`|Lets you modify an array by deleting a section a`nd |replacing it with more items.|
 |`a.reverse()`|Reverses the array.|
 
+### Array Functions
+
+```js
+//Reduce allows to go through the array and returns an accumlated value from the whole operation
+const arr = [1, 2, 5, 8, 2, 3];
+const total  = arr.reduce((acc, num) => {
+  return acc + num;
+});
+//acc represents the accumalated value
+
+//map
+const squares = arr.map(num => num*num);
+//It will return a new array of the squares of the array elements.
+
+//filter - also returns a new array
+const greaterThan3 = arr.filter(num => num > 3);
+```
+
 ## Functions
 
 ```javascript
@@ -270,3 +288,6 @@ fetch('flowers.jpg')
   image.src = objectURL;
 });
 ```
+
+
+##

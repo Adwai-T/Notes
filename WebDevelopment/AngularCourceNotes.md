@@ -833,7 +833,51 @@ canActivateChild(route: ActivateRouteSnapshot. state: RouterStateSnapshot):Obser
 
 ```
 
-### Create URL Trees
+### Router
+
+A service that provides navigation among views and URL manipulation capabilities.
+
+Can be used to route to different component and children from code.
+
+There are lot of useful function of the class [Router](https://angular.io/api/router/Router)
+
+```ts
+//import from
+import { Router } from '@angular/router';
+//init in constructor
+constructor(const router:Router){}
+
+//will navigate to `~/articles
+this.router.navigate(['articles']);
+```
+
+### Show Url with Location
+
+The [`Location`](https://angular.io/api/common/Location) class can be imported into the constructor to get a lot of functions relating to the url being shown in the url bar of the browser. This can help us change the url shown without actually routing out of the current page.
+
+```ts
+//say we are in a ~/article, say we load content from a file and arent routing to anther location
+//We want to show that a page has changed and also show relevant url, we use
+this.location.go(`/article/${topic.title}`)
+
+//We could also detect changes to url by subscribing to the location
+let locationEvent = this.location.subscribe((value) => {});
+//set the subscription to a varible so that we can unsubscribe when done using.
+locationEvent.unsubscribe();
+
+//---Be careful that if reloaded as there is no such url to match in router there would be an error.
+//To mitigate this error use wildcard as one of the children that will match all paths.
+//Also use the Location class only when needed and with a particular path.
+const routes: Routes = [
+  {
+    path: '',
+    component: PostsComponent,
+    children: [
+      { path: '**', redirectTo:'' }
+    ]
+  },
+];
+```
 
 ## Observable
 

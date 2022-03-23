@@ -277,11 +277,11 @@ animation-timing-function: linear, ease-out, cubic-bezier(0.25, 0.25, 0.75, 0.75
 
 * Containers :
 
-*display*: flex; (Sets the container to be a Flex box container)
+*display* : flex; (Sets the container to be a Flex box container)
 
-*flex-direction*: (default)row, column-reverse, row-reverse, column;
+*flex-direction* : (default)row, column-reverse, row-reverse, column;
 
-*justify-content*: center, flex-start(default), flex-end, space-between, space-around, space-evenly; (Adjust elements in a horizontal space)
+*justify-content* : center, flex-start(default), flex-end, space-between, space-around, space-evenly; (Adjust elements in a horizontal space)
 
 *align-items*: flex-start, flex-end, stretch, center, baseline; (Adjust elements in a vertical container)
 
