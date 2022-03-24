@@ -416,3 +416,33 @@ We can add a varible to css through javascript as `document.documentElement.styl
 ```
 
 Hide Scroll bar [Stackoverflow post](https://stackoverflow.com/questions/16670931/hide-scroll-bar-but-while-still-being-able-to-scroll).
+
+## Responsive Web Design
+
+```css
+/*For all cases*/
+header nav {
+  display: block;
+}
+
+/* Visible only on screens smaller than 768px */
+@media screen and (max-width: 768px) {
+  header nav {
+    display: none;
+  }
+}
+/* For specific screen orientation */
+@media screen and (orientation: landscape) {
+  header nav {
+    position: fixed;
+    left: 0;
+    width: 20vw;
+  }
+}
+```
+
+```html
+<!-- Can also be used as specific element media query -->
+  <div *media="'(min-width: 768px)'">I am visible only on desktop</div>
+  <div *media="'(max-width: 767px)'">I am visible only on mobile</div>
+```

@@ -83,8 +83,16 @@ These tags give a discriptive structure to our HTML making the HTML code easier 
   The checked property is used to create the radiobutton or checkboxes that are checked by default-->
 
 </form>
+```
 
+### Create in-page link
 
+```html
+<h1 id="heading1"> This is a heading</h1>
+
+<!-- code here -->
+
+<a href="#heading1">Link to above heading</a>
 ```
 
 ## Intermediate HTML
