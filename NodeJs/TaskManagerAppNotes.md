@@ -54,6 +54,9 @@ Mongodb GUI admin tool :
 3. As mongoose is build around mongodb it is very similar in operation to the mongodb.
 4. Mongoose maps data as models.
 5. Connecting to the mongodb with mongoose
+6. To create a model in mongooese We use `mongoose.model('name' , { fields we want to define })`.It will act as a blueprint to create the document for the collection in the db.
+7. We create a new entry to be added to the collection in the db by using the `new` on the model that we created.
+8. Now to actually save the created document from above to the db we use `save()` and it returns a promise.
 
 ```javascript
 mongoose.connect('mongodb://127.0.0.1:27017/task-manager-api', {
@@ -62,10 +65,6 @@ mongoose.connect('mongodb://127.0.0.1:27017/task-manager-api', {
     useUnifiedTopology: true,
 })
 ```
-
-6. To create a model in mongooese We use `mongoose.model('name' , { fields we want to define })`.It will act as a blueprint to create the document for the collection in the db.
-7. We create a new entry to be added to the collection in the db by using the `new` on the model that we created.
-8. Now to actually save the created document from above to the db we use `save()` and it returns a promise.
 
 ## Rest Api
 
@@ -88,6 +87,8 @@ mongoose.connect('mongodb://127.0.0.1:27017/task-manager-api', {
 2. To manually create the schema we use `const userSchema = new mongoose.Schema({object of options})`.
 3. Now we can pass this schema to our model to set the model up and we can also use middle-ware on the schema.
 4. To use middle ware just before saving the user to database we use
+5. Some of the functions of mongoose like findbyIdAndUpdate by pass middleware and validation. They thus cannot be used when we are using middle ware with them.
+6. So we edit the function to use more traditional functions like findById and then modify the users individual properties.
 
 ```javascript
 //Using middleware just before we save user to database to check if our password is changed and hash it if it was changed.
@@ -102,9 +103,6 @@ userSchema.pre('save',async function(){
     next(); //if next is not called it will hang here and will never finish this function.
 });
 ```
-
-5. Some of the functions of mongoose like findbyIdAndUpdate by pass middleware and validation. They thus cannot be used when we are using middle ware with them.
-6. So we edit the function to use more traditional functions like findById and then modify the users individual properties.
 
 ### Loggin a user in
 
@@ -134,19 +132,18 @@ userSchema.statics.findUserByCredentials = async (email, password)=>{
 
 1. Like mongoose has middle ware function/methods that can be create to do something before data is saved to database, express also has middle ware that could be use in between when we get the request and when we act on what we do with the request.
 2. To use the middle ware provided by express
+3. We use the express middleware to check for authentication of the user and their prevelage to check and access data.
+4. To use a middle-ware for a particular request type we use it with middle-ware function as an argument passed to the route handler for type of request.
 
 ```javascript
+//---
 app.use((req, res, next) =>{
     console.log(req.method); //logs method used to send request like post, get etc;
     console.log(req.path);//logs path of the request being send.
     next(); // The next method provided by express call a function that lets express run as it should and act on the request being send  and respond with appropriate data.
 });
-```
 
-3. We use the express middleware to check for authentication of the user and their prevelage to check and access data.
-4. To use a middle-ware for a particular request type we use it with middle-ware function as an argument passed to the route handler for type of request.
-
-```javascript
+//--- 
 route.get('/user', middlewareFunction, async Callbackfunction);
 ```
 
@@ -165,6 +162,9 @@ route.get('/user', middlewareFunction, async Callbackfunction);
 2. Pre-request script supports javascript with postman functions so that we can automate what happens before a request is send to the server through postman.
 3. Tests in postman runs after we have recieved response from the server and provides us with function.
 4. So the test Script for when we create a user
+5. We dont want the test to run when we login the user or create the user so we set the authorization for the request to be noAuth.
+
+6. All other request are set to have authorization set to inherit from parent.
 
 ```javascript
 //We check if the user was successfully created and only then run the below script
@@ -173,9 +173,6 @@ if (pm.response.code === 201) {
     pm.environment.set('authToken', pm.response.json().token);
 }
 ```
-
-5. We dont want the test to run when we login the user or create the user so we set the authorization for the request to be noAuth.
-6. All other request are set to have authorization set to inherit from parent.
 
 ### JSON.Stringify
 
