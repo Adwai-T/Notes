@@ -4,7 +4,7 @@ For more info on where this is taken from : [JetBrains Website](https://www.jetb
 
 When the code is compiled and ready, you can package your application in a Java archive (JAR) to share it with other developers. A built Java archive is called an artifact.
 
-## Create an artifact configuration for the JAR﻿
+## Create an artifact configuration for the JAR
 
 From the main menu, select File | Project Structure Ctrl+Alt+Shift+S and click Artifacts.
 
@@ -17,7 +17,6 @@ IntelliJ IDEA creates the artifact configuration and shows its settings in the r
 Apply the changes and close the dialog.
 
 ![Create Artifacts Image](../NotesImages/createArtifact.gif)
-
 
 ## Build the JAR artifact﻿
 
