@@ -44,7 +44,7 @@ Out docker container is running in the background, if we want to go into the con
 
 We can also speciify some other functions in the Dockerfile.
 
-Comments in docker file start with `#`. 
+Comments in docker file start with `#`.
 
 ```DockerFile
 FROM node:8.11.1
