@@ -928,7 +928,6 @@ public String customMessage(HttpServletRequest request, Model model) {
    * Above "message" string is passed as a key and the mesg variable is passed as value. 
    * We can add as many attributes to the model as we want, also Model varaible can have any name.
   */
-
   return "successMessage" //Page returned
 }
 ```
@@ -1139,11 +1138,183 @@ This is where Spring MVC Validation help us.
 
 Java's Standard Bean Validation API is only a specification and is vendor independent and hence portable, thus we need to select a vendor that will provide us with the Validator implementation.
 
-We will use Hibernate Validation that is a package independent of Hibernate and is specialized only for Validation.
+We will use [Hibernate Validation](https://hibernate.org/validator/) that is a package independent of Hibernate and is specialized only for Validation.
 
 Hibernate validator 6.2 is based on Java EE and version later than that are based on Jakarta EE. So we want to make sure that our version of spring supports Jakarta EE or is based on Java EE.
 
-We here will use Hibernate Validator 6.2.
+We here will use [Hibernate Validator 6.2](https://hibernate.org/validator/releases/6.2/).
+
+* Required Fields Validation
+
+```java
+
+public class Customer{
+
+  private String firstName;
+
+  @NotNull(message="is Required")
+  @Size(min=1, message="is Required")
+  private String lastName;
+  //The user can still provide just whitespace and the validation will pass. We can solve this issue with @InitBinder and WebDataBinder to preprocess all Strings comming into request and trim them off whitespaces with the SpringTrimmerEditor. But this has a catch, Every time the request is made this method is called, that might show the application. So it is better to do the trimming in the front end and validate it when the request is made in the backend.
+}
+
+//--- Controller Class
+//The @Valid will tell Spring to perform validation on the model customer and the result of the validation will be placed inside of the BindingResult.
+@RequestMapping("/processForm")
+public String processForm(@Valid @ModelAttribute("customer") Customer customer, BindingResult bindingResult){
+  if(bindingResult.hasError()) {
+    return "customer-form"; //return to form
+  }
+  else {
+    return "customer-confirmation"; //Show success page
+  }
+}
+```
+
+> Note that The `BindingResult` must come immediately after the `@ModelAttribute` else this will not work as desired. If they are passed at any other point, the validation will be completely ignored by spring.
+
+```jsp
+<style>
+  .error{
+    color:"red";
+  }
+</style>
+
+<form:form action="processFrom" modelAttribute="customer">
+  First Name : <form:input path="firstName" />
+  <br>
+  Last Name : <form:input path="lasttName" />
+  <!--The errors tag shows when there are errors and will display the message that we had set with the validator annotation in the Customer class-->
+  <form:errors path="lastName" cssClass="errors" />
+  <!--In the above we define give the form tag a css class named 'error'. we define the style for the class above.-->
+  <br>
+  <form:input type="submit" value="Submit" />
+```
+
+* Number Range Validation
+
+This will help us validate whether a number is between minimum and maximum value.
+
+All the other use of the validator in the controller and the views remain the same as we have seen for the required validation.
+
+```java
+public class Student{
+
+  @Min(value=6, message="Age Must be greater than or equal to 6years")
+  @Max(value=20, message="Age Must be less than or equal to 20years")
+  private int age;
+
+  //Getters And Setters
+
+  //If we want to make the above field required and we simply add the @NotNull annotation above the field, it will give us an error when the user does not enter the number.
+
+  //Spring in the background will try to convert and empty string into a primitive int and it will fail, thus giving us an error that String cannot be converted to int.
+
+  //To Solve this we just use the Integer class to define the field type
+  @NotNull(message="Required")
+  @Min(value=6, message="Age Must be greater than or equal to 6years")
+  @Max(value=20, message="Age Must be less than or equal to 20years")
+  private Integer age;
+  //So now when there is an empty String it will be converted to Null and thus will add the message to the BindingResult.
+}
+```
+
+We Still have not handled error if the user enters a non integer value. We can handle the error using spring error handling and assigning a custom message whenever the String to number conversion fails on the above field.
+
+We first create a new folder name `resources` in the `src` directory. In this folder we create a file `messages.properties`. The name of the folders and files and the location of this file is important as Spring will automatically look for these files while it is trying to handle the Validation error.
+
+```properties
+# messages.properties
+
+typeMismatch.student.age=Please Enter a Number
+```
+
+The formate in the properties file is *error-code + . + object-name + . + field*.
+
+We also now need to make spring aware of the file that we have created and create a bean so that Spring can use these messages
+
+```xml
+<!--Inside WEB-INF/spring-mvc-demo-servlet.xml-->
+<bean id="messageSource" class="org.springframework.context.ResourceBundleMessagesSource">
+  <property name"basenames" value="resources/messages" />
+</bean>
+```
+
+We can even generalize the messages for just the error-code or error-code and object-name. We can check the possible error code by logging the `BindingResult` to the console and checking the possible error code.
+
+For more information on [error code resolve](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/validation/DefaultMessageCodesResolver.html).
+
+* Using Regular Expression for Validation
+
+We use the `@Pattern(regexp="", message="")` to Validate data with regular expression.
+
+```java
+public class Student{
+  //Other properties
+
+  @Pattern(regexp="^[\S|\D]\S*@\S*\.(?:(?:com)|(?:in)|(?:org))$", message="Not a valid email id")
+  private String eamilId;
+}
+
+//There are no flages used as we are checing fields and the regex is used to match the complete field, if the complete field is not matched, the validation will fail.
+```
+
+### Custom Form Validation
+
+First We need to create a custom annotation. We create a custom annotation in Java by using `@interface`, this is not limited to Spring, but is a part of Java itself.
+
+We are creating an annotation that will add a check if the String that is returned by method or a value of the property being populated starts with 'NES'.
+
+And the Annotation will look like `@PrefixCheck(value="NES", message="Must start with NES") private String schoolCourseName;`
+
+So *PrefixCheck* will be the name of the class, that defines the Annotation.
+
+```java
+//-@Constraint: Defines the class that will hold the buisness logic for the annotation
+//-@Target: Defines where the annotation can be used, in this case over a method or a varible/property.
+//-@Retention:Defines how long the annotation should be held. In this case we give it RUNTIME so the annotation will be held in the byte code that is compiled and will be used during runtime.
+@Constraint(validatedBy=ClassContainingBuisnessLogic.class)
+@Target({ElementType.METHOD, ElementType.FIELD})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface PrefixCheck {
+
+  //Here we define the default values according to our limited need but they can be any according to the need and function of annotation.
+  //Not defining the value directly makes the annotaion more flexible.
+  public String value() default "NES";
+
+  public String message() default "Must start with NES";
+
+  public Class<?>[] groups() default {};//Here we are not using any grouping
+
+  public Class<? extends Payload>[] payload() default {}; //In this case we are also not using any payloads that give additional information/details about the validation failure(severity, error code, etc).
+}
+
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
+
+//The ConstraintValidator has generic filled with our annotation name and the string data that we are trying to validate.
+public class ClassContainingBuisnessLogic implements ConstraintValidator<PrefixCheck, String> {
+  private String coursePrefix;
+
+  @Override
+  public void initialize(PrefixCheck prefixCheck) {
+    coursePrefix = prefixCheck.value();
+  }
+
+  @Override
+  public boolean inValid(String theStringToBeChecked, ConstraintValidatorContext constraintValidatorContext) {
+    boolean result;
+
+    if(theStringToBeChecked != null) {
+      result = theStringToBeChecked.startsWith(coursePrefix);
+    }
+
+    else result = true;
+
+    return result;
+  }
+}
+```
 
 ### Access Static resources in Spring MVC
 
