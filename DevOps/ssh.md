@@ -20,18 +20,29 @@ In SSH Asymmetrical Encryption is used initially to from a Symmetrical Encryptio
 
 * Hashing : Hashing is used to authenticate that the message content is not tempered while transimission.
 
-## Connecting to Github with SSH
+## Create and use SSH Keys
 
-We have a folder `~/.ssh` in the user.
+We have a folder `~/.ssh` in the user folder of the operating system that holds all the SSH keys that we may have generated.
+
+To check existence of previously created/existing SSH keys use `ls -al ~/.ssh` in the terminal or on windows use git-bash. This will give us the list of all the files in the folder.
 
 The folder contains `config id_rsa id_rsa.pub key_backup/ known_hosts` etc folders in it.
 
-We can use `ssh-keygen -C "emailaddress@email.com"`
--C => comment, provides a new Comment.
+We can use `ssh-keygen -t rsa -b 4096 -C "emailaddress@email.com"`. `-t` is used to specify the type of encryption algorithm used. Here we use the rsa algorithm but we can also use DSA, ECDSA, ed25519 algorithm.
+
+In most modern system we use ed25519 algorithm and is also recommended by github. `ssh-keygen -t ed25519 -C "your_email@example.com"`
+
+`-C` => comment, provides a new Comment.
 
 Once we press Enter, we will be asked where the key needs to be saved. If there are other keys we can rename the `id_rsa` file for that specific use case.
 `Enter file in which to save key(/Users/Adwait/.ssh/id_rsa): /Users/Adwait/.ssh/id_rsa_git`.
 
 We can have an additional password for this but we don't need it mostly.
 
-We can then use this key that we generated and add it to the any servers authorized_keys.
+We can then use the public part of the key(File marked with `.pub`) that we generated and add it to the any servers authorized_keys.
+
+To changing the passphrase of existing key we use `ssh-keygen -p -f ~/.ssh/id_ed25519`.
+
+Adding the created ssh key to the `ssh-agent` we use `ssh-add ~/.ssh/id_ed25519` but before that start the ssh-agent in the background `eval "$(ssh-agent -s)"`.
+
+Once the key is added we can use `ssh-add -L` to get a list of all the keys that are managed by our ssh-agent.
