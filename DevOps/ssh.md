@@ -43,6 +43,26 @@ We can then use the public part of the key(File marked with `.pub`) that we gene
 
 To changing the passphrase of existing key we use `ssh-keygen -p -f ~/.ssh/id_ed25519`.
 
-Adding the created ssh key to the `ssh-agent` we use `ssh-add ~/.ssh/id_ed25519` but before that start the ssh-agent in the background `eval "$(ssh-agent -s)"`.
+Adding the created ssh key to the `ssh-agent` we use `ssh-add ~/.ssh/<private_key_file>` like `ssh-add ~/.ssh/id_ed25519` but before that start the ssh-agent in the background `eval "$(ssh-agent -s)"`.
 
 Once the key is added we can use `ssh-add -L` to get a list of all the keys that are managed by our ssh-agent.
+
+Lets say we have two ssh keys for github and bitbucket and we want to check what ssh key is being use to connect with bitbucket we can do that by using `ssh -v git@bitbucket.org` or to check the connection with github we can use `ssh -T git@github.com`. Then we can check the bitbucket account to see that key we have registered with it to see if they both are the same.
+
+So we use the `-T` tag to check the connection and we use the `-v` tag to check which public key was offered for the connection. We can also use the `-i` tag to specify which key needs to be provided.
+
+When we have multiple identity files that we want to use for different sites we can also create a configuration file for ssh in the `~/.ssh/config` and configure ssh to use the required identities.
+
+```config
+host github.com
+user git
+identityfile ~/.ssh/id_rsa_github
+
+host bitbucket.org
+user git
+identityfile ~/.ssh/id_rsa_bitbucket
+```
+
+So in the address for github `git@github.com` the part before @ `git` is the user and the part after @ is the host that is `github.com`. Similatly for bitbucket.
+
+Once the configuration file is saved, ssh will automatically use the identity files.
