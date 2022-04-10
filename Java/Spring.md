@@ -1337,3 +1337,681 @@ Now we can access the resources and assets from the folder by referencing them i
 `<script src="${pageContext.request.contextPath}/resources/js/index.js"></script>`
 
 We need to use `${pageContext.request.contextPath}` to acccess the correct root directory for our web application.
+
+## Hibernate
+
+Hibernate is a Object relational mapping tool used to provide a framwork for mapping object oriented domain model with a relational database. It is developled by Red Hat.
+
+Hibernate uses JDBC(Java Database Connectivity) in the background to communicate with the database in the background.
+
+### Setting up Hibernate
+
+First we need to download [Hibernate](https://hibernate.org/orm/).
+
+We will also need the driver/connector from the database we want to connect to with hibernate.
+
+Say we want to connect with My-SQL database we will download the connector/driver from [MYSQL Connectors](https://www.mysql.com/products/connector/).
+
+Similarly there are drivers for [Postgresql](https://jdbc.postgresql.org/download.html).
+
+We then add all the jar files provided by the connector/drivers and the required files from the hibernate to the class path of our project. We could also add the same to maven if we are using maven.
+
+Once we have the database of our choice running we can test our connection with the database with the following simple program. We will use MySql in the following example but any database should work the same.
+
+```java
+public class TestJDBC {
+  public static void main(String[] args) {
+    String jdbcURL = "jdbc:mysql://localhost:3306/students_tracker?useSSL=false";// We give the link a parameter so that MySQL does not give us a warning.
+
+    String user = "student";
+    String pass = "student_password";
+
+    try{
+      System.out.println("Connecting to database\n");
+
+      Connection myConn = DriverManager.getConnection(jdbcURL, user, pass);
+
+      System.out.println("Connection Successful");
+    }catch(Exception exp) {
+      exp.printStackTrace();
+    }
+  }
+}
+//If the program executes successfully without any errors that means that we have successfully established a connection with our database using hibernate and jdbc.
+```
+
+### Hibernate Configuration With XML
+
+We will place the hibernate configuration file `hibernate.cfg.xml` in the src folder of the project.
+
+The following is a example of the xml configuration for hibernate to communicate with a sql data base.
+
+```xml
+<!DOCTYPE hibernate-configuration PUBLIC 
+  "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+  "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd"
+>
+
+<hibernate-configuration>
+  <session-factor>
+
+    <!-- JDBC Database connection settings -->
+    <property name="connection.driver.class">com.mysql.jdbc.Driver</property>
+    <property name="connection.url">jdbc:mysql://localhost:3306/students_tracker?useSSL=false</property>
+    <property name="connection.username">students</property>
+    <property name="connection.password">students_password</property>
+
+    <!-- JDBC connection pool settings using build in test pool -->
+    <property name="connection.pool.size">1</property>
+
+    <!-- Select our SQL dialect -->
+    <property name="dialect">org.hibernate.dialect.MySQLDialect</property>
+
+    <!-- Echo the SQL to stdout -->
+    <property name="show-sql">true</property>
+
+    <!-- Set the current session context -->
+    <property name="current_session_context_class">thread</property>
+  </session-factory>
+</hibernate-configuration>
+```
+
+Users using java 9 and higher will encounter a error as recent version of java have removed `java.xml.bind` from their default classpath.
+
+### Hibernate Annotaion
+
+We will use annotations to create entity classes that will help us map our java objects to the tables in the batabase.
+
+We use JPA annotation instead of Hibernates own annotation as it is recommended by the hibernate team as best pactice.
+
+JPA is a standard specifcation and hibernate is an implementation of the JPA specification.
+
+Hibernate implements all JPA annotations.
+
+#### Entity LifeCycle
+
+There are different states that an entity can be in or go through during its lifecycle based on the operations being performed.
+
+* Detach : It is not associated with a hibernate session.
+* Merge : If instance is detached from session, then merge will reattach it to the session.
+* Persist : Transitions new instance to managed state, that is when commit/flush is done save it to the database.
+* Remove : Transition managed entity to be removed when next commit is done.
+* Refresh : Reload/sync object with data from db.
+
+We need to understand this to understand the cascade type that we will use in the mapping section of hibernate.
+
+#### Example of Simple Entity class
+
+```java
+//We want to import the Table and Entity from Javax.persistence. This gives us the standard interface that hibernate implements
+@Entity
+@Table(name="student")
+public class Student {
+  //The @Id is used to denote that this property holds a unique id.
+  @Id
+  @GeneratedValue(strategy=GenerationType.IDENTITY)
+  //We don't always have to specify a generate Value. Most databases have a preferred way of generating a unique identity. WE can leverage that to generate the id.
+  @Column(name="id")
+  private int id;
+  //The name represents the name of the property in the database. They can be different or same. If they are the same in class and table we do not need to specify the name for the column, hibernate will infer it from the property name of class.
+  @Column(name="first_name")
+  private String firstName;
+
+  //Similarly for all entries columns in the database table.
+
+  //We create a no arg argument. This is for hibernate. We can have any number of constructor that we might need.
+  public Student() {
+
+  }
+  //Getter and Setters for all fields as they all are private.
+}
+```
+
+### Hibernate CRUD
+
+There are two key components of hibernate that we use to communicate with our database.
+
+* SessionFactory : Reads the hibernate config file, creates session objects. It is created only once and thus is called as a heavy weight object.
+
+* Session : It wraps a JDBC connection and is a short lived object that is it will be used for a method and destoried. It is used to save and retrieve objects. It is created and retrieved from SessionFactory.
+
+```java
+public static void main(String[] args) {
+  SessionFactory factory = new Configuration()
+                              .configure("hibernate.cfg.xml") //this is the default file name and if we are using the default name we do not need to specify this.
+                              .addAnnotatedClass(Student.class)
+                              .buildSessionFactory();
+
+  Session session = factory.getCurrentSession();
+
+  try{
+    //--- Save to database
+    Student student = new Student("Adwait", "S", "adwait@adwait.in");
+    session.beginTransaction();
+    session.save(student);
+    session.getTransaction().commit();
+
+    //--- Reading object from database table. 
+    session = factory.getCurrentSession();
+    session.beginTransaction();
+    //Finding students id. AS we have already commited to the database the database would have generate the ide that we can retrieve as
+    Integer id  = student.getId();
+    //If we provide a primary key that does not exist then the returned object will be null.
+    Student student2 = session.get(Student.class, student.getId());
+    session.getTransaction().commit();
+
+    //--- Query objects with hibernate.
+    //Hibernate has its own query language that is very similar to SQL.
+    session.beginTransaction();
+    //- Query all students in database
+    List<Student> students = session.createQuery("from Student").getResultList();
+    //- Query Students with last name Bing or first name Joey
+    List<Student> student = session.createQuery("from Student s where s.lastName='Bing' OR s.firstName='Joey'").getResultList();
+    //- Qery students whoes eamil ends with adwait.in
+    List<Student> students = session.createQuery("from Student s where s.email LIKE %adwait.in").getResultList();
+    for (Student student : students) {
+      System.out.println(student);
+    }
+    session.getTransaction.commit();
+
+    //--- Update Database
+    //- Edit data for one student.
+    int studentID = 1;
+    Session session = factory.getCurrentSession();
+    session.beginTransaction();
+    Student student = session.get(Student.class, studentID);
+    student.setFirstName("Monica");//Here we make the change in memory, it will update database on commit.
+    session.getTransaction().commit();
+    //- Edit data for multiple students
+    session = factory.getCurrentSession();
+    session.beginTranscation();
+    session.createQuery("update Student set age='10'").executeUpdate(); 
+    session.getTransaction().commit();
+    //Assuming that there is a property age for all students, all the students age will now be set to 10. We can have more specific queries.
+
+    //--- Delete
+    //- Delete one Student
+    int studentID = 1;
+    Session session = factory.getCurrentSession();
+    session.beginTransaction();
+    Student student = session.get(Student.class, studentID);
+    student.delete(student);
+    session.getTransaction().commit();
+    //- Delete student or students with query
+    //All other code as above queries
+    session.createQuery("delete from Student where id=2").executeUpdate();
+    //executeUpdate method is a general method and is used for all updates to database with queries.
+  }finally {
+    session.close();//We close the session manually here as if there are exception during the execution the session might not close and thus there might be session leaks.
+    factory.close();
+  }
+}
+```
+
+Transaction : A transaction generally represents any change in a database. A database transcation symbolizes a unit of work performed within a database management system against a database treated in a coherent and reliable way independent of other transactions.
+
+A transcation is a single unit of logic or work, sometimes made up of multiple operations. Lets take an example of a bank, we transfer money from one account to other, so we retrieve balance amount of both accounts, then substract amount from one account and add it to the other account, the save the values to the database. This will be considered as one transaction.
+
+Database transaction must be
+
+* Atomic : It must either be complete entirely or have no effect otherwise.
+* Consistent : They should conform to the existing constrains of the database.
+* Isolated : It must not effect other transactions.
+* Durable : It must get written to persistent storage.
+
+`session.beginTransaction` is used to start a transaction, where as `session.getTransaction().commit()` is used to make the changes to the database, before we do commit, all the changes that we made in that session are still in the memory and have no effect on the database itself.
+
+> The `list()` method used before hibernate 5.2 is depricated in higher version and now we use `getResultList()` instead like in the following example. Change `session.createQuery("from Students").list()` to `session.createQuery("from Student").getResultList()`.
+
+### Hibernate Mappings
+
+Important Terminology
+
+* Primary Key : Identify a unique row in a table.
+
+* Foreign Key : It links tables together and is a field in one table that refers to primary key in another table.
+
+Main purpose is to preserve relationship between tables also called *Referential Integrity*. It prevents operations that would destroy reationship.
+
+It ensures only valid data is inserted into the foreign key column.
+
+* Cascade :  We can cascade the same operations to the related tables that are linked with mapping. For example we delete a user then we might also want to delete all the comments that were made by that user. This will be known as CASCADE DELETE. We might not want cascade all the time.
+
+* Fetch Type :
+Eager will retrieve everthing.
+Lazy will retieve data on request.
+
+* Uni-Directional And Bidirectional Mapping : We can have a user and his comments that will have a unidirectional mapping or User is Friend with other user will have a bidirectional mapping.
+
+#### One To One Mapping
+
+One To One Cascade Types
+
+* PERSIST : If entity persisted, related entity will also be persisted. Similarly for all other following cascade types.
+* REMOVE
+* REFRESH
+* DETACH
+* MERGE
+* ALL
+
+By default no operations are cascaded.
+
+Following example is for a Uni-Directional mapping of Student to Guardian.
+
+```java
+//--- Configuring cascade
+@Entity
+@Table(name="Students")
+public class Student {
+  @Id
+  @GenerateValue(strategy=GenerationType.IDENTITY)
+  @Column(name="id")
+  private int id;
+
+  //- The name of the column is that which is shown in this table and not the name that is shown in the table that this column links to.
+  @OneToOne(cascade=CascadeType.ALL)
+  @JoinColumn(name="guardian_id")
+  private Guardian guardian;
+
+  @Column(name="name")
+  private String name;
+
+  public Student() {}
+  public Student(String name) {
+    this.name = name;
+  }
+
+  //Other properties, getters and setters
+}
+
+@Entity
+@Table(name="Guardians")
+public class Guardian {
+  @Id
+  @GenerateValue(strategy=GenerationType.IDENTITY)
+  @Column(name="id")
+  private int id;
+
+  @Column(name="first_name")
+  private String firstName;
+
+  public Guardian() {}
+
+  public Guardian(String firstName) {
+    this.firstName = firstName;
+  }
+  //Getters and setters
+}
+
+//We could fine configure mappings to use particular cascades
+@OneToOne(cascade={CascadeType.DETACH, CascadeType.MERGE, CascadeType.Persist})
+
+//--- Persisting an entry
+public static void main(String[] args) {
+
+  SessionFactory factory = new Configuration().
+                            configure("hibernate.cfg.xml")
+                            .addAnnotatedClass(Student.class)
+                            addAnnotatedClass(Guardian.class)
+                            .buildSessionFactory();
+
+  Session session = factory.getCurrentSession();
+
+  Student student = new Student("Adwait");
+  Guardian guardian = new Guardian("Jane");
+  student.setGuardian(guardian);
+
+  session.beginTransaction();
+  session.save(student);
+  session.getTransaction().commit();
+
+  session.close();
+  factory.close();
+  //We should be using try catch to handle exceptions
+}
+//As the cascade type is set to all in the above example the student as well as the guardian will be saved to the database.
+```
+
+We will make changes to the above code and make convert the above example into a Bidirectional mapping.
+Only the code below will be changed, all other code remain the same. Also the structure of the database remains the same as was created for the unidirectional mapping.
+
+```java
+//We already have the Student class mapped to guardians id column
+public class Student{
+  @OneToOne(cascade=CascadeType.ALL)
+  @JoinColumn(name="guardian_id")
+  private Guardian guardian;
+}
+
+public class Guardian{
+  @OneToOne(mappedBy="guardian")
+  private Student student;
+}
+
+/*
+ mappedBy tells Hibernate to look at the guardian property in the Student class, use the infromation from the Student class @JoinColumn and help find the associated Student.
+*/
+
+//We can also use cascade types with mappedBy.
+@OneToOne(mappedBy="guardian", cascade=CascadeType.ALL)
+//In this case we might not want to have all operations cascade and thus we could state the required cascade types as we discussed above.
+
+public static void main(String[] args) {
+  //all other code as before
+  int id = 2;
+  Guardian guardian = session.get(Guardian.class, id);
+
+  //Now we can get the student from the guardian.
+  Student student = guardian.getStudent();
+}
+```
+
+Say we want to delete a guardian but not her student. We will then have to change the cascade type.
+
+```java
+
+//-- Guardian class
+@OneToOne(mappedBy="guardian", cascade={CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+private Student student;
+
+//-- inside main
+int id = 2;
+Guardian guardian = session.get(Guardian.class, id);
+//Before we can delete a guardian we will have to break the bidirectinal link between the guardian and the student else we will have errors.
+guardian.getStudent().setGuardian(null);
+session.delete(guardian);
+//This commit will update the student and delete guardian from the database.
+session.getTransaction().commit();
+```
+
+#### @JoinColumn
+
+Official Docs On [@JoinColumn](https://docs.oracle.com/javaee/7/api/javax/persistence/JoinColumn.html#name)
+
+When we use the `@JoinColumn` and give it a name, the table in which the foreign key column is found depends upon the context.
+
+* If the join is for a OneToOne or ManyToOne mapping using a foreign key mapping strategy, the foreign key column is in the table of the sourse entity.
+* If the join is for a unidirectional OneToMany mapping using foreign key mapping strategy, the foreign key is in the table of the target entity.
+* If the join is for a ManyToMany mapping or for a OneToOne or bidirectional ManyToOne/OneToMany mapping using a join table, the foreign key is in a join table.
+
+#### Many To One Mapping
+
+One to Many mapping is used when we have to map many objects to one object.
+
+* In the following example we will have a course and all its reviews. So If can get from the course all its review and when a course is deleted all the reviews are deleted with the course.
+
+```java
+//--- Unidirectional Mapping
+@Entity
+@Table(name="reviews")
+public class Review{
+  @Id
+  @GenerateValue(strategy=GenerateType.IDENTITY)
+  private int id;
+
+  @Column(name="comment")
+  private String comment;
+}
+
+@Entity
+@Table(name="course")
+public class Course{
+  //other properties
+
+  @OneToMany(cascade=CascadeType.ALL)
+  @JoinColumn(name="course_id")
+  private List<Review> reviews;
+  
+  //Constructor
+
+  public void add(Review review) {
+    if(review == null) {
+      reviews = new ArrayList<>();
+    }
+    reviews.add(review);
+  }
+
+  //Getters and Setters
+}
+```
+
+* In the following example we will have a teacher and all the courses that that teacher teaches.
+
+```java
+//--- Bidirectional mapping
+@Entity
+@Table(name="teachers")
+public class Teacher{
+
+  @Id
+  @GeneratedValue(strategy=GenerationType.IDENTITY)
+  @Column(name="id")
+  private int id;
+
+  @Column(name="name")
+  private String name;
+
+  @OnetoMany(mappedBy="teacher", cascade={CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+  private List<Course> courses;
+
+  //Constructors
+
+  //Convenience methods for bidirectional relationship
+  public void add(Course course) {
+    if(courses == null) {
+      courses = new ArrayList<>();
+    }
+    //We will set this teacher as the teacher for this course
+    course.setTeacher(this);
+    courses.add(course);
+  }
+
+  //Getters and Setters
+}
+
+@Entity
+@Table(name="courses")
+public class Course{
+
+  @Id
+  @GeneratedValue(strategy=GenerationType.IDENTITY)
+  @Column(name="id")
+  private int id;
+
+  @Column(name="title")
+  private String title;
+
+  @ManyToOne(cascade={CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+  @JoinColumn(name="teacher_id")
+  private Teacher teacher;
+
+  //Constructor, getter/setter
+}
+
+//-- Inside main
+//Update the hibernate.cfg.xml to point to the right database connection url.
+public static void main(String[] args) {
+  SessionFactory factory = new Configuration()
+                            .configure("hibernate.cfg.xml")
+                            .addAnnotatedClass(Teacher.class)
+                            .addAnootatedClass(Course.class)
+                            .buildSessionFactory();
+  
+  Session session = factory.getCurrentSession();
+
+  try{
+    //-- Create and save Teacher
+    session.beginTransaction();
+    Teacher teacher = new Teacher("Rupali");
+    session.save(teacher);
+    session.getTransaction().commit();
+
+    //-- Create and add course to teacher
+    session = factory.getCurrentSession();
+    session.beginTranscation();
+    int id = 1;
+    //We find the teacher in the database that we have already saved.
+    Teacher savedTeacher = session.get(Teacher.class, id);
+    Course course = new Course("Linear Algebra");
+    Course course2 = new Course("Geometry");
+    //We add the course to the teacher that was saved.
+    savedTeacher.add(course);
+    savedTeacher.add(course2);
+    //We save the courses to the database
+    session.save(course);
+    session.save(course2);
+    session.getTransaction().commit();
+
+    //-- Get courses for a teacher
+    session = factory.getCurrentSession();
+    session.beginTransaction();
+    id = 1;
+    Teacher teacher = session.get(Teacher.class, id);
+    List<Courses> course = teacher.getCourses();
+    session.getTransaction().commit();
+
+    //-- Delete a course
+    //Because of the cascading set teacher will not be deleted.
+    session = factory.getCurrentSession();
+    session.beginTransaction();
+    int courseId = 1;
+    Course course = session.get(Course.class, courseId);
+    session.delete(course);
+    session.getTransaction(course);
+    session.getTransaction().commit();
+  }finally{
+    session.close();
+    factory.close();
+  }
+}
+```
+
+#### Eager Vs Lazy Loading With Hibernate Mapping
+
+Eager Loading : Will retrieve/load all dependent entities in the first request for the main entity.
+
+Lazy Loading : Will wait until dependent entities are requested to load them.
+
+Thus when the number of dependent is very high we prefer lazy loading, and thus save the time for the first load.
+
+When the dependent entities are few and we want to work on the dependent entities we will use Eager loading.
+
+Default Fetch Types are applied if we do not specify the FetchType with with our mappings.
+
+* OneToOne : FetchType.EAGER
+* OneToMany : FetchType.LAZY
+* ManyToOne : FetchType.EAGER
+* ManyToMany : FetchType.LAZY
+
+Let take the example of Teacher and Course thought by that Teacher.
+
+```java
+@Entity
+@Table(name="Teachers")
+public class Teacher{
+  //all other properties
+
+  @OneToMany(fetch=FetchType.LAZY, mappedBy="teacher")
+  private List<Course> courses;
+
+  //...
+}
+```
+
+Lazy loading needs that the session be kept open to fetch the data as needed. If the session is closed, hibernate will throw an exception `LazyInitializationException`.
+
+The first solution is to fetch all the required data before the session closes.
+
+Or, Lazy Loading with Hibernate Query after the session is closed.
+
+```java
+//We can also use Hibernate queries to retrieve data
+int id  = 1;
+
+//import from org.hibernate.query.Query
+Query<Teacher> query = session.createQuery("select i from Teacher i JOIN FETCH i.courses where i.id=:teacherId", Teacher.class);
+
+//Set the parameter for the query that we have created above will map to id=:teacherId.
+query.setParameter("teacherId", id);
+
+//execute Query
+Teacher teacher = teacher.getSingleResult();
+
+System.out.println(teacher);
+
+
+//-- WE can also open a new session and lazy load data at a later point
+session = factory.getCurrentSession();
+session.beginTransaction();
+//get course of a given teacher
+Query<Course> query = session.createQuery("select c from Course where c.teacher.id=:teacherId", Course.class)
+
+query.setParameter("teacherId", id);
+List<Course> courses = query.getResultList();
+```
+
+#### Many To Many Mapping
+
+When we map two entities in a many to many relation we need to create a new table called as the JoinTable that will keep track of the relation.
+
+A Join Table has foreign keys for each table to define the mapping relationship.
+
+In the following students we have students and the courses that the students are taking.
+
+Create a Join Table for Students and Courses.
+
+```sql
+CREATE TABLE `course_student` (
+  `course_id` int(1) NOT NULL
+  `student_id` int(1) NOT NULL
+
+  PRIMARY KEY (`course_id`, `student_id`),
+  
+  CONSTRAINT `FK_COURSE`
+  FOREIGN KEY (`course_id`)
+  REFERENCES `course` (`id`),
+
+  CONSTRAINT `FK_STUDENT`
+  FOREIGN KEY (`student_id`)
+  REFERENCES `student` (`id`),
+)
+```
+
+Create And store the Entities to the database.
+
+```java
+@Entity
+@Table(name="courses")
+public class Course {
+  //other properties
+
+  //We can have the fetch and cascade with the relation
+  @ManyToMany
+  @JoinTable(
+    name="course_student",
+    joinColumns=@JoinColumn(name="course_id"),
+    inverseJoinColumns=@JoinColumn(name="student_id")
+  )
+  private List<Student> students;
+
+  //Constructors, Getters and Setters
+}
+
+@Entity
+@Table(name="students")
+public class Student {
+  //other properties
+
+  @ManyToMany
+  @JoinTable(
+    name="course_student",
+    joinColumns=@JoinColumn(name="student_id"),
+    inverseJoinColumns=@JoinColumn(name="course_id")
+  )
+  private List<Course> course;
+
+  //Constructors, Getters and Setters
+}
+
+//All the operation code for save, update and delete remains the same as we had in any other relation mapping.
+```
