@@ -840,7 +840,6 @@ The base code for the above files is as given in following starter files.
   <!-- Step 3: Add support for component scanning -->
   <context:component-scan base-package="com.luv2code.springdemo" />
 
-
   <!-- Step 4: Add support for conversion, formatting and validation support -->
   <mvc:annotation-driven/>
 
@@ -855,6 +854,81 @@ The base code for the above files is as given in following starter files.
 ```
 
 ### Configuring Spring MVC with Java Code
+
+#### @EnableWebMVC
+
+Provides similar Support to `<mvc:annotation-driven />` in XML.
+
+It also adds support for validation, fromatting and conversion.
+
+It also processes `@Controller` classes and `@RequestMapping` etc methods.
+
+#### Configuration Code
+
+Spring MVC provides support for web app initailization, that detects our code automatically. The class `AbstractAnnotationConfigDispatcherServletInitializer` is used to initialize the servlet container.
+
+So we extend the base class nad then override all required methods and then specify servlet mapping and location of our app config.
+
+```java
+//--- Replaces spring-mvc-demo-servlet.xml
+@Configuration
+@EnableWebMvc
+@ComponentScan(basePackage="in.adwait.project")
+public class AppConfig{
+  @Bean
+  public ViewResolver viewResolver(){
+    InternalResourceViewResolver viewResolver = new InternalResourseViewResolver();
+
+    //This will help spring to map to the view-page like /WEB-INF/view/login.jsp.
+    //So when we provide login viewResolver will automatically link to the page.
+    viewResolver.setPrefix("/WEB-INF/view/");
+    viewResolver.setSuffiex(".jsp");
+
+    return viewResolver;
+  }
+}
+
+//--- Replace web.xml
+import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
+
+public class SpringMvcDispatcherServletInitialzer extends AbstractAnnotationConfigDispatcherServletInitializer () {
+  @Override
+  protected Class<?>[] getRootConfigClasses() {
+    return null;
+  }
+
+  @Override
+  protected Class<?>[] getServletConfigClasses() {
+    return new Class[]( AppConfig.class );
+  }
+
+  @Override
+  protected String[] getServletMappings() {
+    return new String[] { "/" };
+  }
+}
+```
+
+Now we have configured our server the same way as we had done with the above xml configuration.
+
+If we are using maven, the maven will complain about missing web.xml file.
+
+```xml
+<!-- pom.xml -->
+<!-- As we are not using the web.xml file and using java configuration instead maven will complain that it is missing. -->
+<!-- We make use of a maven plugin to address that. -->
+<pluginManagement>
+  <plugins>
+    <plugin>
+      <!-- Coordinates for maven-war-plugin -->
+      <groupId>org.apache.maven.plugin</group>
+      <artifactId>maven-war-plugin</artifactId>
+      <version>3.2.0</version>
+      <!-- responsible for collecting all artifact dependencies, classes and resources of the web application and packaging them into a web application archive -->
+    </plugin>
+  </plugins>
+</pluginManagement>
+```
 
 ### @Controller and @RequestMapping
 
