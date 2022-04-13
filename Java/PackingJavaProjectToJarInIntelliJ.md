@@ -1,4 +1,4 @@
-# Package an application into a JAR﻿
+# Package an application into a JAR
 
 For more info on where this is taken from : [JetBrains Website](https://www.jetbrains.com/help/idea/compiling-applications.html#package_into_jar)
 
@@ -18,7 +18,7 @@ Apply the changes and close the dialog.
 
 ![Create Artifacts Image](../NotesImages/createArtifact.gif)
 
-## Build the JAR artifact﻿
+## Build the JAR artifact
 
 From the main menu, select Build | Build Artifacts | Build.
 

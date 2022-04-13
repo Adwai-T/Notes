@@ -68,7 +68,7 @@ Example of ClassPathXmlApplicationContext
     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
     
     <!--Example Bean-->
-    <!-- <bean class="com.baeldung.springbootxml.Pojo">
+    <!-- <bean class="in.adwait.MyBeanClass">
         <property name="field" value="sample-value"></property>
     </bean> -->
 </beans>
@@ -185,29 +185,41 @@ We here are still going to use xml in this example to enable component scanning 
 
 ## Container Configuration With Java
 
-We in modern Spring application prefer to use pure java to configure our Spring application. We in this third and final method will not use XML.
+We in modern Spring application prefer to use pure java to configure our Spring application. In this third and final method will not use XML.
 
 Instead of using `ClassPathXmlApplicationContext` we will be using `AnnotationConfigApplicaionContext`.
 
 ```java
-@Configuration
-@ComponentScan("in.adwait.springdemo")
-public class MyConfigurationClass{
-
-}
-
 public interface MyBeanInterface{
   public String getMessage();
 }
 
+@Component
 public class MyBean implements MyBeanInterface{
-
   public MyBean() { }
-
   public String getMessage() {
     return "Message From MyBean";
   }
-} 
+}
+
+public class BeanWithOutAnnotation{
+  private String message;
+  //Constructors, getters and setters.
+}
+
+//All the classes marked with @Component and are inside in.adwait.springdemo directory will be available as beans in the context.
+@Configuration
+@ComponentScan("in.adwait.springdemo")
+public class MyConfigurationClass{
+  //We will create and return the bean that has no @Component Annotation so that it can be used in the application.
+  @Bean(name="myBeanWithoutAnnotation")
+  public BeanWithOutAnnotation getBeanWithOutAnnotation() {
+    BeanWithOutAnnotation bean = new BeanWithOutAnnotation();
+    bean.message = "This bean was created in configuration class";
+    return bean;
+  }
+  //We do not need to create beans with @Component, they are automatically created by Spring.
+}
 
 public class Main{
 
@@ -217,9 +229,13 @@ public class Main{
 
     //get bean
     MyBean bean = context.getBean("myBean", MyBeanInterface.class);
-
     //Use Our bean
     System.out.println(bean.getMessage());
+
+    //get the bean that we created
+    BeanWithOutAnnotation bean2 = context.getBean("myBeanWithoutAnnotation", BeanWithOutAnnotation.class);
+    //Use bean;
+    System.out.println(bean2.getMessage());
 
     //Close context
     context.close();
@@ -2014,4 +2030,438 @@ public class Student {
 }
 
 //All the operation code for save, update and delete remains the same as we had in any other relation mapping.
+```
+
+## Aspect Oriented Programming
+
+Aspect-oriented programming (AOP) is a programming paradigm that aims to increase modularity by allowing the separation of cross-cutting concerns. It does so by adding behavior to existing code (an advice) without modifying the code itself, instead separately specifying which code is modified via a "pointcut" specification, such as "log all function calls when the function's name begins with 'set'". This allows behaviors that are not central to the business logic (such as logging) to be added to a program without cluttering the code core to the functionality.
+
+AOP includes programming methods and tools that support the modularization of concerns at the level of the source code, while aspect-oriented software development refers to a whole engineering discipline.
+
+### Introduction Theory
+
+#### Benifits of AOP
+
+* Code For Apect is defined in a single class, which prevents scattering and promotes code reuse and easier to change.
+* Buisness code in our application is clean, which reduces complexity and only applies to the buisness functionality.
+* Aspects can be selectively applied to parts of the app based on the need only by changing the configuration and keeping the buisness code unchanged.
+
+#### AOP Use Cases
+
+* Security, transactions, logging.
+* Audit logging - who, what, where when.
+* Exception handling and notification to relevant authority
+* API management and analytics. How many times called, load, top users.
+
+#### Disadvantages of AOP
+
+* Too many aspects can make app flow hard to follow.
+* Minor performance cost for aspect execution.
+
+#### AOP Terminology
+
+* Aspect : Module of code for cross cutting concern(logging, security, etc).
+* Advice : What action is taken and when it should be applied.
+* Join Point : When to apply code during program execution.
+* Pointcut : A predicate expression for where advice should be applied.
+* Weaving : Linking aspects with other application types or objects to create an advised object
+
+#### Advice Types
+
+* Before Advice : Run before the method.
+* After finally advice : Run after the method(finally).
+* After returning advice : Run after the method(sucessful execution).
+* After throwing advice : Run after method(if exeception thrown).
+* Around advice : Run before and after method.
+
+#### Weaving
+
+* Connecting aspects to target object to create an adviced object.
+* Different types of weaving are Compile time, load-time or runtime
+* Run-Time Weaving is slow as it happens at runtime.
+
+#### AOP Frameworks
+
+* AspectJ
+* Spring AOP
+
+Spring AOP
+
+* Spring provides AOp support out of the box.
+* Key components that use AOP in spring are Security, transactions, caching, etc.
+* Spring AOP uses run-time weaving of aspects.
+MainApp -> AOP proxy -> Logging or/and Secutity Aspect -> Target Object.
+
+Advantages of Spring AOP over AspectJ
+
+* Simpler to use and is a light implementation of AOP.
+* Uses Proxy Pattern
+* Can migrate to AspectJ when using @Aspect annotation
+
+Disadvantages of Spring AOP over AspectJ
+
+* Only supports method-level join points.
+* Can only apply aspects to beans created by Spring App context.
+* Minor performance cost for aspect execution as it uses run-time weaving.
+
+AspectJ
+
+* It is the original AOP framework, released in 2001.
+* Provides complete support for AOP.
+* Rich support for join points and code weaving.
+* Join Point : Method level, constructor, field.
+* Code weaving : Compile-time, post compile-time and load-time.
+
+Advantages of AspectJ over Spring AOP
+
+* Support all join points.
+* Works with any POJO not just beans from app context.
+* Faster performance compared to Spring AOP.
+* Complete AOP support.
+
+Disadvantages of AspectJ over Spring AOP
+
+* Compile-time weaving requires extra comilation steps.
+* AspectJ pointcut syntax can become complex.
+
+### Setting Up AOP
+
+We need to add AspectJ jar files even though we will be using Spring AOP as Spring still uses some of the annotation and classes from AspectJ.
+
+### @Before Advice Type
+
+The code from the aspect will run before the method.
+
+Main App <-> AOP proxy -> Logging/Security Aspect -> Target Object.
+
+Most Common Uses
+
+* Logging, Security, Transcations.
+* Audit Logging.
+* API Management.
+
+```java
+
+@Aspect
+@Component
+public class LoggingAspect {
+
+  @Before("execution(public void addAccount())")
+  public void beforeAddAccount() {
+    System.out.println("\n Logging => A new Account is going to be added");
+  }
+}
+
+@Component
+public class AccountDAO {
+  public void addAccount() {
+    System.out.println()
+  }
+}
+
+@Configuration
+@EnableAspectJAutoProxy
+@ComponentScan("in.adwait.project")
+public class MainConfiguration{
+
+}
+
+public class Main{
+
+  public static void main(String[] args) {
+    AnnotationConfigAppicationContext context = new AnnotationConfigurationContext(MainConfifuration.class);
+
+    AccountDAO account = new AccountDAO();
+    account.addAccount();
+
+    context.close();
+  }
+}
+```
+
+### AOP PointCut Expressions
+
+Pointcut is a predicate expression for where advice should be applied.
+
+Spring AOP uses AspectJ's pointcut expression language.
+
+#### Execution PointCut Expressions
+
+`execution(modifiers-pattern? return-type-pattern declaring-type-pattern method-name-pattern(param-pattern) throws-pattern?)`
+
+Following are examples of PointCut Expression for execution.
+
+* `@Before("execution(public void in.adwait.project.Account.addAccount())")` : Match only `addAccount()` method in Account class.
+* `@Before("execution(public void addAccount())")` : Match any `addAccount()` method in any class.
+* `@Before("execution(public void add*())")` : Match methods starting with add in any class.
+* `@Before("execution(* processCard*())")` : Modifiers are optional hence we dont have to list it, we can use * for optional patterns.
+* `@Before("execution(public * processCard*())")` : Match method that has a public modifier with any return type and processCard as the start of the method name in any class.
+* `@Before("execution(void processCard*())")` : Match method that has any modifier, and a return type of void in any class, starting with processCard.
+
+#### Parameter Patterns
+
+For Param-pattern WildCards
+
+* `()` : matches a method with no arguments
+* `(*)` : matches a method with one argument of any type.
+* `(..)` : matches a method with 0 or more arguments of any type.
+
+Match on method Parameter examples.
+
+* `@Before("execution(* addAccount(in.adwait.project.Account))")` : In the method we specify a fully qualified class path for the argument type.
+* `@Before("execution(* addAccount(in.adwait.project.Account, ..))")` : matches with method with name addAccount having a Account as argument and any number of other arguments.
+* `@Before("execution(void in.adwait.project.dao.*.*(..))")` : Match any method in our DAO package(in.adwait.project.dao). The first * represents any class and the second any mwthod in the class.
+
+#### Declaring PointCut Expression
+
+We can use the pointcut expression by add them to each method separately or we could also declare them as a varible and use them from there.
+
+Benefits of Pointcut Declarations over using them directly.
+
+* Easily resuse.
+* Easy Update in one location.
+* Can also share and combine pointcut expression.
+
+```java
+@Aspect
+@Component
+public class LoggingAspect{
+  @Pointcut("execution(* in.adwait.project.dao.*.*(..))")
+  private void forDaoPackage(){} //This method name will be used as name for the pointcut declaration.
+
+  //Now that we have declared the pointcut we can use this as many times as we want.
+
+  //Using the above declaration of pointcut
+  @Before("forDaoPackage()")
+  public void beforeAddAccountAdvice() {
+    //code for before advice here.
+  }
+}
+
+//--- We can also declare the pointcut expression in a different class and use it.
+@Aspect
+@Component
+public class PointCutExpressions{
+  @Pointcut("execution(* in.adwait.project.dao.*.getter(..))")
+  private void gettersInDaoPackage() {}
+}
+
+@Aspect
+@Component
+public class LoggingAspect{
+  //While using pointcut expression from any other class we have to specify the fully qualified path for the class and the name of the pointcut.
+  @Before("in.adwait.project.PointCutExpressions.gettersInDaoPackage()")
+  public void beforeGetterMethods() {
+    //code executed before any getter method in dao package.
+  }
+}
+```
+
+Combining pointcut Expression.
+
+The Advice type work like a if statement when we pass in multiple pointcut expressions. The advice is execute only when the pointcut expressions together return true.
+
+Following are the Operators that can be used in combination to define our pointcut combination.
+
+* `@Before("expressionOne() && expressionTwo()")
+* `@Before("expressionOne() || expressionTwo()")
+* `@Before("expressionOne() && !expressionTwo()")
+* `@Before("expressionOne() && (expressionTwo() || expressionThree())")
+
+We can also declare a combination of pointcut expression as a single pointcut expression and then use it.
+
+```java
+//Select only getters in the package
+@Pointcut("execution(* in.adwait.project.dao.*.get*(..))")
+private void getters() {}
+//Select only setters in the package
+@Pointcut("execution(* in.adwait.project.dao.*.set*(..))")
+private void setters() {}
+//Select all methods in the package
+@Pointcut("execution(* in.adwait.project.dao.*.*(..))")
+private void fromDaoPackage() {}
+
+//Combine the above pointcuts to get all methods that are not getters or setters.
+@Pointcut("fromDaoPackage() && !(getters() || setters())")
+private void fromDaoPackageExceptGettersAndSetters() {}
+```
+
+### Ordering Aspects
+
+The Spring AOP does not have any order by which it will run different Advice.
+
+To Control order we would have to place advices in separate aspects. The we can control the order of the aspects using `@Order` annotation. This will guarantee the order of when aspects are applied.
+
+* The lower the number of Order the higher the preference.
+* Negative Numbers are allowed
+* Numbers do not have be consecutive.
+* If two aspect have the same number, for them both the order will be random, but they will still run in order as compared to others.
+
+In the following example we have three Advices that will run on the same method and we want to order them. So we create three different Aspects for the three Advices and mark them with `@Order`.
+
+```java
+@Aspect
+@Component
+@Order(1)
+public class CloudLogAspect{
+
+}
+
+@Aspect
+@Component
+@Order(2)
+public class LoggingAspect{
+
+}
+
+@Aspect
+@Component
+@Order(3)
+public class AnalyticsAspect{
+
+}
+
+//So in the case CloudLogAspect will be executed first, then LoggingAspect and then AnalyticsAspect will be run last.
+```
+
+### JoinPoints
+
+We will use the JoinPoints to access the method parameters for which we are using Advices, so that we could use the data from the arguments.
+
+We can access the method Signature as well as method arguments.
+
+```java
+//--- class
+@Component
+public class AccountDAO() {
+  public void addAccount(Account account) {
+    System.log.println("The account was added.");
+  }
+}
+
+@Before("...")
+public void beforeAddAccountAdvice(JointPoint joinPoint) {
+  //--- display method signature
+  MethodSignature sign = (MethodSignature) jointPoint;
+  System.out.println("Method: " + sign);
+  //Output : Method: void in.adwait.project.dao.AccountDAO.addAccount(Account account)
+
+  //--- display method arguments, in th case the argument is Account.
+  Object[] args = joinPoint.getArgs();
+  for(Object arg: args) {
+    System.out.println(arg);
+
+    if(arg instanceof Account) {
+      Account account = (Account) arg;
+      System.out.println("Account Details of account added : " + account);
+      //Now here we can get the argument being passed and use it as we would like.
+    }
+  }
+}
+```
+
+### @AfterReturning
+
+`@AfterReturning` Advice type is run after the method successfully executes.
+
+```java
+// In the AccountDAO class say we have findAccount method that returns a list of Account that it found
+
+@Aspect
+@Component
+public class AccountAspect{
+  @AfterReturning(pointcut="execution(* in.adwait.project.AccountDAO.findAccount(..))", returning="result")
+  public void afterReturningFindAccountAdvice(JointPoint joinPoint,  List<Account> result) {
+    //The returning String and the name of used in the above arguments must be the same. It is not related to the name of the return in the actual method that the Advice targets.
+    
+    System.out.println(result);
+    //The result contains what ever is returned by the targeted method.
+  }
+}
+```
+
+### @AfterThrowing
+
+`@AfterThrowing` Advice is used to intercept if the method execution fails at some point and throws an exception.
+
+```java
+//The name given to throwing should be same as that used in argument of the method defining the advice.
+@AfterThrowing(pointcut= "execution(* findAccount())", throwing="exception")
+public void afterThrwoingFindAccountAdvice(JoinPoint joinPoint, Throwable exception) {
+  System.out.println("Exception in the findAccount method logged from @AfterThrowing Advice");
+  System.out.println(exception);
+}
+//--- In the above case the exeception is still propogated to the main program. We just can peek into the exception with the @AfterThrowing.
+
+//--- If we want to stop the exception from propogating then we use the @Around advice.
+```
+
+### @After
+
+The `@After` Advice executes after the method as completed execution and is executed irrespective of whether the method successfully completed or threw an exception.
+
+So it works similar to a finally block in java.
+
+If we have `@After` and `@AfterThrowing` advice for matching for the same method, the `@After` will run after `@AfterThrowing`. This change was made in version 5.2.7 and all versions after that implment the same.
+
+`@After` Advice does not have access to the exception being thrown and hence it should not depend on whether the method was successful or it failed.
+
+```java
+
+@After("execution(* in.adwait.project.AccountDAO.findAccount(..))")
+public void finallyAfterFindAccountAdvice(JoinPoint joinPoint) {
+  //Do after the method is excuted.
+}
+```
+
+### @Around
+
+The `@Around` Advice runs before and after the target object. It is like a combineation of the `@Before` and `@After` Advices but gives more fine grain control over the process.
+
+With `@Around` Advice we get a reference to a 'Proceding Joint Point', which is a handle to the target method used to execute the target method.
+
+```java
+//Here we will calculate the time for execution of the get method that in the services package for all classes.
+@Around(execute("* in.adwait.porject.services.*.get*())")
+public Object afterGetService(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
+  long begin = System.currentTimeMillis();
+
+  //The proceedingJoinPoint gives us a handle to the method that we use to run the method.
+  Object result = proceedingJoinPoint.proceed();
+
+  long end = System.currentTimeMillis();
+  long duration = end-begin;
+
+  System.out.println("Duration : " + duration);
+
+  return result;
+}
+```
+
+> Note : Spring uses the logger output stream to print the logs while the System.out.println uses the Standard output stream to print the data to console.
+> Sometimes this leads to inconsistent prints to console. To resolve this we can change our code to use the logger output stream.
+> `private Logger logger = Logger.getLogger(getClass().getName());` The we can use it to log by using `logger.info("Print to console"); ` or `logger.warning("This is a warning message")`. Also logger will only print String so we need to call the `toString()` method for objects.
+
+#### Handling Exception
+
+While we execute the method in the Advice we can handle the exception so that the exception is not propogated to the main app or we can rethrow the exception to be handled in the main program.
+
+```java
+@Around("execution(* in.adwait.project.*.get*(..))")
+public Object afterGetFortune(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
+  Object result = null;
+
+  try{
+    result = proceedingJoinPoint.proceed();
+  }
+  catch(Exception exce) {
+    System.out.println("Exception Handled in @Around Advice" + exec);
+    result = "Exception Handled";
+
+    //-- optionally we can rethrow the exception if we want to the exception to be propogated to the main app.
+    throw exec;
+    //In the case that the exception is thrown the result will never be returned and the method will terminate here and let the main app handle this exection, but the logging can still be done from here.
+  }
+  return result;
+}
 ```

@@ -2684,7 +2684,9 @@ Some environments require a customized approach to map Id values such as data st
 
 ![@MongoId Description and Usage Image](../NotesImages/MongoIDDescription.png)
 
-## [Getting Spring Application ready for production with Heroku](https://devcenter.heroku.com/articles/preparing-a-spring-boot-app-for-production-on-heroku#rate-limit-api-calls)
+## Deploying To Heroku
+
+[Getting Spring Application ready for production with Heroku](https://devcenter.heroku.com/articles/preparing-a-spring-boot-app-for-production-on-heroku#rate-limit-api-calls)
 
 ## Cross Origin Requests
 
