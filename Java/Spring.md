@@ -18,13 +18,17 @@ As previously mentioned, tomcat was installed as a service for windows and we ca
 
 The approach of externalizing/outsourcing the construction and management of objects.
 
+Inversion Of Control : Create and manage objects by a container or a framework.
+
+Benefits are Decouples the execution and implementation, easier to switch between implementations, modularity, easier testing.
+
 Simply put the Spring framework will create and manage all the instances and inject them where they are needed, it will also be responsible for managing the instances during their lifecycle.
 
-So Spring does two primary functions
+### Dependency Injection
 
-* Inversion Of Control : Create and manage objects.
+It is a pattern we use to implement IoC.
 
-* Dependency Injection : Inject object's dependencies.
+In the Spring framework, the interface `ApplicationContext` represents the IoC container. The Spring container is responsible for instantiating, configuring and assembling objects known as beans, as well as managing their life cycles.
 
 ## Spring Development Process
 
@@ -133,6 +137,12 @@ Why Spring Annotations ?
 
 ## @Component
 
+Spring Framework automatically detects classes annotated with `@Component` during Component Scan.
+
+We can specify specific name for the bean created form the component but by default it is the same as the class name with lowercase starting character.
+
+`@Repository`, `@Service`, `@Configuration`, and `@Controller` are all meta-annotations of `@Component`, and are automatically picked up by Spring component scan.
+
 ```java
 //---MyBeanInterface.java
 public interface MyBeanInterface{
@@ -186,6 +196,16 @@ We here are still going to use xml in this example to enable component scanning 
 ## Container Configuration With Java
 
 We in modern Spring application prefer to use pure java to configure our Spring application. In this third and final method will not use XML.
+
+### @ComponentScan
+
+Configures which packages to scan for classes with annotation configuration.
+
+We can specify the base package names directly with one of the `basePackages` or value arguments where value is an alias for `basePackages`. We can also specify `basePackageClasses` which point to the classes in the base package. Both are arrays and can have multiple packages and classes respectively.
+
+Also multiple `@ComponentScan` can be annotated on the same class as Spring leverages Java8's repeating annotation feature. Thus we can have both `basePackageClasses` and `basePackages` on the same class.
+
+Alternately we can also use `@ComponentScans({...})` to specify multiple `@ComponentScan` inside.
 
 Instead of using `ClassPathXmlApplicationContext` we will be using `AnnotationConfigApplicaionContext`.
 
@@ -294,6 +314,7 @@ It is not recommended to use prototype scope for a bean unless in very sepcific 
 |request|Scoped to an HTTP web request. Only used for web applicaitions|
 |session|Scoped to an HTTP web session.|
 |global-session|Scoped to a global HTTP web session|
+|websocket|Scoped to a websocket|
 
 ### Bean Life-Cycle Methods / Hooks
 
@@ -377,16 +398,7 @@ public class MyBean{
 }
 ```
 
-## Dependency Injection
-
-Object factory create an object for us according to our configuration and then provides us with the required object.
-
-### Common types of injection
-
-1. Constructor Injection
-2. Setter Injection
-
-## Depencency Injection With XML Configuration
+## DI With XML Configuration
 
 ```xml
 <!--Load the properties file that we will use below-->
@@ -499,7 +511,7 @@ public class MyBean implements MyBeanInterface {
 }
 ```
 
-## Dependency Injection With @Autowired Annotation
+## DI With @Autowired
 
 We can use `@Autowired` Annotation for constrution as well as setter injection by adding the annotation over the constructor or setter.
 
@@ -541,7 +553,7 @@ Which Injection should we use?
 
 * Even thought most will recommend constructor injection in most places, we can use any we want as spring documentation suggests that all types of injection give the same functionality.
 
-## @Qualifier
+### @Qualifier
 
 `@Qualifier` is used when there are multiple beans of the same type that are created and we want to specify which bean must be injected. If this is not specified spring will through `NoUniqueBeanException`, as it will not know which specific bean is need to be injected.
 
@@ -592,7 +604,7 @@ public class MyBean{
 
 > [@Qualifier Documentation](https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#beans-autowired-annotation-qualifiers)
 
-## @Value
+### @Value
 
 We use `@Value` to inject Field variables from a `.properties` file.
 
@@ -609,8 +621,9 @@ private String name;
 
 ## Dependency Injection Without Xml
 
-> `@Bean` : We can use `@Bean` to make an existing third-party class available to your Spring framework application context.
-> We use `@PropertiesSource` to specify class path for our properties files being used.
+> `@Bean` : We can use `@Bean` to make an existing third-party class available to our Spring framework application context.
+.
+> We use `@PropertySource` to specify class path for our properties files being used.
 
 ```java
 //This code is not be perfect and may not run directly. This is to be used as reference only.
@@ -656,7 +669,7 @@ public class MyBeanService{
 
 @Configuration
 @ComponentScan("in.adwait.springdemo")
-@PropertiesSource("classpath:credentials.properties")
+@PropertySource("classpath:credentials.properties")
 public class MyBeanConfiguration{
 
 //Here we are manually defining the beans.
@@ -672,7 +685,6 @@ public class MyBeanConfiguration{
 }
 
 public class Main{
-
   public static void main(String [] args) {
     AnnotationConfigApplicationContext context = new AppicationConfigApplicationContext("MyBeanConfiguration.class");
 
@@ -711,14 +723,14 @@ public static PropertySourcesPlaceholderConfigurer
 
 ```java
 @Bean
-public static PropertySourcesPlaceholderConfigurer propertySourcePlaceHolderConfugurer() {
+public static PropertySourcesPlaceholderConfigurer propertySourcePlaceHolderConfigurer() {
   return new PropertySourcePlaceHolderConfigurer();
 }
 ```
 
 * In Spring 4.3 and higher which we will use most of the times, we do not need the above code.
 
-## @Bean
+### @Bean
 
 The `@Bean` annotation tells Spring that we are creating a bean component manually.
 
@@ -746,11 +758,331 @@ If this is the first time the method is called then the methods will execute as 
 
 Any further call to the method will not execute the method instead Spring will use the instance stored in the Container and inject it as needed.
 
-### Real-time Use cases for @Bean
+#### Real-time Use cases for @Bean
 
 We can use the `@Bean` annotation to make an existing third-party class available to our Spring Framework applicaiton context.
 
 As we cannot go into a third party class an add `@Component` Spring will not be able to detect the class and creat beans for Dependency injection. So we manually make it avaiable with `@Bean`.
+
+### @Primary
+
+We use the `@Qualifier` to select bean that will be injected, but we cannot use it when we create the bean during configurartion.
+
+`@Primary` is used to specify the primary bean that will have higher preference of injection if a qualifier is not specified during Autowiring.
+
+```java
+@Configuration
+public class MyBeanConfiguration{
+  @Bean
+  @Primary
+  public Vehicle getCar() {
+    return new Car();
+  }
+
+  @Bean()
+  public Vehicle getBus() {
+    return new Bus();
+  }
+}
+
+//Both Car and Bus return a type of Vehicle, so whenever we use have to inject into a Vehicle interface declaration the Car bean will be injected as that is marked as primary.
+```
+
+### @Order
+
+`@Order` is primarly used in AOP with ApsectJ but can also be used to get beans in an order.
+
+```java
+public interface Person{
+  public int getStartAge();
+}
+
+@Component
+@Order(Ordered.LOWEST_PRECEDENCE)
+public class Adult implements Person{
+  public int getStartAge(){
+    return 18;
+  }
+}
+@Component
+@Order(2)
+public class Teen implements Person{
+  public int getStartAge(){
+    return 13;
+  }
+}
+@Component
+@Order(1)
+public class Child implements Person{
+  public int getStartAge(){
+    return 0;
+  }
+}
+
+// --- we can then get them as list in some class
+@Autowired
+private List<Person> person;
+
+//We can access them as which are in the order that we had set them
+person.get(0).getStartAge() //-> 0
+person.get(1).getStartAge() //-> 13
+person.get(2).getStartAge() //-> 18
+```
+
+## Advance DI
+
+* We can also Inject Collection From Java.utils by defining them as beans.
+
+### Factory Beans
+
+Spring beans container manages two types of beans, ordinary beans that are used directly and FactoryBean that themselves can create Objects, that are managed by the framework.
+
+FactoryBean is a interface that can be implemented to create a bean that creates objects that are managed by spring container.
+
+```java
+//--- This is the FactoryBean interface 
+public interface FactoryBean<T> {
+  //Returns an object produced by the factory, that will be used by the Spring Contianer
+  T getObject() throws Exception;
+  //Returns the type of object that this FactoryBean produces.
+  Class<?> getObjectType();
+  //Denotes if the object produced by this FactoryBean is a singleton
+  boolean isSingleton();
+}
+
+public class Vehicle{
+  private int id;
+
+  //Constructors, Getters, Setters.
+}
+
+//Create FactoryBean class
+public class VehicleFactory implements FactoryBean<Vehicle> {
+  private int factoryId;
+  private int vehicleId;
+
+      @Override
+    public Tool getObject() throws Exception {
+        return new Vehicle(vehicleId);
+    }
+
+    @Override
+    public Class<?> getObjectType() {
+        return Vehicle.class;
+    }
+
+    @Override
+    public boolean isSingleton() {
+        return false;
+    }
+}
+
+@Configuration
+public class BeanConfigurationClass{
+  @Bean(name="vehicle")
+  public VehicleFactory getVehicleFactory() {
+    VehicleFactory factory = new VehicleFactory();
+    factory.setFactoryId(10);
+    factory.setVehicleId(10);
+    return factory;
+  }
+
+  @Bean
+  public Vehicle vehicle() throws Exception{
+    return getVehicleFactory.getObject();
+  }
+}
+
+//The we can use 
+@Autowired
+private Vehicle vehicle;
+//Will inject the vehicle object from above.
+```
+
+### @Lazy
+
+By default, Spring creates all singleton beans eagerly at the startup/bootstrapping of the application context. This prevents any errors at runtime as all beans are already created and avaiable.
+
+But if we want we can use `@Lazy` to create bean on request and not at the start of the application context.
+
+When we put `@Lazy` annotation over the `@Configuration` class, it indicates that all the methods with `@Bean` annotation should be loaded lazily.
+
+```java
+@Lazy
+@Component
+public class City {
+    public City() {
+        System.out.println("City bean initialized");
+    }
+}
+//@Lazy in both classes is necessary
+public class Region {
+
+    @Lazy
+    @Autowired
+    private City city;
+
+    public Region() {
+        System.out.println("Region bean initialized");
+    }
+
+    public City getCityInstance() {
+        return city;
+    }
+}
+//City bean will only be created when we call the getCityInstance method.
+```
+
+### Inject values From Config Files
+
+External Configuration Data can be stored in a YAML file or Properties.
+
+Spring supports YAML documents as an alternative to properties and uses SnakeYAML under the hood to parse them.
+
+A YAML file provides a concise way to store hierarchical configuration data, that is very readable.
+
+We can simply put an `application.properties` file in our `src/main/resources` directory, and it will be auto-detected.
+
+#### @PropertySource
+
+We have previously used `@PropertySource` to load and use values from `.properties` file that are supported by Spring out of the box.
+
+```java
+@Configuration
+@PropertySource("classpath:credentials.properties")
+public class PropertiesWithJavaConfig {
+    @Value("${user.name:defaultUserName}")
+    private String name;
+    @Value("${user.password}")
+    private String password;
+}
+
+//Using PlaceHolders
+@PropertySource({ "classpath:persistence-${envTarget:mysql}.properties"})
+//:mysql is the default value and envTarget is the key of enviroment varaible.
+
+//Multiple property locations
+@PropertySource("classpath:creadentials.properties"),
+@PropertySource("classpath:persistence-${envTarget:mysql}.properties")
+public class PropertiesWithJavaConfig{}
+//OR
+@PropertySources({
+    @PropertySource("classpath:creadentials.properties"),
+    @PropertySource("classpath:persistence-${envTarget:mysql}.properties")
+})
+public class PropertiesWithJavaConfig{}
+
+// --- WE can also use the Enviroment Api to get the properties
+@Autowired
+private Environment env;
+
+dataSource.setUrl(env.getProperty("jdbc.url"));
+```
+
+By default `@PropertySource` does not support or load yaml files. We can define a custom `PropertySourceFactory` so that we can load and use yaml files.
+
+As of Spring 4.3, `@PropertySource` comes with the factory attribute. We can make use of it to provide our custom implementation of the `PropertySourceFactory`, which will handle the YAML file processing.
+
+```java
+public class YamlPropertySourceFactory implements PropertySourceFactory {
+
+    @Override
+    public PropertySource<?> createPropertySource(String name, EncodedResource encodedResource) 
+      throws IOException {
+        YamlPropertiesFactoryBean factory = new YamlPropertiesFactoryBean();
+        factory.setResources(encodedResource.getResource());
+
+        Properties properties = factory.getObject();
+
+        return new PropertiesPropertySource(encodedResource.getResource().getFilename(), properties);
+    }
+}
+
+@Configuration
+@ConfigurationProperties(prefix = "yaml")
+@PropertySource(value = "classpath:foo.yml", factory = YamlPropertySourceFactory.class)
+public class YamlFooProperties {
+
+    private String name;
+
+    private List<String> aliases;
+
+    // standard getter and setters
+}
+```
+
+```yaml
+yaml:
+  name: foo
+  aliases:
+    - abc
+    - xyz
+```
+
+### Exceptions
+
+#### UnsatisfiedDependencyException
+
+UnsatisfiedDependencyException gets thrown when, as the name suggests, some bean or property dependency isn't satisfied.
+
+This may happen when spring tries to resolve a mandatory dependency and is unable.
+
+#### NoSuchBeanDefinitionException
+
+This is a common exception thrown by the BeanFactory when trying to resolve a bean that simply isn't defined in the Spring Context.
+
+## Advance Spring
+
+### @Profile
+
+Allowing us to map our beans to different profiles.
+
+```java
+//Bean is active/created only when dev profile is active.
+@Component
+@Profile("dev")
+public class DevDatasourceConfig{}
+
+//Bean is active/create only when dev profile is not active, or any other profile is active.
+@Component
+@Profile("!dev")
+public class DevDatasourceConfig{}
+
+//--- Setting profile to be active Programmatically
+//--   via WebApplicationInitializer
+@Configuration
+public class MyWebApplicationInitializer implements WebApplicationInitializer {
+    @Override
+    public void onStartup(ServletContext servletContext) throws ServletException {
+ 
+        servletContext.setInitParameter(
+          "spring.profiles.active", "dev");
+    }
+}
+
+//-- via ConfigurableEnvironment
+@Autowired
+private ConfigurableEnvironment env;
+
+env.setActiveProfiles("someProfile");
+```
+
+We can also set the profile in Maven `pom.xml` file and `application.properites` file.
+
+### @DependsOn
+
+Initialize other beans before the annotated one. Mostly this annotation is not needed.
+
+```java
+@DependsOn("engine")
+class Car implements Vehicle {}
+
+@Bean
+@DependsOn("fuel")
+Engine engine() {
+    return new Engine();
+}
+```
 
 ## Spring MVC
 
@@ -759,6 +1091,15 @@ Model-View-Controller
 [Spring MVC Official Docs](https://docs.spring.io/spring-framework/docs/current/reference/html/web.html)
 
 Basic flow of MVC : WebBrowser -> Front Controller -> Controller -> View template -> Back to WebBrowser
+
+Responsibilities of FrontView Controller
+
+* Intercepts incoming requests
+* Converts the payload of the request to the internal structure of the data
+* Sends the data to Model for further processing
+* Gets processed data from the Model and advances that data to the View for rendering
+
+The `DispatcherServlet` acts as the main controller to route requests to their intended destination
 
 Components of a Spring MVC Application
 
@@ -859,7 +1200,7 @@ The base code for the above files is as given in following starter files.
 
 Provides similar Support to `<mvc:annotation-driven />` in XML.
 
-It also adds support for validation, fromatting and conversion.
+It also adds support for validation, formatting and conversion.
 
 It also processes `@Controller` classes and `@RequestMapping` etc methods.
 
@@ -867,7 +1208,7 @@ It also processes `@Controller` classes and `@RequestMapping` etc methods.
 
 Spring MVC provides support for web app initailization, that detects our code automatically. The class `AbstractAnnotationConfigDispatcherServletInitializer` is used to initialize the servlet container.
 
-So we extend the base class nad then override all required methods and then specify servlet mapping and location of our app config.
+So we extend the base class and then override all required methods and then specify servlet mapping and location of our app config.
 
 ```java
 //--- Replaces spring-mvc-demo-servlet.xml
@@ -887,6 +1228,7 @@ public class AppConfig{
     return viewResolver;
   }
 }
+//--- We could `implements WebMvcConfigurer` to further configure the contoller by overriding required method.
 
 //--- Replace web.xml
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
@@ -908,6 +1250,8 @@ public class SpringMvcDispatcherServletInitialzer extends AbstractAnnotationConf
   }
 }
 ```
+
+> With **Spring Boot**, we can set up frontend using Thymeleaf or JSP's without using `ViewResolver`. By adding `spring-boot-starter-thymeleaf` dependency to our `pom.xml`, Thymeleaf gets enabled, and no extra configuration is necessary.
 
 Now we have configured our server the same way as we had done with the above xml configuration.
 
@@ -936,11 +1280,52 @@ The `@Controller` annotation inherits from the `@Component` and hence all Contro
 
 `@RequestMapping` is used on the methods to give the request that will activate the methods so that the request can be processed and an appropriate reply can be sent.
 
+Marks request handler methods.
+
+Properties used to configure `@RequestMapping` are path/name/value, params, headers, consumes, producesn method.
+
+```java
+@RequestMapping(
+  value = "/ex/foos/{id}", //can have path variables 
+  headers = { "key1=val1", "Accept=application/json" }, //What the method expects
+  method = GET, //Or it could also be method = RequestMethod.GET
+  produces = {"application/json", "application/xml" } //what this method will produce
+)
+
+//-- Request Mapping, fallback for all requests
+@RequestMapping(value = "*", method = RequestMethod.GET) //For all get methods
+
+//-- Multiple requests
+@RequestMapping(
+  value = { "school/student/id", "college/student/id" }, 
+  method = GET)
+
+//-- Multiple Methods
+@RequestMapping(
+  value = "school/student/{id}", 
+  method = { RequestMethod.PUT, RequestMethod.POST }
+)
+```
+
+#### Aliases for @RequestMapping
+
+* @GetMapping
+* @PostMapping
+* @PutMapping
+* @DeleteMapping
+* @PatchMapping
+
+#### @RequestMapping on Class
+
 `@RequestMapping` can also Serves as a parent mapping for the controller if we put the annotion below the `@Controller` annotation.
 
 For very simple applications this might not be necessary, this serves best when there are conflict of path between two controllers.
 
 All request mapping on methods in the controller are relative to the controller's request mapping.
+
+#### Serving Page
+
+As we have set up the server configuration to serve pages, the following request mapping will serve the `.jsp` pages in the resources that we have created.
 
 ```java
 @Controller
@@ -1009,7 +1394,7 @@ public String customMessage(HttpServletRequest request, Model model) {
   String name = request.getParameter("studentName");
 
   //Create custom Message with the name
-  String mesg = "Hello " + name + ", We hope you are having a wonderful day."
+  String mesg = "Hello " + name + ", We hope you are having a wonderful day.";
 
   //Add the message to the Model
   model.addAttribute("message", mesg);
@@ -1037,11 +1422,51 @@ As discussed above Model holds data for us. We can use this data in the page tha
 </html>
 ```
 
+We can also add maps to the Model with `mergeAttributes(map)`
+
+```java
+Map<String, String> map = new HashMap<>();
+map.put("user1", "Ram");
+map.put("user2", "Lakshman");
+model.addAttribute("message", "Welcome");
+model.mergeAttributes(map);
+```
+
+#### ModelMap
+
+Like Model, ModelMap can also be used to pass values to the view.
+
+ModelMap gives us the ability of passing  a collection of values and treat it as if it was a map.
+
+```java
+@GetMapping("/welcome")
+public String passModelMap(ModelMap map) {
+    map.addAttribute("welcomeMessage", "welcome");
+    map.addAttribute("user", "Parul");
+    return "index";
+}
+```
+
+#### ModelAndView
+
+```java
+@GetMapping("/student")
+public ModelAndView modelAndView() {
+    ModelAndView modelAndView = new ModelAndView("index");
+    modelAndView.addObject("message", "Welcome");
+    modelAndView.addObject("user", "Adwait");
+    return modelAndView;
+}
+//WE can then use model veiw as we used Model and ModelMap
+```
+
 ### @RequestParam
 
 In the above example we use the `HttpServletRequest` to get the request directly. We then used the request to get and assign the form data that was send as a url parameter to a varaible that we could use.
 
 With `@RequestParam` we can directly map the url paramter to a varaible and use it in the method.
+
+Accessing HTTP request parameters like `localhost:8080:/processFormVersionTwo?studentName=adwait`.
 
 ```java
 //The same methods as above but using @RequestParam
@@ -1052,7 +1477,125 @@ public String customMessage(@RequestParam("studentName") String name, Model mode
   model.addAttribute("message", mesg);
   return "successMessage"
 }
+
+//-- Set Defualt value, or if the value is required
+@RequestParam(name="studentName", defaultValue = "Adwait", required=false) String name
+//-- Mapping All parameters 
+@RequestParam Map<String,String> allParams
+//-- Mapping multi-value parameter like /?id=1,2,3 or ?id=1&id=2&id=3
+@RequestParam List<String> id
 ```
+
+### @RequestBody
+
+Maps Body of the HTTP request to an object.
+
+The deserialization is automatic and depends on the content type of the request.
+
+```java
+@PostMapping("/save")
+void saveStudent(@RequestBody Student student) {
+    // ...
+}
+//By default the @RequestBody must correspond to the JSON sent from the client.
+```
+
+### PathVariable
+
+Method argument is bound to a URI template variable.
+
+```java
+@RequestMapping("/{id}")
+Student getStudent(@PathVariable("id") int id) {
+    // ...
+}
+
+//---Multiple Path variables
+@RequestMapping(value="/{school}/students/{id}")
+public Student getStudent(
+  @PathVariable String school, 
+  @PathVarible("id") int studentId
+){
+  //...
+}
+
+//We can also specify if it is not required
+@PathVariable(required = false) long id
+```
+
+Similarly we can also access `@CookieValue` and `@RequestHeader`.
+
+### @ResponseBody
+
+Spring treats the result of the method as the response itself.
+
+If we annotate a `@Controller` class with this annotation, all request handler methods will use it.
+
+```java
+//--- This will sent ths String that is returned as the response body.
+@ResponseBody
+@RequestMapping("/welcome")
+String welcomeMessage() {
+    return "Welcome To My Website!";
+}
+
+//--- If the method on which response body is placed is a class, the reponse body will be a json.
+public class Student{
+  private int id;
+  private String name;
+  private int age;
+  //Constructor, Getters, and Setters
+}
+//Method
+@PostMapping("/response")
+public Student studentDetails(@RequestParam int id){
+  //Get student from db with the id. But here we will just send a new student.
+  return new Student(id, "Mary", 13);
+}
+//--- This will seralize the class Student and send as JSON.
+```
+
+We can change the response type of the `ResponseBody` by explicitly stating how the response body needs to be formatted.
+
+`@PostMapping(value = "/content", produces = MediaType.APPLICATION_JSON_VALUE)`, or we can use `application/json` directly. And there are other media types such as `APPLICATION_XML_VALUE`, that also could be used.
+
+### @ResponseStatus and @ExceptionHandler
+
+`@ResponseStatus` specify the desired HTTP status of the response.
+
+`@ExceptionHandler` we can declare a custom error handler method. Spring calls this method when a request handler method throws any of the specified exceptions.
+
+```java
+@ExceptionHandler(IllegalArgumentException.class)
+@ResponseStatus(HttpStatus.BAD_REQUEST)
+void onIllegalArgumentException(IllegalArgumentException exception) {
+    // ...
+}
+```
+
+### @RestController
+
+The `@RestController` combines `@Controller` and `@ResponseBody`.
+
+```java
+@RestController
+@RequestMapping("students")
+public class SimpleBookRestController {
+  //In any methods in the class we do not need To annotate with @ResponseBody
+  @GetMapping("/{id}", produces = "application/json")
+  public Student getStudent(@PathVariable int id) {
+      return findStudentById(id); //Returns a Student instance/object
+  }
+}
+```
+
+### @ModelAttribute
+
+Aaccess elements that are already in the model of an MVC `@Controller`.
+
+### @CrossOrigin
+
+Enables cross-domain communication.
 
 ### Form Tags and Data Binding
 
@@ -1428,11 +1971,48 @@ Now we can access the resources and assets from the folder by referencing them i
 
 We need to use `${pageContext.request.contextPath}` to acccess the correct root directory for our web application.
 
+We can add the folder we want to serve static resources from by using java configuration.
+
+```java
+@Configuration
+@EnableWebMvc
+public class MvcConfig implements WebMvcConfigurer {
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry
+          .addResourceHandler("/resources/**")
+          .addResourceLocations("/resources/");
+    }
+}
+```
+
 ## Hibernate
 
 Hibernate is a Object relational mapping tool used to provide a framwork for mapping object oriented domain model with a relational database. It is developled by Red Hat.
 
 Hibernate uses JDBC(Java Database Connectivity) in the background to communicate with the database in the background.
+
+### Basic concepts
+
+#### Session
+
+[Session](https://docs.jboss.org/jbossas/javadoc/7.1.2.Final/org/hibernate/Session.html) : Hibernate session is an interface that defines the main runtime interface between Java application and Hibernate. The central API class abstracting the notion of persistence service.
+
+The lifecycle of a Session is bounded by the beginning and end of a logical transaction. (Long transactions might span several database transactions.)
+
+The main function of the Session is to offer create, read and delete operations for instances of mapped entity classes. Instances may exist in one of three states.
+
+* transient: never persistent, not associated with any Session
+* persistent: associated with a unique Session
+* detached: previously persistent, not associated with any Session
+
+#### SessionFactory
+
+The main contract here is the creation of `Session` instances. Usually an application has a single `SessionFactory` instance.
+
+The internal state of a SessionFactory is immutable. This internal state includes all of the metadata about Object/Relational Mapping.
+
+[SessionFactory official Docs.](https://docs.jboss.org/jbossas/javadoc/7.1.2.Final/org/hibernate/SessionFactory.html)
 
 ### Setting up Hibernate
 
@@ -1483,7 +2063,7 @@ The following is a example of the xml configuration for hibernate to communicate
 >
 
 <hibernate-configuration>
-  <session-factor>
+  <session-factory>
 
     <!-- JDBC Database connection settings -->
     <property name="connection.driver.class">com.mysql.jdbc.Driver</property>
@@ -1506,7 +2086,114 @@ The following is a example of the xml configuration for hibernate to communicate
 </hibernate-configuration>
 ```
 
+* Usage
+
+```java
+SessionFactory factory = new Configuration()
+                            .configure("hibernate.cfg.xml") //this is the default filename and if we are using the default name we do not need tospecify this.
+                            .addAnnotatedClass(Student.class)
+                            .buildSessionFactory();
+
+Session session = factory.getCurrentSession();
+```
+
 Users using java 9 and higher will encounter a error as recent version of java have removed `java.xml.bind` from their default classpath.
+
+### Hibernate Configuration With Java
+
+The small java based setup we had in the above Setting up Hibernate works fine, but if we want more control over the configuration like we had with the Xml based configuration we can use the following
+
+```java
+@Configuration
+@EnableTransactionManagement
+public class HibernateConfiguration{
+
+  @Bean
+  public LocalSessionFactoryBean sessionFactory() {
+    LocalSessionFactoryBean sessionFactory = new LocalSessionfactoryBean();
+    sessionFactory.setDataSource(dataSource());
+    sessionFactory.setPackageToScan({"in.adwait.project.hibernate.model"});
+    sessionFactory.setHibernateProperites(hibernateProperties());
+
+    return sessionFactory;
+  }
+
+  @Bean
+  public DataSource dataSource() {
+    BasicDataSource dataSource = new BasicDataSource();
+    dataSource.setDriverClassName("com.mysql.jdbc.Driver");
+    dataSource.setUrl("jdbc:mysql://localhost:3306/students_tracker?useSSL=false");
+    dataSource.setUserName("students");
+    dataSource.setPassword("students_password");
+    dataSource.setMaxActive(1);//Set max poolsize- max active connection
+    
+    return dataSource;
+  }
+
+  @Bean
+  public PlatformTranasactionManager hibernateTransactionManager() {
+    HibernateTransactionManager transactionManager = new HiberanteTranasactionManager();
+    transactionManager.setSessionFactory(sessionFactory().getObject());
+
+    return transactionManager;
+  }
+
+  private final Properties hibernateProperties() {
+    Properties hiberanteProperties = new Properties();
+    hiberanteProperties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
+    hiberanteProperties.setProperty("hibernate.show_sql", "true");
+
+    return hibernateProperties;
+  }
+}
+```
+
+* Usage
+
+```java
+@Autowired
+private SessionFactory factory;
+
+Session session = factory.getCurrentSession();
+```
+
+#### @EnableTransactionManagement
+
+Enables Spring's annotation-driven transaction management capability, similar to the support found in Spring's `<tx:*>` XML namespace. To be used on @Configuration classes to configure traditional, imperative transaction management or reactive transaction management.
+
+For more details official docs on [@EnableTransactionManagement](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/transaction/annotation/EnableTransactionManagement.html)
+
+#### LocalSessionFactoryBean
+
+[LocalSessionFactoryBean](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/orm/hibernate5/LocalSessionFactoryBean.html) implements `FactoryBean<SessionFactory>` thus it creates a Hibernate SessionFactory.
+
+This is the usual way to set up a shared Hibernate SessionFactory in a Spring application context; the SessionFactory can then be passed to data access objects via dependency injection.
+
+#### DataSource And BasicDataSource
+
+A factory for connections to the physical data source that this DataSource object represents.
+
+Basic implementation of `javax.sql.DataSource` that is configured via JavaBeans properties.
+
+[DataSource](https://docs.oracle.com/javase/1.5.0/docs/api/javax/sql/DataSource.html).
+
+[BasicDataSource](https://commons.apache.org/proper/commons-dbcp/api-1.2.2/org/apache/commons/dbcp/BasicDataSource.html)
+
+#### PlatformTransactionManager and HibernateTransactionManager
+
+This is the central interface in Spring's imperative transaction infrastructure. Applications can use this directly, but it is not primarily meant as an API.
+
+JdbcTransactionManager, JpaTransactionManager, HibernateTransactionManager are different implementations of the PlatformTransactionManager.
+
+* HibernateTransactionManager
+
+`PlatformTransactionManager` implementation for a single Hibernate SessionFactory. `SessionFactory.getCurrentSession()` gives us the session that we use to communicate with db.
+
+It is transaction manager is appropriate for applications that use a single Hibernate SessionFactory for transactional data access, but it also supports direct DataSource access within a transaction (i.e. plain JDBC code working with the same DataSource). This allows for mixing services which access Hibernate and services which use plain JDBC (without being aware of Hibernate)
+
+[PlatformTransactionManager](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/transaction/PlatformTransactionManager.html).
+
+[HibernateTransactionManager](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/orm/hibernate5/HibernateTransactionManager.html).
 
 ### Hibernate Annotaion
 
@@ -1564,6 +2251,10 @@ There are two key components of hibernate that we use to communicate with our da
 * SessionFactory : Reads the hibernate config file, creates session objects. It is created only once and thus is called as a heavy weight object.
 
 * Session : It wraps a JDBC connection and is a short lived object that is it will be used for a method and destoried. It is used to save and retrieve objects. It is created and retrieved from SessionFactory.
+
+In the following all examples we use the xml configuration to set up the `SessionFactory`.
+
+For Java based configuration as we have done above we can just get the factory through autowiring as we have already created a bean of `LocalSessionFactory`.
 
 ```java
 public static void main(String[] args) {
@@ -2514,7 +3205,7 @@ public Object afterGetService(ProceedingJoinPoint proceedingJoinPoint) throws Th
 
 > Note : Spring uses the logger output stream to print the logs while the System.out.println uses the Standard output stream to print the data to console.
 > Sometimes this leads to inconsistent prints to console. To resolve this we can change our code to use the logger output stream.
-> `private Logger logger = Logger.getLogger(getClass().getName());` The we can use it to log by using `logger.info("Print to console"); ` or `logger.warning("This is a warning message")`. Also logger will only print String so we need to call the `toString()` method for objects.
+> `private Logger logger = Logger.getLogger(getClass().getName());` The we can use it to log by using `logger.info("Print to console");` or `logger.warning("This is a warning message")`. Also logger will only print String so we need to call the `toString()` method for objects.
 
 #### Handling Exception
 
