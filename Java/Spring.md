@@ -1992,6 +1992,8 @@ Hibernate is a Object relational mapping tool used to provide a framwork for map
 
 Hibernate uses JDBC(Java Database Connectivity) in the background to communicate with the database in the background.
 
+Hibernate is an implementation of the JPA specification. JPA is a API specification while Hibernate is a framework that implements JPA specifications.
+
 ### Basic concepts
 
 #### Session
