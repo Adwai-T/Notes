@@ -1,14 +1,12 @@
 # Node package Manager
 
-## Basic Commands
-
-### Setting up
+## Setting up
 
 `npm init` : This will create the `package.json` and `package-lock.json` in the project folder. Now we can install packages from npm in the Directory/Project. It will walk us through basic inforamtion about the project that we can fill or skip.
 
 `npm init --yes` : Skips all the inforamtion for initialization of npm, we can later update it in `package.json`
 
-### Installing packages
+## Installing packages
 
 `npm install package-name` : Intall packages locally.
 
@@ -18,7 +16,7 @@
 
 `npm install -g package-name` : The package will be installed globally and can be used anywhere with npm. We want to only install packages that we want to use with multiple projects like clis, or project setups for react or angular globally.
 
-### List of installed packages
+## List of installed packages
 
 We can look at the installed packages in `package.json`. We can look at all the packages with their dependencies in `package-lock.json`. But we can look at all the packages intalled in the current project directory by using `npm list` or `npm ls`.
 

@@ -85,7 +85,7 @@ MongoCollection<Document> collection = database.getCollection("test");
    "type" : "database",
    "count" : 1,
    "versions": [ "v3.2", "v3.0", "v2.6" ],
-   "info" : { x : 203, y : 102 }
+   "info" : "{ x : 203, y : 102 }"
   }
 ```
 

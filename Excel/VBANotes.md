@@ -1,6 +1,6 @@
 # VBA
 
-Following code is vba. Just marked as java for better hightlighting
+Following code is vba. Just marked as javascript for better hightlighting
 
 ```javascript
 //--- Comments
