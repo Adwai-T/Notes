@@ -298,3 +298,278 @@ spring.datasource.password=
 
 ## JPA Authentication Configuration
 
+Spring Security does not provide a out of the box implementation for JPA as it did for for JDBC.
+
+So we provide the `AuthenticationProvider` with `UserDetails` by implementing a `UserDetailsService` ourself. The UserDetailsService returns a `User` Object that the AuthenticationProvider will authenticate. We have seen how this works in the working section.
+
+So our UserDetailsService implementation will use our JPA service to communicate with the database to get the user details by using the username provided by AuthenticationProvider.
+
+Once we have userdetails we create the UserDetails object from it and return it to the AuthenticationProvider.
+
+> Note : The UserDetailsService can be implemented needs to return the UserDetails Object, how it finds and creates the object is completely up to us. In the case we use JPA but we can find and get details from Any Source.
+> Spring Security will call the `loadUserByUsername(String s)` method to get the UserDetails, so we override it an code our implementation in it.
+
+```java
+@Autowired
+private UserDetailsService userDetailsService;
+
+@Override
+protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+  auth.userDetailsService(userDetailsService)
+}
+```
+
+### General Implementation for any Datasource
+
+```java
+// --- This is a General Implemetation That we can use for any DataSource
+
+@Service
+public class MyUserDetailsService implements UserDetailsService {
+  @Override
+  public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException{
+    return new MyUserDetails(s);
+  }
+}
+
+public class MyUserDetails implements UserDetails{
+  //We implement all the method of the interface as needed.
+
+  //-- creating A Role with GrantedAuthority
+  @Override 
+  public Collection<? extends GrantedAuthority> getAuthorities() {
+    return Arrays.asList(new SimpleGrantedAuthority("ROLE_USER"));
+  }
+}
+```
+
+### JPA specific Implementation
+
+For the Database we have a sql database with instance name springsecurity, having a table named users with column id, username, password, role, and active.
+
+```java
+//--- Create JPA Entity javax.persistence.Entity
+@Entity
+@Table(name="User")
+public class User{
+  @Id
+  @GeneratedValue(strategy=GenerationType.AUTO)
+  private String userName;
+  private String password;
+  private String active;
+  private String roles;
+
+  //Constructors, Getters and Setters
+}
+
+//--- Create Repository
+public interface UserRepository extends JpaRepository<User, Integer>{
+  //We just provide the interface and the methods are automatically implemeted by the framework.
+  Optional<User> findByUserName(String userName);
+}
+
+@Service
+public class MyUserDetailsService implements UserDetailsService{
+  @Autowired
+  private UserRepository repository;
+
+  @Overrider
+  public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
+    Optional<User> user = repository.findUserByUserName(userName);
+
+    user.orElseThrow(()-> new UsernameNotFoundException("Not found: " + userName));
+
+    return user.map(MyUserDetails::new).get();
+  }
+}
+
+public class MyUserDetails implements UserDetails {
+  private String userName;
+  private String password;
+  private boolean active;
+  private List<GrantedAuthority> authorities;
+  public MyUserDetails(User user){
+    this.userName = user.getUserName();
+    this.password = user.getPassword();
+    this.active = user.isActive();
+    //Int the db we have ROLES string separated by ,
+    this.authorities = Arrays.stream(user.getRoles().split(","))
+      .map(SimpleGrantedAuthority::new)
+      .collect(Collector.toList());
+  }
+  //The we use the above values to override the methods in the UserDetails interface.
+}
+
+//--- Finally we have to also enable JpaRepostories
+@SpringBootApplication
+@EnableJpaRepositories(basePackageClasses=UserRepository.class)
+public class SpringSecurityJpaApplication {
+  //... main
+}
+```
+
+We also need to configure our Datasource. If we are using SpringBoot we can add the configure the datasource in the application.properties file and spring will auto configure the database for us.
+
+```properties
+spring.datasource.url=jdbc:mysql://localhost:3305/springsecurity
+spring.datsource.username=root
+spring.datasource.password=password
+# Tells hibernate to now wipe the database at start but just update and use the same.
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.properites.hibernate.dialect=org.hiberante.dialect.MySQL5Dialect
+```
+
+## Authentication With LDAP
+
+LDAP is Lightweight Directory Access Protocol.
+
+It is protocol for accessing and maintaining distributed directory information services over an Internet Protocol network.
+
+It is often used to store organizational information, often with a hierarchical structure.
+
+We need some dependencies that will help us use ldap with spring.
+
+* com.unboundedid - unboundedid-ldapsdk : Opensource in memory implementation of ldap used for testing.
+* org.springframework.ldap - spring-ldap-core : ldap interaction with spring.
+* org.springframework.security - spring-security-ldap : Help spring security with ldap.
+
+The full code for the [Authentication with LDAP](https://spring.io/guides/gs/authenticating-ldap/).
+
+```java
+@Override
+public void configure(AuthenticationManagerBuilder auth) throws Exception {
+  auth
+    .ldapAuthentication()
+      .userDnPatterns("uid={0},ou=people")
+      .groupSearchBase("ou=groups")
+      .contextSource()
+        .url("ldap://localhost:8389/dc=springframework,dc=org")
+        .and()
+      .passwordCompare()
+        .passwordEncoder(new BCryptPasswordEncoder())
+        .passwordAttribute("userPassword");
+}
+```
+
+## JWT
+
+JWT is mostly used for Authorization. It can be used in place of Session tokens.
+
+HTTP is a stateless protocol, hence to maintain a session we need Session tokens.
+
+### Understanding Session
+
+When we authenticate the server saves the Authenticated user in session store on the server and returns a reference token to this session back to the user. This is the session token.
+
+This reference token is send back every time with the requests that a authenticated user makes as cookies.
+
+The request containing the session token will be used by server to check authorization and thus there is not need to Authenticate again for the duration of session.
+
+The session store stores all the authenticated user with live sessions and use the session token reference to check Authorization.
+
+### Problems with Session
+
+Sessions assume that the whole web app is a monolit and runs on the same server.
+
+But Modern web apps are often split into several instance with a load balancer. This means that the subsequent request might not be send to the same server that initailly Authenticated the user and saved session information and returned session token.
+
+To solve this there are two techinque that are employed.
+
+* Sicky Sessions : The Load balancer will remember which client is handled by which server initailly and the route all subsequent request to the same server. But this has the obvious disadvantage that increases the work done by Load Balancer.
+
+* Shared Session Store : Shared Session store like redish can be used between all the web app instances to store the session. This has the disadvantage that it creates a single point of failure, if session store goes down, all session also go down.
+
+### JWT vs Session Tokens
+
+Session Tokens are Reference token as they are a reference to the Authenticated user stored in the session store on the server.
+
+JWT are Value Tokens that is they themselves contain all the information about the Authorization.
+
+As JWT contain all the information about the authorization, the server does not need to maintain any store of authenticated users.
+
+This makes the server stateless. The Application completely relies on the Client to maintain session.
+
+Stateful services have an important advantage over stateless service, they can react differently to the same input based on the history of the session.
+
+### Structure Of JWT
+
+JWT consist of three Parts `Header.Payload.Signature`.
+
+The Header contains details about encryption of the signature, the Payload containes authorization details about the Authenticated user and the secret key is a key that server calculates from a secret that is stored on the server and the payload.
+
+The Header and Payload are encoded with Base64 encoder and are visible directly as JSON when decoded with Base64 decoder.
+
+When a JWT is send to server for Authorization the server uses the payload and a secret key to calculate the Signature again and then matches them to check the validity of the Signature.
+
+Thus any changes to the payload will invalidate the signature.
+
+As playload is not encrypted, sensitive information about Authenticated user like password, birthday, etc must not be stored in it.
+
+### Drawbacks of JWT
+
+As the server does not hold any state regarding a authenticated user if the JWT is stolen the user can be impersonated for the time the JWT is valid.
+
+There is no way invalidate the key for the server as well by the user. The only way that a key can be invalidate is putting it into a blacklist. That is the server will have to maintain and check this blacklist for stolen key and block the request.
+
+In the case of session keys the server has control over the session and the key can be invalidated any time. Also session keys become invalid once that session ends.
+
+A Common way of using JWT authorization is through the process of using **Oauth**. Oauth has ways of protecting from JWT keys from being stolen.
+
+### JWT Authorization With Spring Security
+
+We will use `io.jsonwebtoken- jjwt` dependency to create and validate jwts.
+
+We also need `javax.xml.bind- jaxb-api` as Java 9+ do not come with them by default.
+
+```java
+//--- We will have to have a class that abstracts all the JWT related tasks based on the JWT library we use
+//- Generate token from a UserDetails object that is returned after authentication.
+//- Validate a Given Json token.
+//These are the two most important methods.
+```
+
+## OAuth
+
+OAuth was created for authorization between services. This is called as Access Delegation.
+
+The current Version is `OAuth 2.0`.
+
+The OAuth Flow is the steps taken by OAuth for authorization.
+
+### Terminologies
+
+Lets say we have a service that want to use a file stored by our user on his google drive.
+
+So we want our service to access another service that is googles drive.
+
+#### Resource
+
+Also sometimes refered to as Portected Resource. This is the thing that is sought by our service from another service. This resource is protected by the other service
+
+In the above example the file on google drive of our user is the Resource and is protected by google drive so only the user has access to it.
+
+#### Resource Owner
+
+The Owner of the protected resource that can give access to the resource is the Resource Owner.
+
+In the case of the example the user that owns the google drive will be able to control access to the files on the drive and hence he is the Resource Owner.
+
+#### Resource Server
+
+The server that holds the protected resource.
+
+In the case of example the google drive is the resource server.
+
+The Resource server has the responsibilty for security, this is deligated by the resource server to the Authorization server.
+
+In the case of example above google is the Authorization service that google drive uses.
+
+#### Client
+
+The Application making protected resource request on behalf of the resource owner with its authorization.
+
+In the case our service that want to access the file will be the client.
+
+#### Authorization Server
+
+The server issuing access token to the client.
