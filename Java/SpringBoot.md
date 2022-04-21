@@ -156,8 +156,6 @@ public class BeanWithIgnore {
 }
 ```
 
-* `@JsonIgnoreProperties(ignoreUnknown= true)` : Will ignore all the properties that are not defined in the class.
-
 * `@JsonIgnore` : Is used to mark a property to be ignored at the field level.
 
 * `@JsonIgnoreType` : Marks all properties of an annotated type to be ignored.
@@ -244,6 +242,92 @@ Some Rules for Serialization and Deseralization
 * If a property is private and has a setter it will be considered for deseralizing and not seralizing.
 
 > For more : [Jackson-Annotations](https://www.baeldung.com/jackson-annotations)
+
+## Spring Data JPA
+
+We will be using PostgreSql for this.
+
+```properties
+spring.datasource.url=jdbc:postgresql://localhost:5432/postgres
+spring.datasource.username=postgres
+spring.datasource.password=wait
+spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.PostgreSQLDialect
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.hibernate.show-sql=true
+```
+
+```java
+//--- User Entity
+import javax.persistence.*;
+
+@Entity
+@Getter @Setter
+@NoArgsConstructor
+@ToString
+@Table(name = "users")
+public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
+
+    @Column(name = "username")
+    private String name;
+    @Column(name = "age")
+    private int age;
+    @Column(name = "active")
+    private boolean active;
+
+    public User(String name, int age, boolean active) {
+        this.name = name;
+        this.age = age;
+        this.active = active;
+    }
+}
+
+
+//--- Create a repository File
+//Spring data jap will automatically create a bean with implementations for the methods
+public interface UserRepository extends CrudRepository<User, Integer> {
+    List<User> findByName(String name);
+    User findById(long id);
+}
+
+//--- Use in Application
+@SpringBootApplication
+public class WebsiteApplication {
+
+  private static final Logger log = LoggerFactory.getLogger(WebsiteApplication.class);
+
+  @Autowired
+  private UserRepository repository;
+
+  public static void main(String[] args) {
+    SpringApplication.run(WebsiteApplication.class, args);
+  }
+
+  @Bean
+  public CommandLineRunner test() {
+    return (args -> {
+      //--save new users
+      repository.save(new User("Adwait", 28, true));
+      repository.save(new User("Vikas", 23, true));
+      repository.save(new User("Sandipan", 24, true));
+
+      log.info("<-----All users---->");
+      for(User user : repository.findAll()){
+        log.info(user.getName());
+      }
+
+      //find and update existing user
+      User adwait = repository.findById(1);
+      adwait.setAge(28);
+      repository.save(adwait);
+
+    });
+  }
+}
+```
 
 ## Using Environment Variables
 
@@ -414,10 +498,6 @@ For more info and other more specific configuration of CORS :
 .
 > [DOCS Example](https://docs.spring.io/spring-framework/docs/4.3.x/spring-framework-reference/html/cors.html)
 
-## Enabling HTTPS
-
-[Tutorial on Enabling Https](https://www.tutorialspoint.com/spring_boot/spring_boot_enabling_https.htm)
-
 ## Swagger2
 
 Swagger2 is an open source project used to generate the REST API documents for RESTful web services. It provides a user interface to access our RESTful web services via the web browser.
@@ -456,97 +536,6 @@ public class SwaggerDemoApplication {
 ```
 
 > We can find the documentation at : [Swagger generated Doc Url at port 8080](http://localhost:8080/swagger-ui.html)
-
-## Flyway Database
-
-Flyway is a version control application to evolve your Database schema easily and reliably across all your instances.
-
-Many software projects use relational databases. This requires the handling of database migrations, also often called schema migrations.
-
-```xml
-<dependency>
-   <groupId>org.flywaydb</groupId>
-   <artifactId>flyway-core</artifactId>
-</dependency>
-
-<dependency>
-   <groupId>org.springframework.boot</groupId>
-   <artifactId>spring-boot-starter-jdbc</artifactId>
-</dependency>
-
-<dependency>
-   <groupId>org.springframework.boot</groupId>
-   <artifactId>spring-boot-starter-web</artifactId>
-</dependency>
-
-<dependency>
-   <groupId>mysql</groupId>
-   <artifactId>mysql-connector-java</artifactId>
-</dependency>
-
-<dependency>
-   <groupId>org.springframework.boot</groupId>
-   <artifactId>spring-boot-starter-test</artifactId>
-   <scope>test</scope>
-</dependency>
-```
-
-application.properties
-
-```properties
-spring.application.name = flywayapp  
-
-spring.datasource.driverClassName = com.mysql.jdbc.Driver
-spring.datasource.url = jdbc:mysql://localhost:3306/USERSERVICE?autoreconnect=true
-spring.datasource.username = root
-spring.datasource.password = root
-spring.datasource.testOnBorrow = true
-spring.datasource.testWhileIdle = true
-spring.datasource.timeBetweenEvictionRunsMillis = 60000
-spring.datasource.minEvictableIdleTimeMillis = 30000
-spring.datasource.validationQuery = SELECT 1
-spring.datasource.max-active = 15
-spring.datasource.max-idle = 10
-spring.datasource.max-wait = 8000
-
-flyway.url = jdbc:mysql://localhost:3306/mysql
-flyway.schemas = USERSERVICE
-flyway.user = root
-flyway.password = root
-```
-
-application.yml
-
-```yaml
-spring:
-   application:
-      name: flywayapp  
-   datasource:
-      driverClassName: com.mysql.jdbc.Driver
-      url: "jdbc:mysql://localhost:3306/USERSERVICE?autoreconnect=true"
-      password: "root"
-      username: "root"
-      testOnBorrow: true
-      testWhileIdle: true
-      timeBetweenEvictionRunsMillis: 60000
-      minEvictableIdleTimeMillis: 30000
-      validationQuery: SELECT 1
-      max-active: 15
-      max-idle: 10
-      max-wait: 8000
-flyway:
-   url: jdbc:mysql://localhost:3306/mysql
-   schemas: USERSERVICE
-   user: "root"
-   password: "root"
-```
-
-Now, create a SQL file under the src/main/resources/db/migration directory. Name the SQL file as “V1__Initial.sql”
-
-```sql
-CREATE TABLE USERS (ID INT AUTO_INCREMENT PRIMARY KEY, USERID VARCHAR(45));
-INSERT INTO USERS (ID, USERID) VALUES (1, 'tutorialspoint.com');
-```
 
 ## Validation
 
@@ -648,11 +637,9 @@ Instead of (or additionally to) validating input on the controller level, we can
 @Service
 @Validated
 class ValidatingService{
-
     void validateInput(@Valid Input input){
       // do something
     }
-
 }
 ```
 
@@ -878,10 +865,6 @@ Here you have learned different ways of handling exceptions. You can make it:
 * On controller level with @ExceptionHandler;
 * In the most flexible way by throwing ResponseStatusException at any place you want.
 * You can also set the order of handlers with the @Order annotation to control the system of them.
-
-## Deploying To Heroku
-
-[Getting Spring Application ready for production with Heroku](https://devcenter.heroku.com/articles/preparing-a-spring-boot-app-for-production-on-heroku#rate-limit-api-calls)
 
 ## Cross Origin Requests
 

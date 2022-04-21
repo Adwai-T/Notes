@@ -707,6 +707,14 @@ foo.email=adwait@adwait.in
 foo.name=Adwait
 ```
 
+> The `classpath` is the path that the Java runtime environment searches for classes and other resource files.
+>
+> While using spring boot with maven `resources/` is the classpath where we put our properties files and use as we did above.
+>
+> We could create directories in the classpath and refer to them to get resources `@PropertySource("classpath:properties/credentials.properties")`
+>
+> `classpath` is always relative to the classpath root. If you put a `/` at the start of the path, it is silently removed.
+
 If we want to use Spring version 4.2 or lower, it cannot directly access the properties file and we need to specify a special bean for the functionality. The following code registers the required bean to the Spring context.
 
 ```java
@@ -2354,6 +2362,8 @@ Important Terminology
 
 * Foreign Key : It links tables together and is a field in one table that refers to primary key in another table.
 
+> Whoever owns the foreign key column gets the `@JoinColumn` annotation, and the other side of the relationship is called the non-owning side.
+
 Main purpose is to preserve relationship between tables also called *Referential Integrity*. It prevents operations that would destroy reationship.
 
 It ensures only valid data is inserted into the foreign key column.
@@ -2393,7 +2403,7 @@ public class Student {
 
   //- The name of the column is that which is shown in this table and not the name that is shown in the table that this column links to.
   @OneToOne(cascade=CascadeType.ALL)
-  @JoinColumn(name="guardian_id")
+  @JoinColumn(name="guardian_id", referencedColumnName="id")
   private Guardian guardian;
 
   @Column(name="name")
@@ -2462,7 +2472,7 @@ Only the code below will be changed, all other code remain the same. Also the st
 //We already have the Student class mapped to guardians id column
 public class Student{
   @OneToOne(cascade=CascadeType.ALL)
-  @JoinColumn(name="guardian_id")
+  @JoinColumn(name="guardian_id", referencedColumnName="id")
   private Guardian guardian;
 }
 
@@ -2494,7 +2504,7 @@ Say we want to delete a guardian but not her student. We will then have to chang
 ```java
 
 //-- Guardian class
-@OneToOne(mappedBy="guardian", cascade={CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+@(mappedBy="guardian", cascade={CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
 private Student student;
 
 //-- inside main
