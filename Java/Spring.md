@@ -582,7 +582,7 @@ public class MyBean implements MyBeanService{
 > However, for the special case of when BOTH the first and second characters of the class name are upper case, then the name is NOT converted. eg `MYBeanService` -> `MYBeanService`.
 >**Java Beans Introspector** is used behind the sence to generate default names for each bean.
 
-* `@Qualifier` with field injection is easy as we just specify it on top of the variable. By it is different when we use it with a constructor as we can have many services that implement the same interface being injected into the construtor.
+* `@Qualifier` with field injection is easy as we just specify it on top of the variable. But it is different when we use it with a constructor as we can have many services that implement the same interface being injected into the construtor.
 
 ```java
 @Component
@@ -602,11 +602,49 @@ public class MyBean{
 }
 ```
 
+Using `@Qualifier` for beans created with `@Bean` and beans created by Spring.
+
+```java
+//---We create this bean manually so we dont add @Component on this class.
+public class Dog implements Animal{
+  //-Implementation
+}
+
+//---We will let Spring create a bean for this class
+@Component
+@Qualifier("catBean")
+public class Cat implements Animal{
+  //-Implementation
+}
+
+@Configuration
+public class MyConfiguration{
+  @Bean("dogBean")
+  public Animal dog {
+    return new Dog;
+  }
+}
+
+public class Pet{
+  @Autowired
+  @Qualifer("dogBean")
+  private Animal dog;
+
+  @Autowired
+  @Qualifier("catBean")
+  private Animal cat;
+}
+```
+
+> As from above example we can see that we can either directly name the Component or Bean to give the bean created that name or we can use `@Qualifier` to give the bean that is created desired name.
+
 > [@Qualifier Documentation](https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#beans-autowired-annotation-qualifiers)
 
 ### @Value
 
 We use `@Value` to inject Field variables from a `.properties` file.
+
+> `@Value` cannot be used to inject values that will be used in the classes constructor as the values are injected after the bean for the class is created.
 
 ```java
 //The properties file and the configuration in the xml remains the same as we have done in the xml section above
@@ -988,6 +1026,10 @@ dataSource.setUrl(env.getProperty("jdbc.url"));
 ```
 
 By default `@PropertySource` does not support or load yaml files. We can define a custom `PropertySourceFactory` so that we can load and use yaml files.
+
+Spring Framework provides two convenient classes that can be used to load YAML documents. The `YamlPropertiesFactoryBean` loads YAML as `Properties` and the `YamlMapFactoryBean` loads YAML as a `Map`.
+
+You can also use the `YamlPropertySourceLoader` class if you want to load YAML as a Spring `PropertySource`.
 
 As of Spring 4.3, `@PropertySource` comes with the factory attribute. We can make use of it to provide our custom implementation of the `PropertySourceFactory`, which will handle the YAML file processing.
 
@@ -2118,7 +2160,8 @@ The small java based setup we had in the above Setting up Hibernate works fine, 
 @EnableTransactionManagement
 public class HibernateConfiguration{
 
-  @Bean
+  //Spring while configuring will look for the entityManagerFactory bean name.
+  @Bean(name="entityManagerFactory")
   public LocalSessionFactoryBean sessionFactory() {
     LocalSessionFactoryBean sessionFactory = new LocalSessionfactoryBean();
     sessionFactory.setDataSource(dataSource());
@@ -2140,7 +2183,7 @@ public class HibernateConfiguration{
     return dataSource;
   }
 
-  @Bean
+  @Bean(name="transactionManager")
   public PlatformTranasactionManager hibernateTransactionManager() {
     HibernateTransactionManager transactionManager = new HiberanteTranasactionManager();
     transactionManager.setSessionFactory(sessionFactory().getObject());
@@ -2150,7 +2193,9 @@ public class HibernateConfiguration{
 
   private final Properties hibernateProperties() {
     Properties hiberanteProperties = new Properties();
-    hiberanteProperties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
+    hibernateProperties.setProperty("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
+    //Can have values update, validate, create, create-drop
+    hiberanteProperties.setProperty("hibernate.hbm2ddl.auto", "update");
     hiberanteProperties.setProperty("hibernate.show_sql", "true");
 
     return hibernateProperties;
@@ -2179,6 +2224,10 @@ For more details official docs on [@EnableTransactionManagement](https://docs.sp
 
 This is the usual way to set up a shared Hibernate SessionFactory in a Spring application context; the SessionFactory can then be passed to data access objects via dependency injection.
 
+> While looking for this `SessionFactoryBean` Spring will look for `entityManagerFactory` bean so we name this bean accordingly.
+.
+> Alternatively we can inform Spring Boot that our bean is named differently by: `@EnableJpaRepositories(basePackages = "in.adwait.website.repository", entityManagerFactoryRef = "sessionFactory")`.
+
 #### DataSource And BasicDataSource
 
 A factory for connections to the physical data source that this DataSource object represents.
@@ -2194,6 +2243,8 @@ Basic implementation of `javax.sql.DataSource` that is configured via JavaBeans 
 This is the central interface in Spring's imperative transaction infrastructure. Applications can use this directly, but it is not primarily meant as an API.
 
 JdbcTransactionManager, JpaTransactionManager, HibernateTransactionManager are different implementations of the PlatformTransactionManager.
+
+> While looking for the `PlatfromTransactionManager` bean Spring will look for bean with name `transactionManager` so name the bean accordingly.
 
 * HibernateTransactionManager
 

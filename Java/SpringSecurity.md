@@ -517,15 +517,193 @@ A Common way of using JWT authorization is through the process of using **Oauth*
 
 ### JWT Authorization With Spring Security
 
-We will use `io.jsonwebtoken- jjwt` dependency to create and validate jwts.
+We Will use the [auth0/java-jwt](https://github.com/auth0/java-jwt) to create and verify jwts, but this can be achieved with any library of your preference.
 
-We also need `javax.xml.bind- jaxb-api` as Java 9+ do not come with them by default.
+```xml
+<dependency>
+    <groupId>com.auth0</groupId>
+    <artifactId>java-jwt</artifactId>
+    <version>3.19.1</version>
+</dependency>
+```
 
 ```java
-//--- We will have to have a class that abstracts all the JWT related tasks based on the JWT library we use
-//- Generate token from a UserDetails object that is returned after authentication.
-//- Validate a Given Json token.
-//These are the two most important methods.
+//---Implementation of below classes will depend on the source of users we use, that is the database.
+//It is not specific to JWT.
+//-UserRepository is the interface implmented automatically by Spring to retrive user from Database.
+//-User class that Models user from our database.
+//-SimpleUserDetailsService implements UserDetailsService
+//-SimpleUserDetials implements UserDetails
+
+//--- To provide and configure UserDetails for Spring Security to use please look at the sections. 
+
+//---Models and other Contoller methods
+//-AuthRequest [username, password] and AuthResponse [username, jwt] are models
+//-ErrorResponse [code, message] is model for general error response.
+
+//---First we create a utility class that will help us create and verify JWTs
+@Service
+public class JwtService {
+  //Externalize these variables by using properties file as we don't want them to be visible when we push code to remote repositories like github. It also makes it easier to manage them.
+  private String provider="Adwait";
+  private String secret="SecretForAlgorithm";
+
+  private Algorithm algorithm;
+
+  public String generate(User user) {
+    if(algorithm == null) algorithm = Algorithm.HMAC256(secret);
+    // We can add any number of custom claims to the map
+    Map<String, Object> payload = new HashMap<>();
+    
+    String token = JWT.create()
+            .withIssuer(provider)
+            .withIssuedAt(new Date())
+            .withExpiresAt(new Date(System.currentTimeMillis() + 36000000))//10hrs
+            .withSubject(user.getUsername())
+            .withAudience(user.getAuthority())
+            .withPayload(payload)
+            .sign(algorithm);
+    return token;
+  }
+
+  public DecodedJWT verify(String jwt) throws JWTVerificationException {
+    if(algorithm == null) algorithm = Algorithm.HMAC256(secret);
+
+    JWTVerifier verifier = JWT.require(algorithm).withIssuer(provider).build();
+    DecodedJWT decodedJWT = verifier.verify(jwt);
+    return decodedJWT;
+  }
+}
+
+//--- We then create a auth method in controller to handle creating and sending the jwt
+@Controller
+@RequestMapping(value = "auth")
+public class AuthenticationController {
+
+  @Autowired
+  private AuthenticationManager authenticationManager;
+  @Autowired
+  private JwtService jwtService;
+  @Autowired
+  private SimpleUserDetailsService userDetailsService;
+    
+  @PostMapping("")
+  public ResponseEntity<AuthResponse> auth(
+          @RequestBody AuthRequest requestBody)
+          throws BadCredentialsException {
+
+    //If Authentication fails throws BadCredentialsException which will be handled below.
+    authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(
+                    requestBody.getUsername(), requestBody.getPassword()
+            )
+    );
+
+    String jwt = jwtService.generate(userDetailsService.getUser());
+
+    return ResponseEntity
+              .status(HttpStatus.OK)
+              .body(new AuthResponse(requestBody.getUsername(), jwt));
+  }
+
+  @ExceptionHandler(BadCredentialsException.class)
+  public ResponseEntity<ErrorResponse> badCredentialsExceptionHandler() {
+      return ResponseEntity
+              .status(HttpStatus.NOT_FOUND)
+              .body(new ErrorResponse(404, "Username or Password incorrect."));
+  }
+}
+
+//--- We also need a filter that will process each request and check for authorization.
+
+//OncePerRequestFilter does exactly that it runs once for every request that the server recieves.
+@Component
+public class JwtFilter extends OncePerRequestFilter {
+
+  @Autowired
+  public SimpleUserDetailsService userService;
+  @Autowired
+  public JwtService jwtService;
+  @Override
+  protected void doFilterInternal(
+          HttpServletRequest request,
+          HttpServletResponse response,
+          FilterChain filterChain)
+          throws ServletException, IOException {
+
+    if (request.getHeader("Authorization") != null) {
+      try {
+        //If jwt verification fails it throws JWTVerificationException and no user is set in the SecurityContext.
+        DecodedJWT jwt = jwtService.verify(request.getHeader("Authorization"));
+
+        //-- We check if there is already a authenticated user in the context.
+        //If there is none we will do what Spring security would have done automatically for a authenticated user.
+        //We will set the authenticated user in the SpringSecrity context so that Spring can check its authorization.
+        if (SecurityContextHolder.getContext().getAuthentication() == null) {
+          UserDetails userDetails = userService.loadUserByUsername(jwt.getSubject());
+          UsernamePasswordAuthenticationToken authToken =
+                  new UsernamePasswordAuthenticationToken(
+                          userDetails, null, userDetails.getAuthorities());
+          authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+          SecurityContextHolder.getContext().setAuthentication(authToken);
+        }
+      } catch (JWTVerificationException exp) {
+        System.out.println("JWT Could not be verified while setting context in filter.");
+      }
+    }
+    //We will again hand over the filter chain back to Spring.
+    filterChain.doFilter(request, response);
+  }
+}
+
+//--- Finally We add the filter to the Security Configuration
+//--- We also tell Spring Security to not create and manage sessions
+//---
+@EnableWebSecurity
+public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+  @Autowired
+  private JwtFilter jwtFilter;
+  @Autowired
+  private SimpleUserDetailsService simpleUserDetailsService;
+
+  //The following configure method is an example of a log thing that can be configured in the HttpSecurity.
+  //We add the jwt filter that we created here. It is to be run before UsernamePasswordAuthenticationFilter.
+  //This lets us manually set the Authenticated user in Spring Secruity Context.
+  @Override
+  protected void configure(HttpSecurity http) throws Exception {
+      http.csrf().disable()
+            .authorizeRequests()
+            .antMatchers("/auth").permitAll()
+            .antMatchers("/admin").hasAnyAuthority("ADMIN")
+            .antMatchers("/member").hasAnyAuthority("ADMIN", "MEMBER")
+            .antMatchers("/user").hasAnyAuthority("ADMIN", "MEMBER", "USER")
+            .anyRequest().authenticated()
+            .and()
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
+            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+  }
+
+  @Override
+  protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+      auth.userDetailsService(simpleUserDetailsService);
+  }
+
+  //We make the AuthenticationManager from the above configure method available for use.
+  @Override
+  @Bean
+  public AuthenticationManager authenticationManagerBean() throws Exception {
+      return super.authenticationManagerBean();
+  }
+  //We create a bean that will be used for encrypting password.
+  //NoOpPasswordEncoder will not encrypt the password and keep it as plain text.
+  //Not to be used in production
+  @Bean
+  public PasswordEncoder getPasswordEncoder() {
+      return NoOpPasswordEncoder.getInstance();
+  }
+}
 ```
 
 ## OAuth

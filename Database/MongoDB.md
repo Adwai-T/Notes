@@ -2,23 +2,12 @@
 
 ## Setting up
 
-1. Create a new DataBase or start the already existing bd at file path :
-`"C:\Users\Adwait\Documents\NpmFiles\mongodb\bin\mongod.exe" --dbpath="C:\Users\Adwait\Documents\NpmFiles\Database"`
+* Create a new DataBase or start the already existing bd at file path :
+`"(location where mongodb is  installed)\mongodb\bin\mongod.exe" --dbpath="(location where the database exists)\Database"`
 
-2. Use Roto-3T to access the database locally at 27017 port : which is the default port for MongoDB.
+Or we can add the bin folder of mongodb to the path and then direcly.
 
-3. A model of how the data should be stored with what properties to be made as a java object. A repository interface
-extends the MongoRepository need to be created.
-
-4. The methods specified in the interface are automatically implemented as should by Spring.
-
-5. They could then be used with a @Autowired instance of the interface.
-
-6. [Mongo Docs Spring Boot](https://docs.spring.io/spring-data/mongodb/docs/current/api/org/springframework/data/mongodb/repository/MongoRepository.html)
-
-7. [Spring Boot with Remote Mongo Repository](https://www.opencodez.com/java/use-mongodb-atlas-with-spring-boot.htm).
-
-8. [Spring Working with NOSQL databases](https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-nosql).
+* Use Roto-3T or Mongodb Compass to access the database locally at 27017 port : which is the default port for MongoDB.
 
 ## Creating Account
 
@@ -26,21 +15,23 @@ Use the MongoDB official site to create a free tier account : [Mongo Atlas](http
 
 WhiteList the ip so that the repository can be used with that particular id or set it to `0.0.0.0/0` so that all ip's are whitelisted and can be used from any where.
 
-Even when we whitelist all ips we dont need to worry as the database is protected by a username and password.
+Even when we have whitelist all ips, we don't need to worry as the database is still protected by a username and password.
 
 ## Access Remote Repo
 
-Robo 3t does not support connecting to remote mongo databases so we use the default software **mongo compass**.
+Robo 3t does not support connecting to remote mongo databases so we use the default software **MongoDB Compass**.
 
-Link to accessdatabase : "mongodb+srv://learn:passwordHere@cluster0.dszax.mongodb.net/nameofdatabasehere?retryWrites=true&w=majority".
+Link to accessdatabase : `mongodb+srv://learn:passwordHere@cluster0.dszax.mongodb.net/nameofdatabasehere?retryWrites=true&w=majority`.
+
+link to access local database : `mongodb://localhost:27017/?readPreference=primary&appname={AppNameWithoutBrackets}&ssl=false`
 
 ## Access Remote Repo from Spring Application
 
-Defined in the Spring.md file.
+Defined in the SpringBoot.md file.
 
 ## Using MongoDB with Java
 
-## Making a connection
+### Making a connection
 
 > Note : [MongoBD Client Documentation](https://mongodb.github.io/mongo-java-driver/3.8/javadoc/com/mongodb/client/MongoClients.html)
 
@@ -63,7 +54,7 @@ MongoClient mongoClient = MongoClients.create("mongodb://hostOne:27017,hostTwo:2
 
 ```
 
-## Access Data-Base
+### Access Data-Base
 
 * Use the `MongoClient.getDatabase()` method to access a database. If a database does not exist, MongoDB creates the database when we first store data for that database.
 
@@ -118,7 +109,7 @@ collection.insertMany(documents);
 
 * Count `Document`s in `MongoCollection` use `collection.countDocuments()`.
 
-## Query the Collection
+### Query the Collection
 
 To query the collection, you can use the collection’s `find()` method. It `find()` returns a `FindIterable()`.
 
@@ -160,7 +151,7 @@ collection.find(gt("i", 50)).forEach(printBlock);
 collection.find(and(gt("i", 50), lte("i", 100))).forEach(printBlock);
 ```
 
-## Update Collections
+### Update Collections
 
 ```java
 //Update first document that matches the filter
@@ -171,7 +162,7 @@ UpdateResult updateResult = collection.updateMany(lt("i", 100), inc("i", 100));
 System.out.println(updateResult.getModifiedCount());
 ```
 
-## Delete From Collections
+### Delete From Collections
 
 ```java
 //Delete single
@@ -183,3 +174,76 @@ System.out.println(deleteResult.getDeletedCount());
 ```
 
 > Note : [Getting Started Guide](https://mongodb.github.io/mongo-java-driver/3.8/driver/getting-started/quick-start/)
+
+## Using with Spring
+
+* A model of how the data needs to be stored is created with a Java class.
+
+* A repository interface that extends the `MongoRepository` need to be created. The methods specified in the interface are automatically implemented by Spring Boot.
+
+* They could then be used with a `@Autowired` instance of the interface.
+
+* [Mongo Docs Spring Boot](https://docs.spring.io/spring-data/mongodb/docs/current/api/org/springframework/data/mongodb/repository/MongoRepository.html)
+
+* [Spring Boot with Remote Mongo Repository](https://www.opencodez.com/java/use-mongodb-atlas-with-spring-boot.htm).
+
+* [Spring Working with NOSQL databases](https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-nosql).
+
+> Note : Mongodb has Database which has collections which have fields. So In Spring we can name them with `@Document(collection = "Comments")` on Model, and `@Field(value = "userId")` on the fields.
+
+### Setting Up
+
+Mongodb with Spring-Boot needs minimum configuration. We just need to add the `spring-boot-starter-data-mongodb` dependency to our project.
+
+Add the following to the `application.properites` file and Spring will auto-configure Mongodb for use in our application.
+
+```properties
+# ----- MongoDb Database Configuration ---- #
+spring.data.mongodb.database=website
+spring.data.mongodb.uri=mongodb://localhost:27017/?readPreference=primary&appname=website&ssl=false
+```
+
+```java
+public interface CommentRepository extends MongoRepository<Comment, String> {
+    public Optional<Comment> findById(String id);
+
+    public List<Comment> findByTopic(String topic);
+
+    public List<Comment> findByUser(String user);
+}
+
+@Document(collection = "Comments")
+public class Comment {
+
+    @Id
+    private String id;
+
+    private String comment;
+
+    private String topic;
+
+    @Field(value = "userId")
+    private String user;
+
+    public Comment(String comment, String topic, String user) {
+        this.comment = comment;
+        this.topic = topic;
+        this.user = user;
+    }
+
+    //Getters, Setters and Constructors
+}
+
+//We autowire repository and can use it in the class we want
+@Autowire
+private CommentRepository repository;
+
+repository.deleteAll();
+repository.save(new Comment("Comment on topic Java", "Java", "Adwait"));
+repository.save(new Comment("Comment on topic JavaScript", "JS", "Sandi"));
+repository.save(new Comment("Comment on topic C++", "C++", "Anita")
+
+for(Comment comment : repository.findAll()) {
+    log.info(comment.toString());
+}
+```
