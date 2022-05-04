@@ -201,3 +201,19 @@ const sanitizer = new Sanitizer();  // Default sanitizer;
 document.getElementById("target").setHTML(unsanitized_string, sanitizer);
 // Result (as a string): "abc  def"
 ```
+
+## Editable Div
+
+We can make the content of a div editable by adding `contenteditable` property to the div element.
+
+```html
+<div id="textarea" contenteditable>I look like textarea</div>
+```
+
+## Adding text from File directly
+
+We can directly add text from a `.txt` file to a html element by using the `<object>` element.
+
+```html
+<div><object data="file.txt"></object></div>
+```

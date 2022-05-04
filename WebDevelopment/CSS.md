@@ -446,3 +446,22 @@ header nav {
   <div *media="'(min-width: 768px)'">I am visible only on desktop</div>
   <div *media="'(max-width: 767px)'">I am visible only on mobile</div>
 ```
+
+## Translate and Translate3d
+
+The use of translate3d pushes CSS animations into hardware acceleration.
+
+So Even when we are trying to use translate in just 2 dimension it will gives us better performance  to use translate3d.
+
+`translate3d( tx, ty, tz )`.
+
+```css
+.translate3d_image {
+    transform: translate3d(100px, 0, 0);
+}
+
+.moved {
+  transform: perspective(500px) translate3d(10px, 0, 100px);
+  background-color: pink;
+}
+```

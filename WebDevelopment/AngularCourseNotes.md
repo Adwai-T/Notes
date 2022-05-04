@@ -1832,6 +1832,49 @@ They declare and export these parts so we can import this shared module and use 
 
 In such a condition we just have to have the shared modules declared in the shared modules file and import the shared modules in the app.modules.ts in imports array.
 
+```ts
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { SharedComponent } from "./SharedComponent";
+import { OtherComponent } from "./OtherComponent";
+
+@NgModule({
+imports: [
+    CommonModule
+],
+declarations: [
+    //-Other component will not be shared as we dont export it.
+    OtherComponent,
+    SharedComponent,
+],
+exports: [
+    //-WE export this component from this module.
+    //-Import this module and then we can
+    //use the compoents exported here.
+    SharedComponent,
+]
+})
+export class SharedModule {}
+
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { SharedModule } from './SharedModule';
+
+@NgModule({
+imports: [
+    //Every module other than the main App module has CommonModule
+    CommonModule,
+    //This is our SharedModule,
+    //We can no use all component declared in this module in this
+    //Module
+    SharedModule
+],
+declarations: [],
+providers: []
+})
+export class AppModule{}
+```
+
 ### Core Module
 
 This is used to make our main app.module.ts file leaner by declaring the providers in a different file that is the Core Modules file and then importing the module in the app.module.ts file.

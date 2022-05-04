@@ -289,5 +289,14 @@ fetch('flowers.jpg')
 });
 ```
 
+## Working With HTMLElements
 
-##
+### Get position of an HTMLElement
+
+```javascript
+const el = document.getElementById('element-id');
+const rect = el.getBoundingClientRect();
+//we can then access the values for the rect 
+console.log(rect);
+console.log(rect.bottom, rect.top, rect.left, rect.right);
+```

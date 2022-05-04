@@ -401,3 +401,191 @@ sort
 collect,
 forEach,
 reduce
+
+## Records
+
+Records are used to do exactly what they say, create an imutable object record, where no fields in it can be changed once it is created.
+
+While creating a record java will give us a default constructor that will set all the final values in the record but we could also create our own constructor with all the fields of the record if we need to do any post processing or validation.
+
+```java
+public record Student(String name, int rollNumber) {}
+
+//The above record is same as the following class
+public class Student{
+  private final String name;
+  private final String rollNumber;
+
+  public Student(String name, String rollNumber){
+    this.name = name;
+    this.rollNumber = rollNumber;
+  }
+
+  //It also gives us a default toStrings method that prints all the fields in a readable manner.
+
+  //It also gives us a equals method that returns equal/true when all the fields in the both the 
+  //given records are equal.
+}
+
+//--- Compact constructors
+//They are unique to records and might be used when we want to override the default constructor or records.
+public record Student(String name, int rollNumber) {
+  //It does not take any parameters
+  public Student{
+    if(name == "") throw new IllegalArgumentException("Name cannot be empty.");
+  }
+  //We also do not need to set the fields. They are set automatically.
+}
+
+//We can have final static fields in the record but cannot declare instance fields later
+public record Student(String name, int rollNumber) {
+  private static final String SCHOOLNAME = "SSPMS";
+  private String className;// Will give an error. Is not allowed.
+}
+```
+
+> Records cannot extend any other class, but they can implement interfaces.
+>
+> Records also cannot have any nonstatic instance fields that are not declared above with the record definition.
+
+## Generics
+
+Generics means parameterized types.
+
+Using Generics, it is possible to create classes that work with different data types.
+
+Generics shift the burden of type safety from you to the compiler. Type safety is enforced at compile time making the code much safe at runtime.
+
+> Generics cannot be used with primitives.
+
+```java
+//---Generics in Collections in Java
+//We have already used generics, when we used java collections like List.
+private List<String> strings = new ArrayList<>();
+//This list is now a list of strings.
+
+//We can create a List of objects
+private List<Object> objects = new ArrayList<>();
+//And we can add any type of objects.
+objects.add("Orange");
+object.add(new Integer(10));
+object.add(new Dog("Tom"));
+//But this presents a major problem as the object is not type safe.
+//It might throw exception while runtime.
+
+//--- Thus we use generics to make it more type safe.
+//In the above example we still used generics to make the list,
+//but what is shows is they should be specific.
+
+
+//--- Bounded Generics
+public interface Animal{
+  public String name;
+  public void eat();
+}
+public interface Quadruped{
+  public void walk();
+}
+
+public class Dog implements Animal, Quadruped{
+  public String name;
+  public Dog(String name) {
+    this.name = name;
+  }
+  public void eat(){
+    System.out.println(name + " is eating dog treats.");
+  }
+  public void walk(){
+    System.out.println(name + " is walking.");
+  }
+}
+
+public class Cat implements Animal, Quadruped{
+  public String name;
+  public Cat(String name) {
+    this.name = name;
+  }
+  public void eat(){
+    System.out.println(name + " is drinking milk.");
+  }
+  public void walk(){
+    System.out.println(name + " is walking.");
+  }
+}
+//When we create a bounded generic even if we want to bound
+//T to be Animal and Quadruped, we still use extends and use
+//& to connect them.
+public class Play<T extends Animal & Quadruped> {
+  public T animal;
+  public Play(T animal) {
+    this.animal = animal;
+  }
+  //as we know that T bounded, it is an animal and quadruped,
+  //we can call the methods of the interface and know that
+  //They exist.
+  public void play() {
+    animal.eat();
+    animal.walk();
+  }
+}
+
+public class Main{
+  public static void main(String[] args){
+    Dog spike = new Dog("Spike");
+    Play play = new Play(spike);
+    play.play();
+
+    Cat tom = new Cat("Tom");
+    Play play = new Play(tom);
+    play.play();
+  }
+}
+```
+
+> When using bounded generics, there can only be one class in the bounds and any number of interfaces, also the class name must be the first in the bound connected with interfaces with `&`.
+
+### Multiple Generics
+
+Our classes can also have multiple generics so that we can use multiple types of variables for our methods.
+
+```java
+public class Print<T, V> {
+  public T string;
+  public  V integer;
+
+  public <T, V> T printAndReturn(T s, V i) {
+    System.out.println(s);
+    System.out.println(i);
+
+    return s;
+  }
+}
+```
+
+### Wildcards in Generics
+
+Lets consider, we want to create a method that takes in a List which containes some kind of object.
+
+So we use `List<Object>` to create the list of objects. But when we try to pass a `List<Integer>` or `List<String>` to the method the method will give an error as a List of object is not the same as List of String or Integers, even thought String and Integer both extend object.
+
+We can solve this problem by using wild card.
+
+```java
+private static void printList(List<?> objects) {
+  System.out.println(objects)
+}
+
+//Now we can pass list that contains any object.
+List<String> strings = new ArrayList<>();
+List<Integer> ints = new ArrayList<>();
+printList()
+
+// --- We can make the wild car specific by bounding it
+private static void printList(List<? extends Animal> animals) {
+  System.out.println(animals)
+}
+
+//Now we can pass in a list of any animals
+List<Cat> cats = new ArrayList<>();
+printList(cats);
+```

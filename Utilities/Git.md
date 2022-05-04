@@ -79,6 +79,28 @@ To quickly commit we might add a commit message directly with out commit using t
 
 When we use `git commit` once we have staged the files for the commit, it will open out editor and we can write our message heading over there. Then if we add an empty line after the subject we can then add a desciption for the commit. Here we importantly want to add the change but also if there is anything that needs to be watched for in the commit.
 
+### Change tracking for a file
+
+A file that is already been added to be tracked by git cannot be untracked just by later adding it to git ignore.
+
+We need to untrack the file before we add the rule to `.gitignore`.
+
+To do that we use `git rm --cached FileName`.
+
+When we want to untrack a whole directory we will use the `-r` flag for recursive ignore.
+
+`git rm -r --cached <file>`
+
+#### Temprorily untrack files
+
+git [update-index](https://mirrors.edge.kernel.org/pub/software/scm/git/docs/git-update-index.html).
+
+Consider we don't want to  track file for some commits. We can set that file to be `--assume-unchanged` so git will not track the changes to that file in the next commits until we set the file to be tracked for changes again `--no-assume-unchanged`.
+
+`git update-index --assume-unchanged path/to/file`
+
+`git update-index --no-assume-unchanged path/to/file`
+
 ### Branching Strategies
 
 WE can different branches for features or development and main branch.
