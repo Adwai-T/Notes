@@ -95,11 +95,6 @@ int main()
     double num_double = 0.1; //if number is defined with f like 12.2f it is default to double when passed or assigned.
     cout << setprecision(17) << "\n Number double with 17 precision set : " << num_double << endl;
 
-    //--- const, and constexpr
-    //Contants that are known at compile time can be declared as constexpr.
-    constexpr double gravity { 9.8 };
-    cout << "Contant declared with constexpr : " << gravity << endl;
-
     //Increment and decrement operators
     //Prefix ++x operator are prefered for performance as they : Increment x, then return x,
     //where as x++ operator : Copy x, then increment x, then return the copy
