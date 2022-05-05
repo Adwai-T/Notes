@@ -77,6 +77,30 @@ int main()
 }
 ```
 
+## Strings
+
+Strings in c++ are of two types, string as character array which were used in c or string objects.
+
+When strings are stored as a character array they need a array of size n+1 where n is the number of characters to be stored in the string.
+
+The final character that is stored in the character array is the `\0` also called as the null character, denotes the end of the string. It helps c and c++ identify the end of the string.
+
+We can declare a character array of any length and define every character that we want then end it with null character. When we print this string we will see that the string is only printed till the null character even though we might have an array that is longer.
+
+When we initailize a string or a character array as a string literal we do not need to specify the null character in it, c and c++ will automatically add it.
+
+```cpp
+char name[20] = "Jerry";
+std::cout << name << std::endl;
+char name2[10];
+name2[0] = 'T';
+name2[1] = 'o';
+name2[2] = 'm';
+name2[3] = '\0';
+name2[4] = 'a';
+std::cout << name2 << std::endl;
+```
+
 ## Static Varaibles
 
 The static storage class instructs the compiler to keep a local variable in existence during the life-time of the program instead of creating and destroying it each time it comes into and goes out of scope. Making local variables static allows them to maintain their values between function calls.
@@ -243,7 +267,7 @@ int add(int &a, int* b) {
   cout << " Pointer a in function add -> " << &a << endl; //0x22fe4c
   cout << " Pointer b in function add -> " << b << endl; //0x22fe48
 
-  //We add a bracktes around so * is not considered as operation
+  //We add brackets around b so * is not considered as an operation.
   int c = a + (*b);
   cout << " Pointer c(return value) in function add -> " << &c << endl; 
   return c;
@@ -273,6 +297,11 @@ using namespace std;
 //to the first element of the array.
 void print(int a[], int size) {
   cout << "Array pointer in print : " << a << endl; //0x22fe30
+  
+  //arrays get downgraded to just pointer to first element of that array.
+  //We have to dereference to get the value of a as it is a pointer.
+  cout << "byte size of array a in function : " << sizeof(*a) << endl;
+
   cout << "[ ";
   for(int i = 0; i < size; i++) {
     cout << a[i] << ", ";
@@ -284,9 +313,13 @@ int main()
 {
   int arr[5] = { 20, 30, 10, 8, 6 };
   cout << " Array pointer in main : " << &arr << endl; //0x22fe30
+  cout << "byte size of array a in main : " << sizeof(arr) << endl;
+  cout << "Number of elements in array : " << sizeof(arr)/sizeof(int) << endl;
   print(arr, 5); 
 }
 ```
+
+> Pointers to an array can be incremented to get the pointer to the next element but the array variable cannot be incremented, it will have a compilation error.
 
 ## Collections
 
@@ -435,7 +468,7 @@ int main()
 }
 ```
 
-### Classes
+## Classes
 
 By default variables declared in a class are private variables.
 
@@ -487,7 +520,7 @@ A class is made abstract by declaring at least one of its functions as pure **vi
 
 A pure virtual function is specified as `virtual double getArea() = 0`.
 
-### Example
+### Example Class
 
 ```cpp
 #include <iostream>
@@ -591,5 +624,443 @@ main()
     << to_string(spikesAgeInHumanYears) 
     << endl;
   cout << "Pointer in main 2 : " << &spike << endl;//0x22fd30
+}
+```
+
+## Template Classes
+
+Template classes help us make generalized classes that can be used with different data types.
+
+We have already seen example of template class in the form of vectors and templatized array. They take a type when we declare them and can store that datatype within them while ensuring type safety in our program.
+
+Lets consider an example of a Stack. We want to create a Stack implementation that can hold any datatype.
+
+### Example Template class
+
+```cpp
+#include <iostream>
+#include <string> //for converting int to string.
+#include <vector>
+#include <iterator> //iterator for iterating over vector
+
+using namespace std;
+
+template <class T>
+class Stack
+{
+private:
+  vector<T> stack;
+public:
+  void push(T const &);//pass by reference
+  void pop();
+  T peek() const
+  {
+    return stack.back();
+  }
+  bool isEmpty()
+  {
+    return stack.empty();
+  }
+  void print();
+};
+
+template <class T>
+void Stack<T>::print()
+{
+  cout << " { ";
+  //type name is used to tell compiler that this is a type declaration
+  //as compiler will interpret it as function call.
+  typename vector<T>::iterator stackT;
+  for (stackT = stack.begin(); stackT < stack.end(); stackT++)
+  {
+    cout << to_string(*stackT) << ", ";
+  }
+  cout << "\b\b }" << endl;
+}
+
+template <class T>
+void Stack<T>::push(T const &t)
+{
+  stack.push_back(t);
+}
+
+template <class T>
+void Stack<T>::pop()
+{
+  if (stack.empty())
+  {
+    throw out_of_range("Empty stc");
+  }
+
+  stack.pop_back();
+}
+
+int main()
+{
+
+  Stack<int> stack;
+
+  stack.push(7);
+  int a{9}, b{6}, c{8};
+  stack.push(a);
+  stack.push(b);
+  stack.push(c);
+  stack.print();
+  stack.pop();
+  cout << "Pop" << endl;
+  stack.pop();
+  cout << "Pop" << endl;
+  stack.print();
+}
+```
+
+## typename
+
+> Only use the keyword typename in template declarations and definitions.
+
+Let take an [example](https://www.ibm.com/docs/en/i/7.3?topic=only-typename-keyword-c).
+
+```cpp
+template<class T> class A
+{
+  T::x(y);
+  typedef char C;
+  A::C d;
+}
+```
+
+The statement `T::x(y)` is ambiguous.
+
+It could be a call to function `x()` with a nonlocal argument `y`, or it could be a declaration of variable `y` with type `T::x`. C++ will interpret this statement as a function call.
+
+In order for the compiler to interpret this statement as a declaration, you would add the keyword typename to the beginning of it.
+
+## Template Function
+
+Similar to template classes we have seen above we can also have template functions.
+
+Lets consider the example of quicksort function below.
+
+```cpp
+#include <iostream>
+#include <cstdlib>
+using namespace std;
+
+template<class T> void quicksort(T a[], const int& leftarg, const int& rightarg)
+{
+  if (leftarg < rightarg) {
+
+    T pivotvalue = a[leftarg];
+    int left = leftarg - 1;
+    int right = rightarg + 1;
+
+    for(;;) {
+
+      while (a[--right] > pivotvalue);
+      while (a[++left] < pivotvalue);
+
+      if (left >= right) break;
+
+      T temp = a[right];
+      a[right] = a[left];
+      a[left] = temp;
+    }
+
+    int pivot = right;
+    quicksort(a, leftarg, pivot);
+    quicksort(a, pivot + 1, rightarg);
+  }
+}
+
+int main(void) {
+  int sortme[10];
+
+  for (int i = 0; i < 10; i++) {
+    sortme[i] = rand();
+    cout << sortme[i] << " ";
+  };
+  cout << endl;
+
+  quicksort<int>(sortme, 0, 10 - 1);
+
+  for (int i = 0; i < 10; i++)
+    cout << sortme[i] << " ";
+  cout << endl;
+  return 0;
+}
+```
+
+## Memory Management In C++
+
+Before we try to understand pointer we need to understand how C++ manages memory.
+
+When we run our c++ program it gets assigned a process by our operating system, each process is allocated some memory.
+
+Following are the segements that our program will divide the memory.
+
+* Code/Text :
+
+This section holds our code as instructions that will be executed by the process assigned to our program by our operating system.
+
+A function is divided into a set of contigious instructions.
+
+The instuctions are read only and are shared by the program.
+
+* Global/Static data :
+
+This segement holds the global and static data.
+
+* Stack :
+
+Memory is assigned on the stack to the function variable when they come into scope and removed from stack when that function goes out of scope.
+
+So we can say that memory management in stack is automatic and we do not need to clean memory for variables that are stored in stack. Memory is reclaimed when function responisble for creating those variables goes out of scope.
+
+* Heap :
+
+Heap is where dynamically created object are stored.
+
+When we create an object dynamically during runtime with new, malloc, calloc or realloc, memory is reserved on the heap and the object are created.
+
+Any objects created on heap have to be managed by us and cleaned when they are no longer needed. Not cleaning these objects can cause memory leaks.
+
+## Pointers
+
+Pointers are variables that store the memory address of another variable.
+
+```cpp
+#include <iostream>
+#include <string> //for converting int to string.
+
+using namespace std;
+
+int main()
+{
+  int a{10};
+  cout << "Initial value of a : " << a << endl;//10
+  int* ptr_a = &a;//pointer to a;
+  *ptr_a = 5;
+  cout << "Value of a changed with pointer dereferencing : " << a << endl;//5
+}
+```
+
+> Pointer variables are strongly typed. That means a pointer to int variable should be of type int.
+
+Pointer variables are strongly typed as the compiler needs it to get the value when we dereference the pointer.
+
+Lets understand it with a pointer to a `char` and an `int`. An `int` in c++ is of 4 bytes, where as a `char` is 1 byte.
+
+Thus c++ will use the type of the pointer to determine how many bytes it needs to consume after the inital pointer to produce the required data.
+
+It also is necessary for performing arithematic operations on pointers.
+
+For example in the case on an `int` pointer, an increment by 1 will increament the value of pointer by 4 as an int is stored as 4 bytes in the memory.
+
+This is an important property of pointers as it is used when we are dealing with array pointers to get to the next element in the array.
+
+### Generic pointer
+
+Generic pointer is designated by `void`.
+
+They can then be type casted to convert the pointer into required type pointer. As we have seen above it is necessary for c++ to know what type of data the pointer point to, to dereference and get the value.
+
+```cpp
+int a{10};
+void* ptr = &a;//pointer to a;
+int* ptr_a = (int*) ptr;
+*ptr_a = 8;
+cout << "Value of a changed with pointer dereferencing : " << a <<endl;//8
+```
+
+### Pointer to Pointer
+
+We can also have a pointer to another pointer as they are also stored in memory somewhere.
+
+> A typical pointer is stored in 4 bytes.
+
+```cpp
+int a{10};
+int* ptr = &a;//pointer to a;
+int** ptr_ptr = &ptr;//pointer to pointer of a
+/*We increase the number of stars to the level of pointers*/
+**ptr_ptr = 8;//dereferencing to update value of a
+cout << "Value of a changed with pointer dereferencing : " << a <<endl;//8
+```
+
+### Pointer as Arguments
+
+We have already seen passing a pointer to a function. It is called as passing as reference to a function as we are not passing the actual object but a pointer reference to the object.
+
+This prevents the variable from getting copied to the local scope of the function.
+
+### Array and Pointer relation
+
+Following example code shows how arrays and pointers work together and how arithematic opeartions on pointers help in traversing the array.
+
+```cpp
+int arr[5]{10, 20, 30, 40, 50};
+
+int* ptr = arr;
+std::cout << "Pointer to arr : " << ptr << std::endl;//0x22fe30
+std::cout << "Pointer to first element in arr : " << &arr[0] << std::endl;/0x22fe30
+//We can perform arithematic operation in the array pointer.
+std::cout << "2nd element in array : " << *(ptr+2) << std::endl;//30
+//or
+std::cout << "3rd element in array : " << *(arr+3) << std::endl;//40
+//same as
+std::cout << "3rd element in array : " << arr[3] << std::endl;//40
+```
+
+When arrays are passed as argument to a function they get downgraded to just pointer to the first element of that array.
+
+> Pointers to an array can be incremented to get the pointer to the next element but the array variable cannot be incremented, it will have a compilation error.
+
+### Function Pointers
+
+Function are sets of instructions stored in the code/text section of the memory managed by the c++ program.
+
+We can get a pointer reference to function like we can for any other variable and even pass them as argument to other functions.
+
+This functions passed as arguement can be used as callback functions.
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+void print()
+{
+  cout << "Printed." << endl;
+}
+void doubleNum(int &a)
+{
+  a *= 2;
+  cout << "Doubled number : " << a << endl;
+}
+
+void a(void (*p)())
+{
+  p();
+}
+
+void b(void (*p)(int &), int num)
+{
+  p(num);
+}
+
+int main()
+{
+  a(print);
+  b(doubleNum, 3);
+}
+```
+
+## Dynamic Memory
+
+Dynamic memory or heap is where dynamically created variables are stored.
+
+We can create any number of variables in dynamic memory at runtime as long as our computer has more memory to share.
+
+> Compared to variables stored in stack and global variables, variables stored on the heap are slower.
+
+### C and C++ ways
+
+There are different ways in c and c++ by which we can allocate dynamic memory to our objects.
+
+C uses functions like `malloc()`, ``calloc()` and `realloc()` to assign/reserve memory and return a pointer, and uses `free()` to destroy the variable and return the memory to the system.
+
+C++ introduced the `new` keyword to assign/reserve memory for dynamic variable/objects and `delete` or `delete()` to destroy the variable and return the memory to the sytem for use.
+
+There are fifference between c functions and c++ keywords in how they work.
+
+`new`
+
+* Calls constuctor.
+* is an Operator.
+* Returns exact data type.
+* on failure, throws bad_alloc exception.
+* Size is calcuated by compiler.
+
+`malloc()`, `calloc()` and `realloc()`
+
+* does not call constructors.
+* It is a function.
+* Returns void*.
+* On failure, returns NULL.
+* size is calculated manually.
+
+`delete()`
+
+* It is an operator.
+* It deallocates memory dynamically.
+* Used for null pointers or memory assigned by new operator.
+* calls desturctor after destoring allocated memory.
+* Faster.
+
+`free()`
+
+* It is library function.
+* destories memory at runtime.
+* used with null pointers or memory allocated by using malloc().
+* Only frees momory from the heap.
+* comparatively slower.
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <string>
+
+using namespace std;
+
+class Box 
+{
+  int side;
+
+  public:
+    int* ptr;
+
+    //Constructor
+    Box()
+    {
+      cout << "Construtor Called" << endl;
+    }
+
+    ~Box() {
+      cout << "Destructor Called" << endl;
+    }
+};
+
+int main()
+{
+
+  //Initializing primitive data types with new
+  int *num = new int{10};
+  cout << *num << endl;//10
+  delete num;
+  cout << *num << endl << endl;//prints garbage value
+
+  //Create Object With new operator
+  Box* box = new Box;
+  //Destory Object using delete
+  delete(box); //also can use delete box;
+  cout << "\n" << endl;
+
+
+  cout << "Using malloc() and free() : " << endl;
+  //Create Object using malloc()
+  Box* box2 = (Box*)malloc(sizeof(Box));
+  //Free up memory using free()
+  free(box2);
+  cout << "No Construtor or Destructor is called." << endl;
+  cout << "\n" << endl;
+
+
+  //Create an object using Class name
+  cout << "Using Class Name : " << endl;
+  Box box3;//don't need to manage memory, scoped variable.
+  cout << "\n" << endl;
+
+  cout << "End of main function. box3 will go out of scope now." << endl;
+  return 0;
 }
 ```
