@@ -23,9 +23,9 @@ using namespace std;
 int main()
 {
   //-- Different Ways of Initializing variables
-  int a1 = 10;
-  int a2= {20};
-  int a3 (30);
+  int a1 = 10; //copy initialization
+  int a2= {20};//brace-initialization -> preferred
+  int a3 (30);//direct initialization
   int a4;
   a4 = a1 + a2 + a3;
   cout << "Sum => " << a4 << endl;
@@ -67,14 +67,96 @@ int main()
   const double PI = 3.1415;
   //-Enum Constants
   enum { alpha = 9, delta = 5 };
+  //--- Enum Defination
+  enum Color
+  {
+      COLOR_BLACK, //will hold value 0 when called.
+      COLOR_WHITE, //will hold value 1 and so on further in the enum.
+      COLOR_RED,
+      COLOR_BLUE
+  };
+  //Having same values for enum elements is possible but not recommended.
+
   //Constants that are known at compile time can be declared as constexpr.
   constexpr double gravity { 9.8 };
+  //-- before c++ 17 inline constexpr could not be defined.
+  // `inline constexpr double PI { 3.1415 };`
+  //The inline constant have external linkages by default.
 
   //-- Strings
   char str[] = "Adwait";//C like strings
   string str2 = "Sandipan";//string is the part of std library in C++.
   cout << str << " and " << str2 << " are friends." << endl;
+
+    //--- Fixed Width integers
+  //- For cross platfrom protability c99 introduced fixed width integers.
+  std::int32_t number_32bit= 1254;
+  //- Similarly we can have unit32_t which is unsigned int.
+  //- Other fixed width ints are : int8_t, int16_t, int64_t 
+  //and their respective unsigned values.
+  //- Downside : The above fixed-width integers should be avoided,
+  //as they may not be defined on all target architectures.
+
+  //--- Fast and least integers
+  std::int_fast32_t number_32bit_fast = 1268;
+  //- Similar for 8, 16, 32, 64 and also can similarly have int_least32_t. 
+  //- Similarly there are unsigned types that can be defined as uint_fast#_t.
+  //- Use least for memory conservation and fast for performace
+  //- 8 bit int in both above cases might behave as char in some systems.
+
+  //--- sizeof() and size_t
+  //- std::size_t is defined as an unsigned integral type, and it is typically
+  //- used to represent the size or length of objects.
+  cout <<"sizeof(size_t) : " << sizeof(size_t) << endl;
 }
+```
+
+### Casting Data types
+
+```cpp
+//--- Casting
+//C type casting
+int cast_i1{1};
+float cast_f1{(float)cast_i1/2};
+//C++ type casting
+double cast_d1{double(cast_i1)/2};
+cout << "Casting result of divide by 2 respectively of C style and C++ style : " << cast_f1 << "\t" << cast_d1 << endl;
+//static_cast
+float static_cast_f1{ static_cast<float>(cast_i1)/2 };
+cout << "Result of divide by 2 from static cast : " <<  static_cast_f1 << endl;
+//From above all three static cast should be prefered.
+```
+
+### Typedef
+
+```cpp
+//--- typedef and type alias
+typedef int integer_number;
+integer_number int_num1 = 10;
+//intger_number is just as if using `int int_num1 = 10`, that is as an alias.
+cout << "Value of type integer_number : " << int_num1 << endl;
+```
+
+## Operators
+
+### Increament Operators
+
+```cpp
+//Increment and decrement operators
+//- Prefix ++x operator are prefered for performance as they : 
+//Increment x, then return x,
+//- where as x++ operator : 
+//copies x, then increment x, then return the copy
+int inc_x{2};
+int inc_y = ++inc_x; //value inc_y is 3
+inc_x = 2;
+int inc_z = inc_x++; //value inc_z is 2
+cout << "Increment opertaor Prefix : inc_y = : " << inc_y << endl;
+cout << "Increment opertaor Postfix : ++inc when inc =  : " << inc_z << endl;
+//Similar for --
+//- It is not recommended to pass x as well as
+//x++ or ++x to a function as the value will
+//depend on what order the compiler executes it.
 ```
 
 ## Strings
@@ -113,9 +195,13 @@ When static is used on a class data member, it causes only one copy of that vari
 
 Namespace is used for encapsulation.
 
+Function in c and c++ are global scoped and are usable across files, thus we define them in a namespace to restrict their scope.
+
 It helps us organize our code into local groups and prevents name collision that might occur especially when our project are big and we are using external libraries.
 
 We have already seen the `std` name space that is the standard namespace used by C++ library.
+
+> Variables are scoped to the file. Using `extern` to define a varaible makes it global in the sence that it can be used between different files.
 
 ```cpp
 namespace utils{
@@ -126,6 +212,16 @@ namespace utils{
 > While using name space we have to add the name space to both the header file as well as implementation.
 
 ## Input From Terminal
+
+When used the buffer from the first cin might not be cleared and will directly be used as the input for
+
+second `getline()`.
+
+To prevent this we have to clear the buffer before we use the getline by ignoring the value that is in it.
+
+`std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');`
+
+This will ignore unlimited characters until a `\n` is removed.
 
 ```cpp
 //--- Getting user input from console.
@@ -320,6 +416,23 @@ int main()
 ```
 
 > Pointers to an array can be incremented to get the pointer to the next element but the array variable cannot be incremented, it will have a compilation error.
+
+### Build in functions
+
+C++ also provides a lot of inbuild function that can be used as helpers for achiving different tasks.
+
+```cpp
+//--- Character Functions
+char letterZ = 'z';
+char char5 = '5';
+std::cout 
+  << "Is z a letter or number : " 
+  << std::isalnum(letterZ) 
+  <<std::endl;
+//isalpha() isdigit() isspace();
+
+
+```
 
 ## Collections
 
@@ -600,6 +713,8 @@ void goodDog(Dog dog)
 }
 main()
 {
+  //Classes can also be initialized as
+  //Dog spike{"Spike", 5}; //giving the same effect as below
   Dog spike("Spike", 5);//constructor.
   spike.talk();//overrider parent abstract method.
   spike.drink();//override parent method.
@@ -955,6 +1070,36 @@ int main()
 }
 ```
 
+## Functions as arguments
+
+Above example shows passing function to another function as argument.
+
+In c++ we also have a support class `functional` that can be used to pass functions as argument making it even easier and cleaner.
+
+```cpp
+//For Function As Argument To other Function.
+#include <functional>
+
+using namespace std;
+
+//Passing Function to Another Function.
+double addTwoNumbers(double num1, double num2)
+{
+  return num1 + num2;
+}
+
+double addThreeNumbers(function<double(double,double)> func, double num3)
+{
+  return func(1, 2) + num3;
+}
+
+int main()
+{
+  //--- function as Argument to function
+  cout << addThreeNumbers(addTwoNumbers, 3) << endl;
+}
+```
+
 ## Dynamic Memory
 
 Dynamic memory or heap is where dynamically created variables are stored.
@@ -1063,4 +1208,173 @@ int main()
   cout << "End of main function. box3 will go out of scope now." << endl;
   return 0;
 }
+```
+
+## Reading and Writing Files
+
+```cpp
+#include <iostream>
+#include <fstream>
+#include <string>
+
+using namespace std;
+
+int main()
+{
+    ofstream file;
+    ifstream readFile;
+
+    file.open("hello.txt");
+    //The above could be done in one line
+    //ofsream file("hello.txt");
+
+    //We can use the file write as if it was cout.
+    if(file.is_open())
+    {
+        file << "Hello There";
+        cout << "File write Successful." << endl;
+    }
+    //Files are closed automatically at the end, but we could be explicit.
+    file.close();
+    return 0;
+}
+```
+
+## Threads
+
+```cpp
+#include <iostream>
+//Time Libraries
+#include <chrono>
+#include <mutex>
+#include <ctime>
+//For Threads
+#include <thread>
+
+using namespace std;
+
+void executeThread(int id)
+{
+    auto nowTime = chrono::system_clock::now();
+    time_t sleepTime = chrono::system_clock::to_time_t(nowTime);
+    tm myLocalTime = *localtime(&sleepTime);
+    cout << "Thread" << id << " Sleep Time " << ctime(&sleepTime) << endl;
+
+    //myLocalTime have varaibles like myLocalTime.tm_mon, tm_mday
+    //tm_year, tm_hour, tm_min, tm_sec
+
+    this_thread::sleep_for(chrono::seconds(3));
+
+    nowTime = chrono::system_clock::now();
+    sleepTime = chrono::system_clock::to_time_t(nowTime);
+
+    cout << "Thread" << id << " Awake Time " << ctime(&sleepTime) << endl;
+}
+
+int main()
+{
+    //--- Create and execute thread
+    thread th1 (executeThread, 1);
+    thread th2 (executeThread, 2);
+    //Join the above threads to the main thread so that the main thread waits
+    //for them to complete.
+    //Once the threads are joined the code beyond this point will be executed
+    //synchronously.
+    th2.join();
+    th1.join();
+
+    return 0;
+}
+```
+
+## Debugging
+
+### Using std::cerr
+
+Use `std::cerr` instead of `std::cout` to print errors or while debugging as `cerr` is non buffered, `cout` is buffered and when an error occurs it may or may not be printed.
+
+`cerr` is non buffered and hence has a performance cost but we don't care about performance while debugging or when an error actually occurs in our program.
+
+> When adding temporary debug statements, it can be helpful to not indent them. This makes them easier to find for removal later.
+
+Debugging cerrr statements if kept for the full development cycle can clutter the code. To use them conditionally we can use preprocessors :
+
+```cpp
+#define ENABLE_DEBUGGING //Comment out to disable debugging
+#ifdef ENABLE_DEBUGGING
+
+std::cerr << "function called \n" << endl;
+
+#endif
+```
+
+### Compiler Extensions
+
+> In brief they are specific to used compilers and might prevent your code from being compatible with other compilers.
+
+To set the comipiler to strict mode that is use no extensions specific to the compiler, we use, GCC-G++ : Adding the `-pedantic-errors` flag to the compile command line.
+
+### Compilation Warning
+
+`-Wall`, `-Weffc++`, `-Wextra`, `-Wsign-conversion` are different warning level flags.
+
+`-Werror` : This will treat warning as errors and code will not compile.
+
+### Language Standard
+
+For GCC/G++ :
+
+pass compiler flags `-std=c++11`, `-std=c++14`, `-std=c++17`, or `-std=c++2a` to enable C++11/14/17/2a support respectively.
+
+## MakeFiles
+
+Makefile are named mas `Makefile` with no extension.
+
+`#` is used to write comments in a makefile.
+
+Makefile for c++ clean, compile and run.
+
+```makefile
+functions: Functions_2.o
+  g++ Functions_2.o -o functions
+
+Functions_2.o: Functions_2.cpp
+  g++ -c Functions_2.cpp 
+
+clean:
+  rm *.o functions a
+```
+
+Makefile to be used with SDL
+
+```makefile
+#Make file Example
+#OBJS specifies which files to compile as part of the project
+OBJS = src/Main.cpp
+
+#CC specifies which compiler we're using
+CC = g++
+
+#INCLUDE_PATHS specifies the additional include paths we'll need
+INCLUDE_PATHS = -IG:\LectureExcersise\Cplus\Projects\SDL\Game\SDL2\include\SDL2
+
+#LIBRARY_PATHS specifies the additional library paths we'll need
+LIBRARY_PATHS = -LG:\LectureExcersise\Cplus\Projects\SDL\Game\SDL2\lib
+
+#COMPILER_FLAGS specifies the additional compilation options we're using
+# -w suppresses all warnings
+# -Wl,-subsystem,windows gets rid of the console window
+COMPILER_FLAGS = -w -Wl,-subsystem,windows
+
+#LINKER_FLAGS specifies the libraries we're linking against
+LINKER_FLAGS = -lmingw32 -lSDL2main -lSDL2
+
+#OBJ_NAME specifies the name of our exectuable
+OBJ_NAME = bin/Main
+
+#After specifying the name of the target and its dependencies, the command to create the target is on the next line.
+#The command to create the target must begin with a tab or Make will reject it.
+#This is the target that compiles our executable
+all : $(OBJS)
+  $(CC) $(OBJS) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o $(OBJ_NAME)
 ```
