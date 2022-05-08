@@ -300,3 +300,48 @@ const rect = el.getBoundingClientRect();
 console.log(rect);
 console.log(rect.bottom, rect.top, rect.left, rect.right);
 ```
+
+### Communication with iframe
+
+> Important the `postMessage` and `onMessage` are methods of the `Window` that means that they can be used with any window. Check the pages for details { [mozilla](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage), [javascript.info](https://javascript.info/cross-window-communication) }
+
+I-frames are used to display a different page in our website, we can communicate with the javascript in the i-frames page.
+
+**Parent -> Iframe** communication:
+
+We use the `postMessage(message, targetOrigin, transfer)` or `postMessage(message, targetOrigin)` property of the `iframe.contentWindow`.
+
+* message : can be string, object, or arrays. There are more that are [supported](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Structured_clone_algorithm).
+
+* targetOrigin : `"*"` can be used for any origin, or a URL can be set specifically, if the target is not matched the event will not be dipatched.
+
+> Always provide a specific targetOrigin, not `*`, if you know where the other window's document should be located. Failing to provide a specific target discloses the data you send to any interested malicious site.
+
+Ex. `postMessage("message", "http://example.com");` will only be sent if `<iframe src="http://example.com">`
+
+* target : (Optional) Is a sequence of transferable objects that are transferred with the message.
+
+Get message in the iframe:
+
+We can use the `onmessage` method to get the meesage sent.
+
+The `event` object has special properties:
+
+`data` : The data from `postMessage`.
+
+`origin` : The origin of the sender.
+
+`source` : The reference to the sender window. We can immediately `source.postMessage(...)` back if we want.
+
+```javascript
+// --- parent -> iframe
+
+//i-frame.contentWindow.postMessage(message, targetOrigin, [transfer]);
+i-frame.contentWindow.postMessage('message', '*');
+
+//in iframe
+window.onmessage = function(e) {
+  console.log(e);
+  console.log(e.data) //message
+}
+```

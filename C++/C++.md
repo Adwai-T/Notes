@@ -1112,7 +1112,7 @@ We can create any number of variables in dynamic memory at runtime as long as ou
 
 There are different ways in c and c++ by which we can allocate dynamic memory to our objects.
 
-C uses functions like `malloc()`, ``calloc()` and `realloc()` to assign/reserve memory and return a pointer, and uses `free()` to destroy the variable and return the memory to the system.
+C uses functions like `malloc()`, `calloc()` and `realloc()` to assign/reserve memory and return a pointer, and uses `free()` to destroy the variable and return the memory to the system.
 
 C++ introduced the `new` keyword to assign/reserve memory for dynamic variable/objects and `delete` or `delete()` to destroy the variable and return the memory to the sytem for use.
 
