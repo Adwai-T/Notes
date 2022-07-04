@@ -742,6 +742,105 @@ main()
 }
 ```
 
+### this keyword
+
+We have already used `this` above when we looked at classes.
+
+But lets dive deeper into how `this` in C++ works.
+
+`this` in c++ is a pointer to the object that it references. See code --1 below.
+
+So `*this` is the dereference to the pointer.
+
+If `this` is returned by a method, it will return a pointer to the object in memory without making a copy.
+
+If `*this` is returned a copy of the object is made on the stack and returned this cloned copy.
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+class Dog
+{
+private:
+  string name;
+
+public:
+  Dog(string name) 
+  {
+    this->name = name;
+  }
+  ~Dog() {}
+
+  // --1
+  Dog* get_reference()
+  {
+    return this;
+  }
+
+  // --2
+  Dog get_copy()
+  {
+    return *this;
+  }
+
+  // --3
+  Dog& get_copy_as_reference()
+  {
+    return *this;
+  }
+
+  string getName()
+  {
+    return name;
+  }
+
+  void setName(string newName)
+  {
+    name = newName;
+  }
+};
+
+int main()
+{
+    cout << "Start" << endl;
+
+//--- Original object created.
+    Dog dog("Bruno");
+    cout << "Pointer to dog object1 before : " << dog.getName() << endl;
+
+//--- Reference to original object in memory
+    Dog* dog_ref = dog.get_reference();
+    dog_ref->setName("Nick");
+
+//--- Copy object in stack created.
+    Dog dog2 = dog.get_copy();
+    dog2.setName("Tom");
+
+//--- Another copy object in stack is created.
+    Dog dog3 = dog.get_copy_as_reference();
+    dog3.setName("Spike");
+
+    cout << "Pointer to dog object1 after : " << dog.getName() << endl;
+    cout << "Pointer to dog object2 : " << dog2.getName() << endl;
+    cout << "Pointer to dog object3 : " << dog3.getName() << endl;
+
+    cout << "End" << endl;
+}
+
+/*
+Result : 
+
+Start
+Pointer to dog object1 before : Bruno
+Pointer to dog object1 after : Nick
+Pointer to dog object2 : Tom
+Pointer to dog object3 : Spike
+End
+*/
+```
+
 ## Template Classes
 
 Template classes help us make generalized classes that can be used with different data types.

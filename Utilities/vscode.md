@@ -12,6 +12,8 @@ We will look at a task to build a C++ file.
 
 Tasks are stored in `.vscode\tasks.json`
 
+> Flag `-g` while compiling is important if we want to debug. If not added the debugger will not stop at breakpoints and will complete the execution.
+
 ```json
 {
   "tasks": [

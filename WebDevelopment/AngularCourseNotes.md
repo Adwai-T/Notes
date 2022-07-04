@@ -1,7 +1,5 @@
 # Angular
 
-> Note all these notes are base on Maximilian Schwarzmüller course on Udemy.
-
 ## Install
 
 Requires Node for packing and optimize the project. Also npm will be used download all the dependencies and angualar cli itself.

@@ -20,6 +20,8 @@ If we have an identity already added to the configuration we can check it by usi
 * `git commit -am "message"` : -a adds all the tracked file and hence can skip the `git add` if no new files have to be added to tracked files.
 * `git log` :  see history of all commits.
 * `git remote` : Check all the remote repositories set for your project. For example if you deploy a project that might be a remote(like heroku) and the other can be github.
+* `git remote -v` : Get detail links about all remotes.
+* `git remote rename currentName toName` : Change the current name of remote.
 * `git push` : will push to the default repo and the main branch.
 * `git push origin master/main` : push to the origin remote repo and its main/master branch.
 * `git fetch` : fetch updated code from remote repositroy. It need to be used with `git branch, git checkout and git reset`.
