@@ -1053,7 +1053,7 @@ int main()
   int a{10};
   cout << "Initial value of a : " << a << endl;//10
   int* ptr_a = &a;//pointer to a;
-  *ptr_a = 5;
+  *ptr_a = 5;//dereference and assign
   cout << "Value of a changed with pointer dereferencing : " << a << endl;//5
 }
 ```
@@ -1071,6 +1071,8 @@ It also is necessary for performing arithematic operations on pointers.
 For example in the case on an `int` pointer, an increment by 1 will increament the value of pointer by 4 as an int is stored as 4 bytes in the memory.
 
 This is an important property of pointers as it is used when we are dealing with array pointers to get to the next element in the array.
+
+> **Dereferencing** is used to access or manipulate data contained in memory location pointed to by a pointer.
 
 ### Generic pointer
 
@@ -1106,6 +1108,51 @@ cout << "Value of a changed with pointer dereferencing : " << a <<endl;//8
 We have already seen passing a pointer to a function. It is called as passing as reference to a function as we are not passing the actual object but a pointer reference to the object.
 
 This prevents the variable from getting copied to the local scope of the function.
+
+### Pointers vs Reference
+
+Functions and methods can have paramters that take either pointers or reference to the object.
+
+In both the cases the object is not copied.
+
+When we pass a pointer we need to dereference to get the value of the pointer, where as in the case of the reference value can directly be used.
+
+> Use References in most cases. Use pointers as arguments when an arithematic operation on the pointer needs to be performed.
+
+```cpp
+int num = 10;
+
+//copy of the original primitive or object is passed.
+void f(int i)
+{
+  std::cout << i << std::endl;  
+}
+f(num);
+
+//argument as pointer
+void f2 (int* i)
+{
+  std::cout << *i << std::endl;//pointer needs to be dereferenced
+}
+f2(&num);
+
+//arguments by reference
+void f1 (int& i)
+{
+  std::cout << i << std::endl;
+}
+f1(num);
+
+//arguments by constant reference
+//In this case the passed reference cannot be changed inside the function.
+void f3(int& const i)
+{
+  std::cout << i << std::endl;
+}
+f3(num);
+```
+
+Other difference in using references over pointers is that a reference cannot be `NULL`.
 
 ### Array and Pointer relation
 
