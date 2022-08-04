@@ -575,7 +575,7 @@ Note: `router-outlet` is a angular directive even if it looks like a html elemen
 <a [routerLink]="['/server','/something']">special Server</a>
 ```
 
-Note: Using `routerLink` in the anchor tag and not using a relative link direclty with `href` will prevent the default behaviour of the browser form reloading the complete page.
+Note: Using `routerLink` in the anchor tag and not using a relative link directly with `href` will prevent the default behaviour of the browser from reloading the complete page.
 
 If we use the `href` the whole page will be reloaded and the state of our application might be lost. This can lead to unexpected behaviour that needs to be prevented.
 
@@ -979,59 +979,106 @@ There are two Approaches that angular offeres to handle forms.
 
 2. Reactive : From is created programmatically and synchronized with the DOM.
 
+Template Driven forms are suitable for small, simple forms, while reactive forms are used for complex forms due to its scalability.
+
+|	REACTIVE |	TEMPLATE-DRIVEN |
+|---|---|
+| Setup of form model	Explicit, created in component class |	Implicit, created by directives|
+| Data model	Structured and immutable	|Unstructured and mutable|
+| Data flow	Synchronous	| Asynchronous|
+| Form validation|	Functions	Directives|
+
+### Common From Foundation Classes
+
+* FormControl : Track the value and validation status of an individual form control.
+
+* FromGroup : Track the same value and status for a group of form controls.
+
+* FormArray : Track the same value and status for an array of form controls.
+
+* ControlValueAccessor : Creates a bridge between the angular FormControl and the inbuild DOM elements.
+
 ### Template Driven Forms
 
 Import FormsModule in the NgModule -> imports[] -> FormsModule in the app.module.ts file to use the approach.
 
+Angulars template driven use **Two way Data binding** to update the data model component and changes are made in the template and visa versa.
+
 Angular does not detect the form controls automatically so we have to make angular aware of the form control. This is done by using `ngModel` which is a part of FormsModule.
 
-```html
-<input type="text" id="username" class="form-control" ngModel name="username">
+The `NgModel` creates and manages a instance of `FormControl` for the given element that it is put on.
+
+There are two ways we can use use template driven forms. 
+
+First way we can direclty use `ngModel` and with a varible in our script component that will track the value of the FormControl.
+
+This ways can mostly be used for 1 or 2 input fields and to directly capture their values without complexity.
+
+> Don't Forget to add `FormsModule` from `'@angular/forms'` in `app.module.ts` while using the template driven forms.
+
+```ts
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-template-form',
+  template: 
+  `
+    Name : <input type="text" [(ngModel)]="name">
+  `
+})
+export class TemplateForm {
+  public name = '';
+}
 ```
 
-`name` is a property of the html element and not of angular. It will be used by angular to identify the element. ngModel will tell angular that this is a form control.
+The second way involves using the ngModel to mark FormControl and creating a form with a submit button.
+
+> To mark the form for template driven approach we use the `ngForm` directive and it needs to be set as the value for our form's local reference.
+
+Lets take an example of a contact form. We have three fields Name, Email and Message.
 
 ```html
-<form (ngSubmit)= "onSubmit(f)" #f= "ngForm">
-    <!--Our html form here as shown above-->
+<!-- Template -->
+<form id="container" (ngSubmit)="onSubmit()" #contactForm="ngForm">
+  <label>If you would like to contact me please use the form.</label>
+
+    <label>Name</label>
+    <input name="name" ngModel />
+    <label>Email</label>
+    <input name="email" ngModel />
+    <br>
+    <label>Message</label>
+    <textarea name="message" ngModel></textarea>
+    <br>
+  <button type="submit">Send</button>
 </form>
 ```
 
-Submitting a Form.
-
-The `ngSubmit` takes over the submit functionality of the HTML form, which is present by default, and gives us the control to submit the from as we want from our script. We pass in the local reference of the form to the submit method to use it to get the values that angular parsed for us.
-
-We put a *local Reference* to the from above and assign it to the `ngForm` which will give us the access to the from object that angular created for us and makes it easy for us to access the values of the form.
+> Note the button used to submit the form, should be marked with `type="sumbit"`.
 
 ```ts
-import { NgFrom } from '@angular/froms';
+export class ContactComponent implements OnInit {
+  @ViewChild('contactForm') public contactForm!: NgForm;
 
-export class AppComponent{
+  constructor() {}
+  ngOnInit(): void {}
 
-    //Other code here
-
-    onSubmit(from: NgFrom){
-        //This will print the the form object to the console and we can see all its properties.
-        console.log(form);
-    }
+  public onSubmit(): void {
+    console.log(this.contactForm.form.value);
+    //will print to console the values object.
+  }
 }
 ```
 
-* Accessing from with `@ViewChild` as we have see before to access the *Local Reference* on the form.
+In the above example we are using `@ViewChild` to get the value for the form, but we could also pass the value as an argument to the `onSubmit()` method.
 
-This method of getting the form objects helps us access the data that the form contains at any time **before the from is submitted**.
+We just need to pass the local reference (`contactForm` in the above example) to the method and have our `onSubmit(contactForm: NgForm)` with NgForm as its parameter.
 
-```ts
-export class AppComponent{
-    @ViewChild('f') signupForm: NgFrom;
+The we can access the value of each of the fields in our form with `formName.form.value`.
 
-    onSubmit(){
-        console.log(this.signupForm);
-    }
-}
-```
+> Note that `ngForm` can only be used with a form element and not with a div, if we use a div to wrap our FormControls.
 
-* **Validation**
+### Validation
 
 Some Build in properties of the HTML like required can be used to validate the form.
 
@@ -1051,7 +1098,7 @@ NgModel can be used with local reference to the form control.
 
 We can also have a default value for the control including `<Select>` as shown below.
 
-`[NgModel]="pet"`
+`[ngModel]="pet"`
 
 The above example above shows one way binding and we can also use NgModel with two way binding.
 
@@ -1072,17 +1119,16 @@ We can also put a Local Reference on the group div and get access to the group o
 We can set default valies to our from controls, by using the `patchValue` method of `form`.
 
 ```ts
-
 const suggestedName = 'SuperUser';
 
 this.signupForm.form.patchValue({
-    userData: {
-        username: suggestedName
-    }
+  userData: {
+    username: suggestedName
+  }
 });
 ```
 
-The above approach to set the value for the form on a event will not reset the whole form, just set the value of the form element that we want to target.
+The above approach to set the value for the form on an event will not reset the whole form, just set the value of the form element that we want to target.
 
 The Other approach might be to set the value directly by using `this.signupForm.setValue({})` and pass in the object with the values that we want ot add to our from, but it will reset the form and thus all the values that the user had entered and thus the above approach is much more convenient and useful in most cases.
 
@@ -1113,29 +1159,31 @@ export class AppComponent implement onInit{
         this.signupForm = new FormGroup({
             'username': new FromControl(null),
             'email' : new FormControl(null),
-            'gender': new FormControl('male') //Here we set a default initialization value for our form control.
+            'gender': new FormControl('male') 
+            //Here we set a default initialization value for our form control.
         });
     }
 }
 ```
 
-Synchronize our script from with the HTML from in our html template.
+Synchronize our script form with the HTML form in our template.
 
 ```html
 <form [formGroup="signupFrom"] (ngSumbit)="onSubmit()">
-    <div>
-        <label for="username">UserName</label>
-        <input type="text" id=" username" formControlName="username" class="form-control">
-    </div>
-     <div>
-        <label for="email">Email</label>
-        <input type="text" id=" email" formControlName="email" class="form-control">
-    </div>
-    <div ckass="radio" *ngFor="let gender of genders">
-        <label>
-            <input type="radio" [value]="gender" fromControlName="gender">{{gender}}
-        </label>
-    <div>
+  <div>
+    <label for="username">UserName</label>
+    <input type="text" id=" username" formControlName="username" class="form-control">
+  </div>
+   <div>
+    <label for="email">Email</label>
+    <input type="text" id=" email" formControlName="email" class="form-control">
+  </div>
+  <div ckass="radio" *ngFor="let gender of genders">
+    <label>
+      <input type="radio" [value]="gender" fromControlName="gender">
+      {{gender}}
+    </label>
+  <div>
 </form>
 ```
 
