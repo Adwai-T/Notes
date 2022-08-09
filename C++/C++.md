@@ -1367,6 +1367,7 @@ using namespace std;
 
 int main()
 {
+    //- ofstream and ifstream belong to the std namespace
     ofstream file;
     ifstream readFile;
 
@@ -1374,14 +1375,25 @@ int main()
     //The above could be done in one line
     //ofsream file("hello.txt");
 
+    //-- Write to file
     //We can use the file write as if it was cout.
     if(file.is_open())
     {
         file << "Hello There";
         cout << "File write Successful." << endl;
     }
-    //Files are closed automatically at the end, but we could be explicit.
+
+    //-- Read From File
+    //Use getline in a while loop to get text line by line
+    while (getline (file, textline)) {
+    // Output the text from the file
+        cout << textline; //line read has line break in the file
+    }
+
+    //Files are closed automatically at the end,
+    //but we could be explicit as good practice.
     file.close();
+    
     return 0;
 }
 ```

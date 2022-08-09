@@ -142,7 +142,7 @@ while (currentByte != -1) {
 inputstream.close();
 ```
 
-### What type of stream should I use
+## What type of stream should I use
 
 Generally speaking, a computer understands only sequences of bytes. As long as any data is just a set of bytes, the byte input stream is a common way for reading any kind of data. For computers, characters are still combinations of bytes defined by charset specification. On the contrary, human beings are used to dealing with sequences of characters. Character input streams are aimed to read data which consists of characters. Under the hood, they still read bytes, but immediately encode bytes to characters. So if you need to read a text, use character input streams. Otherwise, for example, while reading audio, video, zip and etc., use byte input streams.
 

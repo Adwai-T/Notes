@@ -14,7 +14,7 @@ API documentation is the most popular use of swagger, although it has tools to h
 
 ## Adding Swagger To Spring Boot
 
-### Get the swagger 2 Spring dependency.
+### Get the swagger 2 Spring dependency
 
 We can add the maven dependency for SpringFox Swagger2 which will give us our documentation in the JSON format and then we can create a UI for it or we can add Springfox Swagger UI which will provide documentation with the UI.
 
@@ -38,9 +38,9 @@ We can add the maven dependency for SpringFox Swagger2 which will give us our do
 
 > [Springfox Swagger2 MVNRepository](https://mvnrepository.com/artifact/io.springfox/springfox-swagger2/3.0.0).
 
-> [Springfox Swagger2 UI MVNRepository](https://mvnrepository.com/artifact/io.springfox/springfox-swagger-ui).w
+> [Springfox Swagger2 UI MVNRepository](https://mvnrepository.com/artifact/io.springfox/springfox-swagger-ui).
 
-### Enabling Swagger in our code.
+### Enabling Swagger in our code
 
 The Following will enable swagger in its most basic form without configuration.
 
