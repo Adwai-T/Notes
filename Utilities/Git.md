@@ -33,9 +33,18 @@ Branches in git :
 
 * `git branch` : list of all branches.
 * `git branch branchname` : create a new branch.
-* `git branch -d branchname` : delete a branch.
 * `git checkout brachname` : move into a branch.
 * `git checkout -b branchname` : create and move into a branch.
+* `git switch -c branchname` : from git 2.23 can be used to create and move into branch. `-c` is `--create`.
+* `git branch -v` : show last commit on each branch.
+* `git log --oneline --decorate` : decorated view of branches and commits
+* `git log branchName` : show commits for that branch
+* `git log --all` : show all branches and commits
+* `git branch -d branchname` : delete a branch.
+* `git branch --merged` : branches that are already merged into the currently active branch.
+* `git branch --no-merged` : branches not already merged with curretly active branch.
+
+> Do not rename branches that are still in use by other collaborators.
 
 Changes to Commits
 
@@ -105,9 +114,9 @@ Consider we don't want to  track file for some commits. We can set that file to 
 
 ### Branching Strategies
 
-WE can different branches for features or development and main branch.
+WE can have different branches for features or development and a main branch.
 
-The branches can also be classifed as Long Running and Short-Live branches.
+The branches can also be classifed as Long Running and Short-Lived branches.
 
 Every project has alteast one Long Running branch, called master or main.
 
@@ -115,9 +124,51 @@ Short_Lived branches are created for a purpose and are reintegrated into a Long 
 
 There are two types how git branching strategy can be used.
 
-* GitHub Flow : it is avery simple, very lean, only one long -running branch("main") + feature branches.
+* GitHub Flow : it is a very simple, very lean, only one long -running branch("main") + feature branches.
 
 * GitFlow : This might offer more structure but also needs to follow a lot more rules.
+
+#### Working with Branches
+
+The default branch name for a new git repository is `master`. As commits are made, we are give a master branch that points to the last commit made.
+
+When further commits are made the master branch pointer moves forward automatically.
+
+The **master** branch in Git is not a special branch. It is exactly like any other branch. The only reason nearly every repository has one is that the git init command creates it by default and most people don’t bother to change it.
+
+When a new branch is created, git gives us a new pointer to move around. The new pointer when created points to the same commit as the currently active branch.
+
+**HEAD** is a special pointer that is used by git to keep track of the currently active branch. It is the pointer to the local branch that we are currently on.
+
+When we `git checkout branchName` the `HEAD` pointer moves to that branch and git reverts the file in the working directory back to the snapshot that the branch points to.
+
+> If while switching to another branch there are conflicting files in the working directory or staging area, git will not allow switching branches. We can either stash changes or commit ammend to get around this.
+
+This means, the changes made to the branch here on forward will diverge from the older version of the project. Essentailly changes made to the branches are now isolated from each other.
+
+> Run `git log --oneline --decorate --graph --all` to print the history of all the commits, showing where the branches point and how branches have diverged.
+
+Branches can be merged when we have completed work on them. Say for example we merge *development* branch with the *master*. Now both the pointer will point to the same commit. We can then delete the *development* branch. If we keep the *development* branch and commit to *master* branch, the master pointer will move forward but the development header will still remain on the same commit. If we continue working on the *master* branch and make several commits, we can then merge the master branch with *development* branch so they are both pointing to the same commit.
+
+In case of complex tree Git will use the common ancestor and a method called three way merge to merge the two branches and will create a new commit. This is called as a **merge commit** and is special in that it has more than one parent.
+
+Occasionally, this process doesn't go smoothly. If we changed the same part of the same file differently in the two branches we're merging, Git won't be able to merge them cleanly. See Merge Conflicts below or refer to the below official links.
+
+Git Official Resources.
+
+[Working with branches](https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell).
+
+[Basic Branching and Merging](https://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging).
+
+[Advanced Merging](https://git-scm.com/book/en/v2/Git-Tools-Advanced-Merging#_advanced_merging).
+
+### Difference between Fetch and Pull
+
+While the `git fetch` command will fetch all the changes on the server that we don't have yet, it will not modify our working directory at all. It will simply get the data for us and let us merge it ourselves.
+
+However, `git pull` which is essentially a `git fetch` immediately followed by a `git merge` in most cases.
+
+Generally it's better to simply use the fetch and merge commands explicitly as the magic of `git pull` can often be confusing.
 
 ### Pull Requests
 
