@@ -23,9 +23,10 @@ If we have an identity already added to the configuration we can check it by usi
 * `git remote -v` : Get detail links about all remotes.
 * `git remote rename currentName toName` : Change the current name of remote.
 * `git push` : will push to the default repo and the main branch.
-* `git push origin master/main` : push to the origin remote repo and its main/master branch.
+* `git push origin master` : push to the origin remote repo and its main/master branch.
+* `git push --set-upstream remoteName branchName` : push the current branch and set the remote as upstream use.
 * `git fetch` : fetch updated code from remote repositroy. It need to be used with `git branch, git checkout and git reset`.
-* `git merge origin/master` : merge code with remote repo.
+* `git merge branchName` : merge code with remote repo.
 * `git pull` : is a Git command used to update the local version of a repository from a remote
 * `git clone <repo-url> <local-directory>` : clone a remote repo to local directory and optionally change name.
 
@@ -154,6 +155,8 @@ In case of complex tree Git will use the common ancestor and a method called thr
 
 Occasionally, this process doesn't go smoothly. If we changed the same part of the same file differently in the two branches we're merging, Git won't be able to merge them cleanly. See Merge Conflicts below or refer to the below official links.
 
+> Remote repository linked with the project also have their own pointer that point to the state of commit on the remote server repository. They cannot be controlled manually and are automatically updated by git as we update our remote repository when pushed.
+
 Git Official Resources.
 
 [Working with branches](https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell).
@@ -214,6 +217,12 @@ We use `git rebase branch-name` to rebase a branch into main.
 
 > Git merge preserves the branch history where as git rebase will club the branches together into one branch as if the development was done on a single branch.
 
-.
+## Github
 
 > When on github on a project page press `>` to open the project on browser based vs code.
+
+### Branch Protection Rule
+
+If there are multiple moderators/maintainers for a github repository, there is a need for rules on which is the main branch, who can make changes to the main branch(like merge other branches), or need approval to merge to main branch etc.
+
+These rules are controlled in this section.

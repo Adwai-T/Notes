@@ -637,7 +637,6 @@ public class Pet{
 ```
 
 > As from above example we can see that we can either directly name the Component or Bean to give the bean created that name or we can use `@Qualifier` to give the bean that is created desired name.
-
 > [@Qualifier Documentation](https://docs.spring.io/spring/docs/current/spring-framework-reference/core.html#beans-autowired-annotation-qualifiers)
 
 ### @Value
@@ -1373,9 +1372,11 @@ For very simple applications this might not be necessary, this serves best when 
 
 All request mapping on methods in the controller are relative to the controller's request mapping.
 
-#### Serving Page
+### Serving Static Web Page
 
 As we have set up the server configuration to serve pages, the following request mapping will serve the `.jsp` pages in the resources that we have created.
+
+> Spring Boot serves static content from a directory called `/static`, `/public`, `/resources` or `/META-INF/` in the class path or from the root of the `ServletContext`. It uses the ResourceHttpRequestHandler from SpringMVC so that we can modify that behaviour in our won `WebMvcConfigurer` and overriding the `addResourceHandlers` method.
 
 ```java
 @Controller

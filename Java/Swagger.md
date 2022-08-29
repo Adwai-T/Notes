@@ -14,11 +14,14 @@ API documentation is the most popular use of swagger, although it has tools to h
 
 ## Adding Swagger To Spring Boot
 
+> Before you add Swagger to your project, it has not been updated for a while and might not be updated further. So to future proof your project it is recommended to add a different documentation tools as [springdoc-openapi](https://springdoc.org/). I tried to recently add Swagger to my project and it is filled with unexpected problems that arise as it has not been updated as Spring Boot has developed.
+> Swagger Still works fine if you want to use it.
+
 ### Get the swagger 2 Spring dependency
 
 We can add the maven dependency for SpringFox Swagger2 which will give us our documentation in the JSON format and then we can create a UI for it or we can add Springfox Swagger UI which will provide documentation with the UI.
 
-> Both swagger2 and swagger2 UI can be added together to get both JSON documentation and UI documentation in our project.
+> Swagger UI need both the dependencies to be added.
 
 ```xml
 <!-- JSON documentation -->
@@ -37,7 +40,6 @@ We can add the maven dependency for SpringFox Swagger2 which will give us our do
 ```
 
 > [Springfox Swagger2 MVNRepository](https://mvnrepository.com/artifact/io.springfox/springfox-swagger2/3.0.0).
-
 > [Springfox Swagger2 UI MVNRepository](https://mvnrepository.com/artifact/io.springfox/springfox-swagger-ui).
 
 ### Enabling Swagger in our code
@@ -62,6 +64,56 @@ Configuring swagger gives users of our api a better experience with our document
 If we have swagger UI enabled we can access it at `http://localhost:8080/swagger-ui.html`.
 
 > When we have Swagger UI enabled we cannot have an API endpoint controller directly at the root as it might not allow swagger link to be accessed.
+
+### Trouble Shooting documentationPluginsBootstrapper
+
+This issue is caused by Spring Fox 3.0.0 not supporting new PathPattern Based Path Matching Strategy for Spring MVC which is now the new default from spring-boot 2.6.0.
+
+Spring is using mvcmatchers by default which conflicts with swagger because it uses the antmatchers so we can solve this by the following methods.
+
+* Downgrading Spring-Version will solve the issue but should not be done just to use swagger.
+  
+* Changing PathPattern matching back to AntPatternMatching in properites/yml file.
+
+```properites
+# In application.properties
+spring.mvc.pathmatch.matching-strategy=ant_path_matcher
+```
+
+* Enable MVCmatchers in spring creating a configuration file for swagger to use.
+
+```java
+@EnableWebMvc
+@EnableSwagger2
+@Component
+public class SwaggersConfigs {
+}
+```
+
+* Migrate to [Spring Doc](https://springdoc.org/#migrating-from-springfox) as swagger did not have any updates for a long time.
+
+#### Spring Security Access
+
+Make sure that all the following paths are accessible while using swagger.
+
+`( "/v2/api-docs", "/swagger-ui/**", "/swagger-resources/**")` if using swagger2.
+
+`( "/v3/api-docs**", "/v3/api-docs/**","/swagger-ui**", "/swagger-ui/**", "/swagger-resources/**")`
+
+if using [SpringDoc](https://springdoc.org/)
+
+When spring security is enabled it will block all paths by default. Configure spring security to enable these Paths.
+
+#### InternalResourceViewResolver Issue
+
+If there are view resolution issues there might be a need to manually create a bean for the View Resolver in our Swagger Configuration.
+
+```java
+@Bean
+public InternalResourceViewResolver defaultViewResolver() {
+    return new InternalResourceViewResolver();
+}
+```
 
 ### Configure Swagger
 
@@ -139,3 +191,5 @@ There is an Alternative to Swagger specifically being designed for spring.
 Swagger is great when we use it in moderation. When every model and every endpoint is being annotated with the swagger configuration annotations, it becomes very cluttered and the unreadable.
 
 To solve this problem where in some cases the swagger annotations can have greater code than the logic/buisness code itself we might want to look towards Spring REST Docs as it takes the documentation part out of the actual code and into test code.
+
+> [springdoc-openapi](https://springdoc.org/).
