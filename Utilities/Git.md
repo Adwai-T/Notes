@@ -61,8 +61,9 @@ Changes to Commits
 * `git stash` : This will create a  stash of current changes.
 * `git pop` : Add back the changes to current working directory.
 * `git stach save stash-name` : If we want to use multiple stashes we can name the stash and then add particular stash to working directory as needed.
-* `git stash list` : list of all stash
+* `git stash list` : list of all stash with id.
 * `git stash apply stash-id` : to add the stash to working directory.
+* `git stash drop stash-id` : delete stash.
 
 Reset code from remote Repo: Lets say we have a remote repo and a local repo and thing are not working on the local repo after some changes were made and we want the code to be reset to the state on the remote repo.
 

@@ -1,7 +1,5 @@
 # SQL
 
-Notes Taken from Youtube channel : ![Socratica](https://www.youtube.com/channel/UCW6TXMZ5Pq6yL6_k5NZ2e0Q)
-
 Structured Query Language
 
 Made for CRUD : Create Read Update Delete
