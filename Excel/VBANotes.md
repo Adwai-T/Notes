@@ -16,7 +16,7 @@ int a = MsgBox("Do you like blue color?",3,"Choose options")
 //4 - vbRetry - Retry was clicked
 //5 - vbIgnore - Ignore was clicked
 //6 - vbYes - Yes was clicked
-//7 - vbNo - No was clicked 
+//7 - vbNo - No was clicked
 
 //--- Input Box
 //InputBox(prompt[,title][,default][,xpos][,ypos][,helpfile,context])
@@ -24,7 +24,7 @@ Length = InputBox("Enter Length ", "Enter a Number")
 
 //--- Variable
 //Dim <<variable_name>> As <<variable_type>>
-//Types : 
+//Types :
 //Numeric : Byte, Integer, Long, Single, Double, Currency, Decimal
 //Non Numeric : String , Date, Boolean, Object, Variant
 Dim num As Integer
@@ -35,8 +35,8 @@ BirthDay = DateValue("30 / 10 / 2020")
 
 //--- Constants
 //Const <<constant_name>> As <<constant_type>> = <<constant_value>>
-Const MyInteger As Integer = 42 
-Const myDate As Date = #2/2/2020# 
+Const MyInteger As Integer = 42
+Const myDate As Date = #2/2/2020#
 Const myDay As String = "Sunday"
 
 //--- Operators
@@ -83,7 +83,7 @@ End If
 Private Sub Constant_demo_Click()
   Dim a As Integer
   a = 10
-  
+
   For i = 0 To a Step 2
      MsgBox "The value is i is : " & i
   Next
@@ -97,7 +97,7 @@ For Each Item In fruits
 Next
 
 //While
-Dim Counter :  Counter = 10 
+Dim Counter :  Counter = 10
 While Counter < 15
 //do something here
 Counter = Counter + 1
@@ -125,7 +125,7 @@ Loop
 
 //Do Until 2
 i = 10
-Do 
+Do
   i = i + 1
   msgbox "The value of i is : " & i
 Loop Until i<15
@@ -151,12 +151,12 @@ arr3 = Array("apple","Orange","Grapes")
 //Add and access value
 arr(0) = "1"
 arr(0) //Access value
-arr(1) = "VBScript"  
-arr(2) = 100 
+arr(1) = "VBScript"
+arr(2) = 100
 
 //Multidimensional Array
 Dim arr(2,3) as Variant
-arr(0,0) = "Apple" 
+arr(0,0) = "Apple"
 arr(0,1) = "Orange"
 arr(0,2) = "Grapes"
 
@@ -181,12 +181,12 @@ End Function
 
 //--- With
 //Using With to chain properties of a object
-With MyObject 
- .Height = 100 ' Same as MyObject.Height = 100. 
- .Caption = "Hello World" ' Same as MyObject.Caption = "Hello World". 
- With .Font 
-  .Color = Red ' Same as MyObject.Font.Color = Red. 
-  .Bold = True ' Same as MyObject.Font.Bold = True. 
+With MyObject
+ .Height = 100 ' Same as MyObject.Height = 100.
+ .Caption = "Hello World" ' Same as MyObject.Caption = "Hello World".
+ With .Font
+  .Color = Red ' Same as MyObject.Font.Color = Red.
+  .Bold = True ' Same as MyObject.Font.Bold = True.
  End With
 End With
 

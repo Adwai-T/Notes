@@ -36,13 +36,13 @@ We are not always going to feel good, but the feeling bad needs to be managed. F
 
 > If you have achieved your identity you are less likly to procrastinate.
 
-* Task Aversiveness : Phase of task completeness will make a difference in likeliness to procrastinate.
+- Task Aversiveness : Phase of task completeness will make a difference in likeliness to procrastinate.
 
 When we think about tasks concretely we think about these task as more urgent, if we are vague or abstract the task are percieved as not urgent and easier or difficult depending on situation.
 
-> "The mental discipline necessary to woek towards a deadline is somthing that you must develop. It can become habit just as letting things silde until the last minute can become habit. That pattern leads to staying up all noight and writing in a blind panic. Besides ruining your health you never can write your best. If anyone tells you, 'I have to wait until the pressure is on before I can start to cook', don't believe it. Occassionally, you maybe able to work under pressure of deadline, but stop kidding yourself, it won't be your best" _ Hagen, 1990
+> "The mental discipline necessary to woek towards a deadline is somthing that you must develop. It can become habit just as letting things silde until the last minute can become habit. That pattern leads to staying up all noight and writing in a blind panic. Besides ruining your health you never can write your best. If anyone tells you, 'I have to wait until the pressure is on before I can start to cook', don't believe it. Occassionally, you maybe able to work under pressure of deadline, but stop kidding yourself, it won't be your best" \_ Hagen, 1990
 
-* Self-Control : Value Affirmation
+- Self-Control : Value Affirmation
 
 I am going to do X at Y time to achieve Z.
 

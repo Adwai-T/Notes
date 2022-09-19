@@ -6,7 +6,7 @@ Made for CRUD : Create Read Update Delete
 
 Relational Database :
 
-**Database** *is* -> **Collection** of tables *has*-> Rows and Columns -> Each row is called as a **Record**
+**Database** _is_ -> **Collection** of tables _has_-> Rows and Columns -> Each row is called as a **Record**
 
 Data in tables can be related to each other, that is why they are called as relational database.
 
@@ -75,7 +75,7 @@ SELECT MIN(column_name), MAX(column_name)
 SELECT DISTINCT column_name FROM table_name
 ```
 
-* In the above `INSERT` we specified an ID(movies_id), these are used as unique identifiers for that entry. Most database softwares will generate an ID automatically and will not have to provide an id manually.
+- In the above `INSERT` we specified an ID(movies_id), these are used as unique identifiers for that entry. Most database softwares will generate an ID automatically and will not have to provide an id manually.
 
 ## Joins
 

@@ -6,7 +6,7 @@ Requires Node for packing and optimize the project. Also npm will be used downlo
 
 `npm install -g @angular/cli` : Install angular Cli
 
-`ng new my-app` :  Create a new project
+`ng new my-app` : Create a new project
 
 `ng serve` : Serve or run the new project at port 4200 on local host with development server active, that is the server will refresh app whenever we save some files and changes are detected in those files. The `ng serve --open` flag will open the default browser at localhost:4200.
 
@@ -75,30 +75,30 @@ The default value for `encapsulation` is `Emulated` which is the default behavio
 
 Selectors can be html tags, or class or id.
 
-* Normal Selector defined when generated is a html element.
-`selector: 'app-servers'`
-`<app-servers></app-servers>`
+- Normal Selector defined when generated is a html element.
+  `selector: 'app-servers'`
+  `<app-servers></app-servers>`
 
-* Attribute :
-`selector: '[app-servers]`
-`<div app-servers></div>`
+- Attribute :
+  `selector: '[app-servers]`
+  `<div app-servers></div>`
 
-* Class :
-`selector: '.app-servers'`
-`<div class="app-servers"></div>`
+- Class :
+  `selector: '.app-servers'`
+  `<div class="app-servers"></div>`
 
 All of the above selectors can be used to get similar results.
 
 ## Data Binding
 
-* String Interpolation :
+- String Interpolation :
 
 `value: string = This string will be displayed`
 `{{ value }}` : This we put in HTML file.
 
 Any value which at the end can be resolved to a string can be used here. But a multiline expresson cannot be used here.
 
-* Property Binding
+- Property Binding
 
 Binding To properties in HTML.
 
@@ -109,21 +109,21 @@ In the above html code we create a button. In it `disable` is a property of the 
 
 In the above code we bind the disable property to the varible `allowNewServer` which is a variable in our js code.
 
-* Event Binding
+- Event Binding
 
 Similar to property binding we can bind to any event provided by that HTML element.
 
 We use `()` to bind to the event as we used `[]` to bind to the properties.
 
-* Bindable Properties and Events
+- Bindable Properties and Events
 
-How do you know to which Properties or Events of HTML Elements you may bind? You can basically bind to all Properties and Events - a good idea is to `console.log()`  the element you're interested in to see which properties and events it offers.
+How do you know to which Properties or Events of HTML Elements you may bind? You can basically bind to all Properties and Events - a good idea is to `console.log()` the element you're interested in to see which properties and events it offers.
 
 Important: For events, you don't bind to onclick but only to click `(=> (click))`.
 
-The MDN (Mozilla Developer Network) offers nice lists of all properties and events of the element you're interested in. Googling for `YOUR_ELEMENT` properties  or `YOUR_ELEMENT` events  should yield nice results.
+The MDN (Mozilla Developer Network) offers nice lists of all properties and events of the element you're interested in. Googling for `YOUR_ELEMENT` properties or `YOUR_ELEMENT` events should yield nice results.
 
-* Events
+- Events
 
 ```ts
 //We get a event from the event binding in the html.
@@ -134,16 +134,16 @@ onUpdateServerName(event: Event){
 }
 ```
 
-* ngModel : Twp Way binding Directive
+- ngModel : Twp Way binding Directive
 
 NgModel is used for two way databinding and is a directive provided by angular.
 
-`ngModel` is not a part of the core module of angular and needs to be imported by adding the `FormsModule`  to the `imports[]`  array in the AppModule.
-Then also need to add the import from `@angular/forms`  in the app.module.ts file:
+`ngModel` is not a part of the core module of angular and needs to be imported by adding the `FormsModule` to the `imports[]` array in the AppModule.
+Then also need to add the import from `@angular/forms` in the app.module.ts file:
 
 `import { FormsModule } from '@angular/forms';`
 
-* Two way Data Binding :
+- Two way Data Binding :
 
 ## Directives
 
@@ -155,12 +155,12 @@ So the code `*` gets converted into an ng-template that angular understands.
 
 ```html
 <div *ngIf="!onlyOdd">
-    <li *ngFor="let even of evenNumbers">{{even}}</li>
+  <li *ngFor="let even of evenNumbers">{{even}}</li>
 </div>
 
 <!--The above code will be converted to the following code and similar for the ngFor inisde the existing code.-->
-<ng-template [ngIf]= "!onlyOdd">
-    <li *ngFor="let even of evenNumbers">{{even}}</li>
+<ng-template [ngIf]="!onlyOdd">
+  <li *ngFor="let even of evenNumbers">{{even}}</li>
 </ng-template>
 
 <!--Now we see that we dont have the star and the ngIf is bound as a property instead-->
@@ -168,32 +168,32 @@ So the code `*` gets converted into an ng-template that angular understands.
 
 Note: We cannot have more than one structural directive on any one html element.
 
-* *ngIf :
+- \*ngIf :
 
 The `*` in the directive name tells that this directive will change the DOM and is a **structural directive**.
 
-The value *ngIf should be set to an expression that return a boolean value.
+The value \*ngIf should be set to an expression that return a boolean value.
 
-* *ngIf with Else :
+- \*ngIf with Else :
 
 ```html
 <p *ngIf="serverCreated; else noServer">Server was created</p>
 <ng-template #noServer>
-<p>No Server was created</p>
+  <p>No Server was created</p>
 </ng-template>
 ```
 
 `#` in the code is called a local marker. It denotes what is to be shown when the condition of the `ngIf` is false.
 
-* ngFor : This is also a structural directive.
+- ngFor : This is also a structural directive.
 
-* ngSwitch :
+- ngSwitch :
 
 ```html
 <div [ngSwitch]="value">
-    <p *ngSwitchCase="1">value 1</p>
-    <p *ngSwitchCase="2">value 2</p>
-    <p *ngSwitchDefault>value Default</p>
+  <p *ngSwitchCase="1">value 1</p>
+  <p *ngSwitchCase="2">value 2</p>
+  <p *ngSwitchDefault>value Default</p>
 </div>
 ```
 
@@ -225,7 +225,7 @@ export class UnlessDirective{
 
 ```html
 <div *appUnless="onlyOdd">
-    <li *ngFor="let even of evenNumbers">
+  <li *ngFor="let even of evenNumbers"></li>
 </div>
 ```
 
@@ -236,31 +236,30 @@ Unlike structural directives these directive do not add or remove any elements. 
 ```html
 <p [ngStyle]="{backgroundColor: getColor()}">This is a line</p>
 <!--We could also have conditional styling like in the below example-->
-<p [ngStyle]="{backgroundColor: odd%2 !== 0 ? 'grey': 'yellow'}">
+<p [ngStyle]="{backgroundColor: odd%2 !== 0 ? 'grey': 'yellow'}"></p>
 ```
 
 The ngStyle by itself does not require the `[]` but was we are binding a value from our component.ts file to the style we need them. In the example above we bind the value from our script file to the backgroundColor Property of the ngStyle.
 
-* ngClass : Conditionally add class to our element.
-`[ngClass]="{odd: odd%2 !==2}"`
+- ngClass : Conditionally add class to our element.
+  `[ngClass]="{odd: odd%2 !==2}"`
 
 ### Creating an Attribute directive
 
 `ng g d better-highlighter`
 
 ```ts
-import{ Directive } from '@angular/core';
+import { Directive } from "@angular/core";
 
 @Directive({
-    selector: '[appBasicHighlight]'
+  selector: "[appBasicHighlight]",
 })
 export class BasicHighlightDirective implements OnInit {
+  constructor(private elementRef: ElementRef) {}
 
-    constructor(private elementRef: ElementRef){}
-
-    ngOnInit(){
-        this.elementRef.nativeElement.style.backgroundColor = 'green';
-    }
+  ngOnInit() {
+    this.elementRef.nativeElement.style.backgroundColor = "green";
+  }
 }
 
 //Directives need to be added to app.module.ts in the declarations for angular to know that we have created that directive.
@@ -285,39 +284,42 @@ The better approach to changing the DOM from the script file is to use `Renderer
 
 //--Change 3 Make final code clear and Add selectable color properties in our script that can be bound from within our html element in our html template file.
 
-import { Directive, OnInit, ElementRef, Renderer2 } from '@angular/core';
+import { Directive, OnInit, ElementRef, Renderer2 } from "@angular/core";
 
 @Directive({
-    selector: '[appBetterHighlight]'
+  selector: "[appBetterHighlight]",
 })
-export class BetterHighlighterDirective implements OnInit{
+export class BetterHighlighterDirective implements OnInit {
+  //--Change 2
+  //Here we bind to the backgroundColor property of host or the html element that the directive is used in. The argument that is passed in represents what we property of the host element we want to bind to and the outside backgroundColor is the varaible name that we use to refer to the bound property within our script and can be named as we wish.
+  @HostBinding("style.backgroundColor") backgroundColor: string = "transparent";
 
+  constructor(private elRef: ElementRef, private render: Renderer2) {}
+
+  ngOnInit() {
+    //--Change 1
+    //this.renderer.setStyle(this.elRef.nativeElement, 'background-color', 'blue');
+  }
+
+  //--Change 1
+  //@HostListener will refer to the element that the directive is placed on.
+  //This will activate when the mouse hover over our html element
+  @HostListener("mouseenter") mouseover(eventData: Event) {
     //--Change 2
-    //Here we bind to the backgroundColor property of host or the html element that the directive is used in. The argument that is passed in represents what we property of the host element we want to bind to and the outside backgroundColor is the varaible name that we use to refer to the bound property within our script and can be named as we wish.
-    @HostBinding('style.backgroundColor') backgroundColor: string = 'transparent'
+    //this.rederer.setStyle(this.elRef.nativeElement, 'background-color', 'blue');
+    this.backgroundColor = "blue";
+  }
 
-    constructor(private elRef: ElementRef, private render: Renderer2){}
-
-    ngOnInit(){
-        //--Change 1
-        //this.renderer.setStyle(this.elRef.nativeElement, 'background-color', 'blue');
-    }
-
-    //--Change 1
-    //@HostListener will refer to the element that the directive is placed on.
-    //This will activate when the mouse hover over our html element
-    @HostListener('mouseenter') mouseover(eventData: Event){
-        //--Change 2
-        //this.rederer.setStyle(this.elRef.nativeElement, 'background-color', 'blue');
-        this.backgroundColor = 'blue';
-    }
-
-    //--Change 1
-    //This will proc when the mouse pointer leaves the area covered by the html element.
-    @HostListener('mouseleave') mouseleave(eventData: Event){
-        //This still uses the renderer form change 1.
-        this.renderer.setStyle(this.elRef.nativeElement, 'background-color', 'transparent')
-    }
+  //--Change 1
+  //This will proc when the mouse pointer leaves the area covered by the html element.
+  @HostListener("mouseleave") mouseleave(eventData: Event) {
+    //This still uses the renderer form change 1.
+    this.renderer.setStyle(
+      this.elRef.nativeElement,
+      "background-color",
+      "transparent"
+    );
+  }
 }
 ```
 
@@ -325,43 +327,44 @@ Final Form of Example
 
 ```ts
 @Directive({
-    selector: '[appBetterHighligher]'
+  selector: "[appBetterHighligher]",
 })
-export class BetterHighlighterDirective implements OnInit{
+export class BetterHighlighterDirective implements OnInit {
+  @Input() defaultColor: string = "transparent";
 
-    @Input() defaultColor: string = 'transparent';
+  //If our directive has one important propertu that it need to bind to we can directly name or in other words use Alias that is the selector value of the directive and bind to the directive declaration itself in the html tag as show below in the html code.
+  @Input("appBetterHighligher") highlightColor: string = "blue";
 
-    //If our directive has one important propertu that it need to bind to we can directly name or in other words use Alias that is the selector value of the directive and bind to the directive declaration itself in the html tag as show below in the html code.
-    @Input('appBetterHighligher') highlightColor: string = 'blue';
+  //We want to the element to initialize with the color so we initialize this in the ngOninit method.
+  @HostBinging("style.backgroundColor") backgroundColor: string;
 
-    //We want to the element to initialize with the color so we initialize this in the ngOninit method.
-    @HostBinging('style.backgroundColor') backgroundColor: string;
+  constructor(private elRef: ElementRef, private renderer: RendererV2) {}
 
-    constructor(private elRef: ElementRef, private renderer: RendererV2){}
+  ngOnInit() {
+    this.backgroundColor = this.defaultColor;
+  }
 
-    ngOnInit(){
-        this.backgroundColor = this.defaultColor;
-    }
+  @HostListener("mouseenter") mouseOver(eventData: Event) {
+    this.backgroundColor = this.highlightColor;
+  }
 
-    @HostListener('mouseenter') mouseOver(eventData: Event){
-        this.backgroundColor = this.highlightColor;
-    }
-
-    @HostListener('mouseleave') mouseleave(eventData: Event){
-        this.backgroundColor = this.defaultColor;
-    }
+  @HostListener("mouseleave") mouseleave(eventData: Event) {
+    this.backgroundColor = this.defaultColor;
+  }
 }
 ```
 
 HTML Code
 
 ```html
-<p [appBetterHighlight]="'red'" [defaultColor]="yellow"> Style me with better Highlighter Directive.</p>
+<p [appBetterHighlight]="'red'" [defaultColor]="yellow">
+  Style me with better Highlighter Directive.
+</p>
 ```
 
 As we see in the previous section example we dont have to have `[]` to surround the directive selector but as we have named our @Input main property that the directive needs to achive to the name of the selector we have to now put the selector of the directive in the `[]`.
 
-We also see that we put the *red* in double quotes and then single quotes, that is to signify that it is a string.
+We also see that we put the _red_ in double quotes and then single quotes, that is to signify that it is a string.
 
 We can also bind to the properties direcly by omitting `[]` but only in the case that we are passing in a string and we also omit the single quotes that surround the string. But while using this case it should be very clear that it is not a native property of the element for other who read the code and also angular itself.
 
@@ -473,14 +476,19 @@ If you DON'T access the selected element in ngOnInit (but anywhere else in your 
 
 If you're using Angular 9, you only need to `add { static: true }` (if needed) but not `{ static: false }`.
 
-To Use `@ViewChild()` we have to pass the local reference to the ViewChild as a paramenter which will be used as a *selector* for the element in HTML.
+To Use `@ViewChild()` we have to pass the local reference to the ViewChild as a paramenter which will be used as a _selector_ for the element in HTML.
 
 Unlike the above example where we pass the local referce to a method as a paramenter and get the html element itself in our script file, we get a `ElementRef` as the type which need to be imported form angular core.
 
 Note: Even if we can get the html element in our script file it is not recommended to change the value of any other property of the html element directly throught the reference. We can use directives to change the value.
 
 ```html
-<mat-drawer id="side-nav" mode="side" [opened]="isDesktop" #matDrawer>
+<mat-drawer
+  id="side-nav"
+  mode="side"
+  [opened]="isDesktop"
+  #matDrawer
+></mat-drawer>
 ```
 
 ```ts
@@ -562,9 +570,11 @@ const appRoutes: Routes = [
 
 In our html we add `<router-outlet></router-outlet>` where we want to add the compoenent at the current route.
 
-Note: `router-outlet` is a angular directive even if it looks like a html element.
+> `router-outlet` is a angular directive even if it looks like a html element.
 
-* Adding links to the HTML code :
+- Adding links to the HTML code :
+
+> Import `import { RouterModule } from '@angular/router';` and add `RouterModule` to the list of importes in the module where `routerLink`'s are used. If not imported the links will not work.
 
 ```html
 <!--In the below we pass directly the route to the router link-->
@@ -585,7 +595,7 @@ Useing relative path in routerLinks is not bad but we have to know that we defin
 
 Relative path for routerLink can be defined as if we were accessing a file structure in terminal using `../` and `./` as it works in terminal.
 
-* `routerLinkActive` and `routerLinkActiveOptions`:
+- `routerLinkActive` and `routerLinkActiveOptions`:
 
 `routerLinkActive` will add the class to the anchor tag whenever the link is active.
 
@@ -593,17 +603,17 @@ Relative path for routerLink can be defined as if we were accessing a file struc
 
 ```html
 <li routerLinkActive="active">
-    <a routerLink="/">Home</a>
+  <a routerLink="/">Home</a>
 </li>
 <li routerLinkActive="active" [routerLinkOptions]="{exact: true}">
-    <a routerLink="/servers">servers</a>
+  <a routerLink="/servers">servers</a>
 </li>
 <li routerLinkActive="active">
-    <a routerLink="/something">something</a>
+  <a routerLink="/something">something</a>
 </li>
 ```
 
-* Loading Routes from Script
+- Loading Routes from Script
 
 ```html
 <button class="btn btn-primary" (click)="onLoadServers()">Servers</button>
@@ -612,27 +622,27 @@ Relative path for routerLink can be defined as if we were accessing a file struc
 ```ts
 //--Change 1 Use Primary path.
 
-import { Route } from '@angular/router'
+import { Route } from "@angular/router";
 
-export class HomeComponent implements OnInit{
-    //other code here
+export class HomeComponent implements OnInit {
+  //other code here
 
-    constructor(private router: Router, private route: ActivatedRoute){}
+  constructor(private router: Router, private route: ActivatedRoute) {}
 
-    onLoadServers(){
-        //Some algorithm here
-        this.route.navigate(['/servers'])
-    }
+  onLoadServers() {
+    //Some algorithm here
+    this.route.navigate(["/servers"]);
+  }
 
-    //In this we will use a relative route. Unline routerLink the script does not know the current route and using relative route the route is appended to the root, thus we have to specify the route we want to be relative to.
-    //this.route will give the script the currently loaded path.
-    onLoadServersSomething(){
-        this.router.navigate(['something'], {relativeTo: this.route});
-    }
+  //In this we will use a relative route. Unline routerLink the script does not know the current route and using relative route the route is appended to the root, thus we have to specify the route we want to be relative to.
+  //this.route will give the script the currently loaded path.
+  onLoadServersSomething() {
+    this.router.navigate(["something"], { relativeTo: this.route });
+  }
 }
 ```
 
-* Passing Parameter to Route
+- Passing Parameter to Route
 
 `{ path: 'users/:id/:name', component: UserComponent }`
 
@@ -640,7 +650,7 @@ In the above code `:` is used to attach a dynamic parameter to the route.
 
 Both id and name are parameters of the route.
 
-* Fetching dynamic Path segment that we create above :
+- Fetching dynamic Path segment that we create above :
 
 ```ts
 //Other imports here
@@ -699,7 +709,7 @@ ngOnDestroy(){
 }
 ```
 
-* Using Query Paramters
+- Using Query Paramters
 
 Both queryParams and fragment are properties of the routerLink itself.
 
@@ -707,18 +717,18 @@ There can only be one fragment per routerLink but there can be multiple queryPar
 
 ```html
 <a
-    [routerLink]="['/servers',5, 'edit']"
-    [queryParams]="{allowEdit: '1'}"
-    fragement="loading"
-    href="#"
->
+  [routerLink]="['/servers',5, 'edit']"
+  [queryParams]="{allowEdit: '1'}"
+  fragement="loading"
+  href="#"
+></a>
 ```
 
 We can get the paramters and the fragements by injecting `ActivatedRoute` and use the `route.snapshot.fragment` and `route.snapshot.queryParams` to retrive the current paramters and fragment.
 
 As discussed above we only want to use `snapshot` if we know that the data of fragment or queryParams is not going to change from within the component, and if it is going to change we want to use the subscription methods as discussed in the previous examples.
 
-* Using The QueryParams In our script file:
+- Using The QueryParams In our script file:
 
 `this.router.navigate(['edit'], {relativeTo: this.route, queryParamsHandling: 'preserve or merge'});`
 
@@ -726,7 +736,7 @@ In the above piece of code we use the `relativeTo` to set the path `edit` relati
 
 ### WildCard Routing and Redirecting
 
-* `redirectTo` :
+- `redirectTo` :
 
 ```ts
 { path: 'not-found', component: PageNotFoundComponent },
@@ -742,20 +752,25 @@ In the above piece of code we use the `relativeTo` to set the path `edit` relati
 ### Child Or Nested Routers
 
 ```js
-
 //In the app.module.ts file where we define routes as above
 
 const appRoutes: Routes = [
-    { path: '', component: HomeComponent },
+  { path: "", component: HomeComponent },
 
-    { path: 'users', component: UserComponent, children:[
-        { path: ':id/:name', component: UserComponent }
-    ] },
+  {
+    path: "users",
+    component: UserComponent,
+    children: [{ path: ":id/:name", component: UserComponent }],
+  },
 
-    { path: 'servers', component: ServersComponent, children: [
-        {path: ':id', component: ServerComponent },
-        {path: ':id/edit', component: EditServerComponent }
-    ] }
+  {
+    path: "servers",
+    component: ServersComponent,
+    children: [
+      { path: ":id", component: ServerComponent },
+      { path: ":id/edit", component: EditServerComponent },
+    ],
+  },
 ];
 ```
 
@@ -766,26 +781,21 @@ There are no special properties to the router-outlet where the child path are lo
 ### Defining route Module outside of the app.module.ts file
 
 ```ts
-
 const appRoutes: Routes = [
-    //All our routes here
-]
+  //All our routes here
+];
 
 @NgModule({
-    imports: [
-        RouterModule.forRoot(appRouters)
-    ],
-    exports:[RouterModule]
+  imports: [RouterModule.forRoot(appRouters)],
+  exports: [RouterModule],
 })
-export class AppRoutingModule{
-
-}
+export class AppRoutingModule {}
 
 //We have created our custom routing module above but it also need to be added to the app.module.ts file to the imports array.
 imports: [
-    //all other imports
-    AppRoutingModule
-]
+  //all other imports
+  AppRoutingModule,
+];
 ```
 
 ## Route Guards
@@ -859,7 +869,7 @@ canActivateChild(route: ActivateRouteSnapshot. state: RouterStateSnapshot):Obser
 
 ```
 
-### Router
+## Router
 
 A service that provides navigation among views and URL manipulation capabilities.
 
@@ -884,7 +894,7 @@ The [`Location`](https://angular.io/api/common/Location) class can be imported i
 ```ts
 //say we are in a ~/article, say we load content from a file and arent routing to anther location
 //We want to show that a page has changed and also show relevant url, we use
-this.location.go(`/article/${topic.title}`)
+this.location.go(`/article/${topic.title}`);
 
 //We could also detect changes to url by subscribing to the location
 let locationEvent = this.location.subscribe((value) => {});
@@ -896,13 +906,50 @@ locationEvent.unsubscribe();
 //Also use the Location class only when needed and with a particular path.
 const routes: Routes = [
   {
-    path: '',
+    path: "",
     component: PostsComponent,
-    children: [
-      { path: '**', redirectTo:'' }
-    ]
+    children: [{ path: "**", redirectTo: "" }],
   },
 ];
+```
+
+### Use Router Events
+
+Router events can be subscribed to.
+
+[For Official Docs Router Events.](https://angular.io/api/router/Router#events)
+
+Using Particular events.
+
+> Use `instanceof` to check the current event. Different types can be found here in [Angular Router API Docs](https://angular.io/api/router) under the Types section.
+
+```ts
+import { Router, NavigationEnd } from "@angular/router";
+import { Subscription } from "rxjs";
+
+export class TestComponent implements OnInit, OnDestroy {
+  private routerEventSubscription: Subscription;
+
+  constructor(private router: Router) {
+    this.routerEventSubscription = this.router.events.subscribe(
+      (event) => {
+        if (event instanceof NavigationEnd) {
+          console.log(event);
+        }
+      },
+      (err) => {
+        console.log("Error", err);
+      },
+      () => {
+        console.log("Completed");
+      }
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.routerEventSubscription.unsubscribe();
+  }
+}
 ```
 
 ## Observable
@@ -911,30 +958,30 @@ Observable and Observer are provided by rxjs and not by angular itself.
 
 All the observable that are given by Angular are managed by angular and Angular will unsubscribe the observable when we are done using the observable, so we dont have to explicitly unsubscribe to the Observable.
 
-* Creating our own observable
+- Creating our own observable
 
 ```ts
-import { interval, Subscription } from 'rxjs'
+import { interval, Subscription } from "rxjs";
 
 export class HomeComponent implements OnInit {
-    //othe code
+  //othe code
 
-    private firstObsSubscription: Subscription;
+  private firstObsSubscription: Subscription;
 
-    //This is a simple observable but it is not build from ground up. It is just for an example.
-    ngOnInit(){
-        this.firstObsSubscription = interval(1000).subscribe(count => {
-            console.log(count);
-        });
-    }
+  //This is a simple observable but it is not build from ground up. It is just for an example.
+  ngOnInit() {
+    this.firstObsSubscription = interval(1000).subscribe((count) => {
+      console.log(count);
+    });
+  }
 
-    ngOnDestroy(){
-        this.firstObsSubscription.unsubscribe();
-    }
+  ngOnDestroy() {
+    this.firstObsSubscription.unsubscribe();
+  }
 }
 ```
 
-* Creating Observable from scratch
+- Creating Observable from scratch
 
 Now we create our own observable from scratch that does the same task as the above example.
 
@@ -963,11 +1010,11 @@ ngOnInit(){
 }
 ```
 
-* Errors and Completion
+- Errors and Completion
 
 Whenever an error is thrown from the Observable the subscription ends.
 
-* Operterators
+- Operterators
 
 > TODO : Add rxjs Notes.
 
@@ -981,22 +1028,22 @@ There are two Approaches that angular offeres to handle forms.
 
 Template Driven forms are suitable for small, simple forms, while reactive forms are used for complex forms due to its scalability.
 
-|	REACTIVE |	TEMPLATE-DRIVEN |
-|---|---|
-| Setup of form model	Explicit, created in component class |	Implicit, created by directives|
-| Data model	Structured and immutable	|Unstructured and mutable|
-| Data flow	Synchronous	| Asynchronous|
-| Form validation|	Functions	Directives|
+| REACTIVE                                                 | TEMPLATE-DRIVEN                 |
+| -------------------------------------------------------- | ------------------------------- |
+| Setup of form model Explicit, created in component class | Implicit, created by directives |
+| Data model Structured and immutable                      | Unstructured and mutable        |
+| Data flow Synchronous                                    | Asynchronous                    |
+| Form validation                                          | Functions Directives            |
 
 ### Common From Foundation Classes
 
-* FormControl : Track the value and validation status of an individual form control.
+- FormControl : Track the value and validation status of an individual form control.
 
-* FromGroup : Track the same value and status for a group of form controls.
+- FromGroup : Track the same value and status for a group of form controls.
 
-* FormArray : Track the same value and status for an array of form controls.
+- FormArray : Track the same value and status for an array of form controls.
 
-* ControlValueAccessor : Creates a bridge between the angular FormControl and the inbuild DOM elements.
+- ControlValueAccessor : Creates a bridge between the angular FormControl and the inbuild DOM elements.
 
 ### Template Driven Forms
 
@@ -1008,7 +1055,7 @@ Angular does not detect the form controls automatically so we have to make angul
 
 The `NgModel` creates and manages a instance of `FormControl` for the given element that it is put on.
 
-There are two ways we can use use template driven forms. 
+There are two ways we can use use template driven forms.
 
 First way we can direclty use `ngModel` and with a varible in our script component that will track the value of the FormControl.
 
@@ -1017,17 +1064,14 @@ This ways can mostly be used for 1 or 2 input fields and to directly capture the
 > Don't Forget to add `FormsModule` from `'@angular/forms'` in `app.module.ts` while using the template driven forms.
 
 ```ts
-import { Component } from '@angular/core';
+import { Component } from "@angular/core";
 
 @Component({
-  selector: 'app-template-form',
-  template: 
-  `
-    Name : <input type="text" [(ngModel)]="name">
-  `
+  selector: "app-template-form",
+  template: ` Name : <input type="text" [(ngModel)]="name" /> `,
 })
 export class TemplateForm {
-  public name = '';
+  public name = "";
 }
 ```
 
@@ -1042,14 +1086,14 @@ Lets take an example of a contact form. We have three fields Name, Email and Mes
 <form id="container" (ngSubmit)="onSubmit()" #contactForm="ngForm">
   <label>If you would like to contact me please use the form.</label>
 
-    <label>Name</label>
-    <input name="name" ngModel />
-    <label>Email</label>
-    <input name="email" ngModel />
-    <br>
-    <label>Message</label>
-    <textarea name="message" ngModel></textarea>
-    <br>
+  <label>Name</label>
+  <input name="name" ngModel />
+  <label>Email</label>
+  <input name="email" ngModel />
+  <br />
+  <label>Message</label>
+  <textarea name="message" ngModel></textarea>
+  <br />
   <button type="submit">Send</button>
 </form>
 ```
@@ -1058,7 +1102,7 @@ Lets take an example of a contact form. We have three fields Name, Email and Mes
 
 ```ts
 export class ContactComponent implements OnInit {
-  @ViewChild('contactForm') public contactForm!: NgForm;
+  @ViewChild("contactForm") public contactForm!: NgForm;
 
   constructor() {}
   ngOnInit(): void {}
@@ -1086,13 +1130,13 @@ There are also directive provided by angular that can be used to validate the fo
 
 The are not a definitive check though as the front end application can be tricked, there should always be validation of data on server side so that we dont get invalid data in our persistance.
 
-* [Build in validators](https://angular.io/api/forms/Validators) : These are all built-in validators, though that are the methods which actually get executed(and which can be add when using the reactive approach).
+- [Build in validators](https://angular.io/api/forms/Validators) : These are all built-in validators, though that are the methods which actually get executed(and which can be add when using the reactive approach).
 
-* [Build in directives](https://angular.io/api?type=directive) : Everything marked with "D" is a directive and can be added to your template.
+- [Build in directives](https://angular.io/api?type=directive) : Everything marked with "D" is a directive and can be added to your template.
 
-Additionally, you might also want to enable HTML5 validation (by default, Angular disables it). You can do so by adding the `ngNativeValidate`  to a control in your template.
+Additionally, you might also want to enable HTML5 validation (by default, Angular disables it). You can do so by adding the `ngNativeValidate` to a control in your template.
 
-* NgModel :
+- NgModel :
 
 NgModel can be used with local reference to the form control.
 
@@ -1106,7 +1150,7 @@ The above example above shows one way binding and we can also use NgModel with t
 
 We can then use interpolation else were where we want to print the value of the answer property.
 
-* Grouping from Controls
+- Grouping from Controls
 
 We can put `ngModelGroup="controlGroup"` on a div that holds the form controls that need to be grouped.
 
@@ -1114,17 +1158,17 @@ This will create a individual object like the form object that we get for the gr
 
 We can also put a Local Reference on the group div and get access to the group object in our script as well as other places in the template itself.
 
-* Setting an patching values
+- Setting an patching values
 
 We can set default valies to our from controls, by using the `patchValue` method of `form`.
 
 ```ts
-const suggestedName = 'SuperUser';
+const suggestedName = "SuperUser";
 
 this.signupForm.form.patchValue({
   userData: {
-    username: suggestedName
-  }
+    username: suggestedName,
+  },
 });
 ```
 
@@ -1132,7 +1176,7 @@ The above approach to set the value for the form on an event will not reset the 
 
 The Other approach might be to set the value directly by using `this.signupForm.setValue({})` and pass in the object with the values that we want ot add to our from, but it will reset the form and thus all the values that the user had entered and thus the above approach is much more convenient and useful in most cases.
 
-* Resetting Form
+- Resetting Form
 
 `this.signupForm.reset();` this will reset the form to empty as if the page was reloaded and the form was never used.
 
@@ -1159,7 +1203,7 @@ export class AppComponent implement onInit{
         this.signupForm = new FormGroup({
             'username': new FromControl(null),
             'email' : new FormControl(null),
-            'gender': new FormControl('male') 
+            'gender': new FormControl('male')
             //Here we set a default initialization value for our form control.
         });
     }
@@ -1189,7 +1233,7 @@ Synchronize our script form with the HTML form in our template.
 
 In the above html code we attached or linked our script Form object with the HTML template containing the Form control component. We use formControlName to connect the respective HTML form elements with the Object in script.
 
-* Submitting Form
+- Submitting Form
 
 As we create the from object in the script it self we already have access to the from object in the script.
 
@@ -1202,7 +1246,7 @@ onSubmit(){
 }
 ```
 
-* Adding Validation In the Reactive Approach
+- Adding Validation In the Reactive Approach
 
 As we dont configure our html form elements in our HTML template, adding validator to the HTML template code does not work in the case of reactive aproach.
 
@@ -1214,16 +1258,19 @@ We import `Validators` from `@angular/froms`
 
 `'email': new FormControl(null, [Validators.required, Validators.email]);`
 
-* Showing message if the form is Invalid
+- Showing message if the form is Invalid
 
 ```html
-<span *ngIf="!signupFrom.get('email').valid && signupForm.get('email').touched" class="help-block">Please Enter a valid Email Address
+<span
+  *ngIf="!signupFrom.get('email').valid && signupForm.get('email').touched"
+  class="help-block"
+  >Please Enter a valid Email Address
 </span>
 ```
 
 Note : If we want to specifically change some css for some property, the class are added to the html element accroding to its state such as `ng-untouched ng-pristine ng-invalid` and many others.
 
-* Grouping Control
+- Grouping Control
 
 We can have nested from groups to create groups of from elements as we did in the Template Approach.
 
@@ -1231,11 +1278,11 @@ For this we just nest `FormGroup` in the main `FromGroup` and put the properties
 
 We also need to add all the html element that we add to the from group in our script object to be put in a HTML element `<div formGroupName="userData">`. Here userData is the name of the group that we used in our script.
 
-* FromArray
+- FromArray
 
 > TODO : Dynamically adding FormControl and FromArray Lecture 209
 
-* Creating Custom Validator
+- Creating Custom Validator
 
 ```ts
 
@@ -1257,13 +1304,13 @@ forbiddenNames(control: FormControl):{[s: string]: boolean}{
 
 ```
 
-* Using Error Codes
+- Using Error Codes
 
 In the form object angular will add the validation error in the error property of the object of the individual FormControl. Angular may or may not add it to the overall form error.
 
 To check what is contained in the error we might want to console.log the from and check for the error values of the from object.
 
-* Async Validations
+- Async Validations
 
 We sometimes want our validations to come from the server, for example check if the email already exist, in this case we want to have a asyc Validator.
 
@@ -1289,42 +1336,42 @@ forbiddenEmails(control: FromControl): Promise<any> | Observable<any>{
 
 ```
 
-* Reacting to Status and Value Changes
+- Reacting to Status and Value Changes
 
 ```ts
-this.signupFrom.valueChanges.subscribe((value=>{
-    //This will print our the object that is the from every time there is a change in any of the value of any of the element in the object.
-    console.log(value);
-}))
+this.signupFrom.valueChanges.subscribe((value) => {
+  //This will print our the object that is the from every time there is a change in any of the value of any of the element in the object.
+  console.log(value);
+});
 
 //Similar to valueChange we have status change that return ths status of the form on whether the form is valid or not.
 
-this.signupForm.statusChanges.subscribe((value=>{
-    console.log(value);
-}))
+this.signupForm.statusChanges.subscribe((value) => {
+  console.log(value);
+});
 ```
 
 These can also be applied on individual from controls.
 
-* Setting and Patching Values
+- Setting and Patching Values
 
 We can update our from on our own by using setValue and patch value as we did in the Template Approach.
 
 ```ts
 this.signupFrom.setValue({
-    //the whole from object with set value for example we set the gender
-    'gender' : 'male',
-    //and so on fro every property of this form object.
-})
+  //the whole from object with set value for example we set the gender
+  gender: "male",
+  //and so on fro every property of this form object.
+});
 
 this.signupForm.patchValue({
-    'userData' : {
-        'username': 'Anna'
-    }
-})
+  userData: {
+    username: "Anna",
+  },
+});
 ```
 
-* Reset From
+- Reset From
 
 Like we used in the Template Approach we also can use reset as `this.signupForm.reset();` and if we want to set any values to initiate the form after it has already been cleared we can pass a object containing the values to the reset method.
 
@@ -1332,36 +1379,35 @@ Like we used in the Template Approach we also can use reset as `this.signupForm.
 
 Transfrom output in our template.
 
-* Adding parameters to pipe :
+- Adding parameters to pipe :
 
 We can add parameters to a pipe by adding `:` after the name of the pipe.
 
 `{{ server.started | date:'fullDate" }}`
 
-* Chaining Multile pipes :
+- Chaining Multile pipes :
 
 The order of the pipes is important. They are parsed from left to right.
 
 `{{ server.started | date:'fullDate | uppercase }}`
 
-* Create Custom pipes
+- Create Custom pipes
 
 `ng g p shortenpipe`
 
 ```ts
 //FileName : shorten.pipe.ts
 
-import { Pipetransfrom } from '@angular/core';
+import { Pipetransfrom } from "@angular/core";
 
 @Pipe({
-    name: 'shorten'
+  name: "shorten",
 })
-export class ShortenPipe implements PipeTransfrom{
-
-//Transform gets the value of interpolated string from our HTML template.
-    transfrom(value:any, limit: number){
-        return value.substr(0,number);
-    }
+export class ShortenPipe implements PipeTransfrom {
+  //Transform gets the value of interpolated string from our HTML template.
+  transfrom(value: any, limit: number) {
+    return value.substr(0, number);
+  }
 }
 
 //The limit here is a paramter for our pipe that can be passed as we saw for the inbuild pipes above.
@@ -1369,20 +1415,19 @@ export class ShortenPipe implements PipeTransfrom{
 //We need to aadd pupes to declarations array of NgModules of the app.module.ts
 ```
 
-* Async Pipes
+- Async Pipes
 
 ```js
 //this is a methods in our component string
-appStatus = new Promise((resolve)=>{
-    setTimeout(()=>{
-        resolve('stable');
-    }, 2000);
+appStatus = new Promise((resolve) => {
+  setTimeout(() => {
+    resolve("stable");
+  }, 2000);
 });
 ```
 
 ```html
-<h2> App Status: {{ appStatus | async }}</h2>
-
+<h2>App Status: {{ appStatus | async }}</h2>
 ```
 
 We use the async pipe as we know after some time the promise will be resolved and the data will be assigned to appStatus.
@@ -1393,7 +1438,7 @@ When we add a async to a object that is a promise or an Observable it automatica
 
 [Official Documents HTTP requests](https://angular.io/guide/http)
 
-* We can set up BackEnd with Firebase.
+- We can set up BackEnd with Firebase.
 
 ### Post Requests
 
@@ -1545,11 +1590,11 @@ private fetchPosts(){
 }
 ```
 
-* Using types with HTTP Request
+- Using types with HTTP Request
 
 We can add the type to the HTTP request methods by adding `post<type>` or `get<Type>`. The request methods are called as generic methods.
 
-* Sending Delete Request
+- Sending Delete Request
 
 ```ts
 
@@ -1570,7 +1615,7 @@ onClearPosts(){
 
 ### Handling Errors
 
-* Directly handling error when we subscibe in the component.
+- Directly handling error when we subscibe in the component.
 
 ```ts
 onClearPosts(){
@@ -1587,7 +1632,7 @@ onClearPosts(){
 }
 ```
 
-* HTTP Headers
+- HTTP Headers
 
 THe last paramter to any HTTP request like post, get, delete takes an object. The object can take query paramters, headers etc.
 
@@ -1595,19 +1640,19 @@ We put our headers in that object as a key and pass in a `new HttpHeaders({key: 
 
 This will set our headers for our request with the required default headers if we do not specify them.
 
-* Params with HttpRequests
+- Params with HttpRequests
 
 In the last object that we pass to the request we add a `params: new HttpParams().set('print', 'pretty')`.
 
 In the above we add print as the key and pretty as the value. We can add multiple such key value pairs.
 
-* `observe`
+- `observe`
 
 We can also pass `observe: 'response'` to the object that takes header to get the whole response with headers, status and body of the response that we get from the server. The default value of observe is body and body thus gets parsed to json.
 
 `observe` can also have a value of event, which will tell us about the event like request was 'sent', 'response' and some-others.
 
-* `responseType` Used to tell the observable what type of data we get in response.
+- `responseType` Used to tell the observable what type of data we get in response.
 
 ### Interceptors
 
@@ -1615,7 +1660,7 @@ They can be used to change or modify a request before it is send. So for example
 
 We can not only interact with the outgoing request but also with the incoming response of all the request.
 
-> Note : When we have multiple interceptor the order in which the interceptor are declared in  the `providers` array will be the order that they are exected in.
+> Note : When we have multiple interceptor the order in which the interceptor are declared in the `providers` array will be the order that they are exected in.
 
 ```ts
 //Before we can use interceptor in our application we have to configure them in our app.module.ts file.
@@ -1855,8 +1900,10 @@ const appRoutes: Routes = [
   exports: [RouterModule]
 })
 export class AppRoutingModule {}
+```
 
-//app.component.html
+```html
+<!-- app.component.html -->
 <app-header></app-header>
 <div class="container">
   <div class="row">
@@ -1865,7 +1912,6 @@ export class AppRoutingModule {}
     </div>
   </div>
 </div>
-
 ```
 
 ### Shared Modules
@@ -1879,46 +1925,44 @@ They declare and export these parts so we can import this shared module and use 
 In such a condition we just have to have the shared modules declared in the shared modules file and import the shared modules in the app.modules.ts in imports array.
 
 ```ts
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
 import { SharedComponent } from "./SharedComponent";
 import { OtherComponent } from "./OtherComponent";
 
 @NgModule({
-imports: [
-    CommonModule
-],
-declarations: [
+  imports: [CommonModule],
+  declarations: [
     //-Other component will not be shared as we dont export it.
     OtherComponent,
     SharedComponent,
-],
-exports: [
+  ],
+  exports: [
     //-WE export this component from this module.
     //-Import this module and then we can
     //use the compoents exported here.
     SharedComponent,
-]
+  ],
 })
 export class SharedModule {}
 
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { SharedModule } from './SharedModule';
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { SharedModule } from "./SharedModule";
 
 @NgModule({
-imports: [
+  imports: [
     //Every module other than the main App module has CommonModule
     CommonModule,
     //This is our SharedModule,
     //We can no use all component declared in this module in this
     //Module
-    SharedModule
-],
-declarations: [],
-providers: []
+    SharedModule,
+  ],
+  declarations: [],
+  providers: [],
 })
-export class AppModule{}
+export class AppModule {}
 ```
 
 ### Core Module
@@ -1939,11 +1983,11 @@ This will help us bundle the code in smaller parts and download only the require
 
 Things to check when lazy loading component :
 
-* Declare the route path to the component that need to be lazy loaded as `{ path: 'recipes', loadChildren: ()=> import('./recipes/recipes.module').then(m=>m.RecipesModule)}`
+- Declare the route path to the component that need to be lazy loaded as `{ path: 'recipes', loadChildren: ()=> import('./recipes/recipes.module').then(m=>m.RecipesModule)}`
 
-* Remove the declaration of the component we are trying to lazy load from the app.module.ts file as we are trying to lazy load it and if we have a decalaration in the main file we will be trying to also actively load it.
+- Remove the declaration of the component we are trying to lazy load from the app.module.ts file as we are trying to lazy load it and if we have a decalaration in the main file we will be trying to also actively load it.
 
-* Now we chagne the path that point to 'recipes' in our Recipes.module.ts or recipes.routes.ts file to be ''(empty string) as we have added that route to our main routes file as shown above.
+- Now we chagne the path that point to 'recipes' in our Recipes.module.ts or recipes.routes.ts file to be ''(empty string) as we have added that route to our main routes file as shown above.
 
 ### Pre-Load LazyLoaded Modules
 
@@ -1959,12 +2003,12 @@ imports:[
 
 Service can be declared in the following scopes and places :
 
-|Service Declaration|Available To Use At|Injector Used by Angular|When to Use|
-|---|---|---|---|
-| AppModules in providers | Service available app wide | Use root Injector | Should be default |
-| AppComponent(or Other Component) | Service availabe in the component-tree | Use Component-specific Injector| Use if service is only relevant for component tree |
-| Eager-loaded Modules | Service avaliable application wide | Use root injector | Avoid using this as it might be confusing for other developers |
-| Lazy-Loaded modules | Service avaliable in loaded module only | Angular creates and uses child injector | Use if service should be scoped to loaded module |
+| Service Declaration              | Available To Use At                     | Injector Used by Angular                | When to Use                                                    |
+| -------------------------------- | --------------------------------------- | --------------------------------------- | -------------------------------------------------------------- |
+| AppModules in providers          | Service available app wide              | Use root Injector                       | Should be default                                              |
+| AppComponent(or Other Component) | Service availabe in the component-tree  | Use Component-specific Injector         | Use if service is only relevant for component tree             |
+| Eager-loaded Modules             | Service avaliable application wide      | Use root injector                       | Avoid using this as it might be confusing for other developers |
+| Lazy-Loaded modules              | Service avaliable in loaded module only | Angular creates and uses child injector | Use if service should be scoped to loaded module               |
 
 When we use the @Injectable to declare a service in the root it has the same effect as if it was declared in AppModules providers array.
 
@@ -1986,7 +2030,7 @@ This removes the need for the angular just in time complier to be shipped wiht o
 
 ## Setting Up Proxy Server
 
-During development we could have our backend running online or on a different localhost port. When we send a http request to our backend through our brower the browser actually sends a *Preflight Request* which is a request with a header for the backend to check if the frontend application has permissions to send the request and whether the backend will allow the operation that the request will contain.
+During development we could have our backend running online or on a different localhost port. When we send a http request to our backend through our brower the browser actually sends a _Preflight Request_ which is a request with a header for the backend to check if the frontend application has permissions to send the request and whether the backend will allow the operation that the request will contain.
 
 In many cases when we use Spring or many other backend frameworks this will not be supported as Spring does not allow preflight request and will give us rather the browser a CORS(Cross Origin Resource Sharing) error.
 
@@ -1998,12 +2042,11 @@ To fix this we can set up a proxy server.
 
 For an Indetail explanation on creating proxy Servers [visit](https://medium.com/better-programming/setup-a-proxy-for-api-calls-for-your-angular-cli-app-6566c02a8c4d).
 
-* Create `proxy.conf.json` in our project root that is in the same folder as `package.json`.
+- Create `proxy.conf.json` in our project root that is in the same folder as `package.json`.
 
-* We write our proxy Configuration in the file.
+- We write our proxy Configuration in the file.
 
 ```json
-
 {
   "/api": {
     "target": "http://localhost:8080",
@@ -2028,12 +2071,12 @@ When running ng eject, you generate a webpack.config.json file. Looking at the f
 
 `ng serve` --> npm start
 `ng build` --> npm run build
-`ng e2e`  --> npm run e2
+`ng e2e` --> npm run e2
 
 If you want to undo `ng eject`, you will have to edit your .angular.cli.json file and set ejected to false:
 
 ```json
-"project": { 
+"project": {
   ...
   "ejected": false
 }
@@ -2047,12 +2090,12 @@ Or
 
 `<div [innerText]="code1"></div>` But innerHTML might be prone to XSS attacks, especially when the code in being injected by the user or by user input.
 
-The altenative to innerHTML when we just want to render text and not execute the *markup*, we could use `textContent`. As we know we want the code to show and not have any markup execute from the html we could use this approach.
+The altenative to innerHTML when we just want to render text and not execute the _markup_, we could use `textContent`. As we know we want the code to show and not have any markup execute from the html we could use this approach.
 
 ```js
 // Renders a string with escaped characters
 // This would show up in the DOM as <img src=x onerror="alert('XSS Attack')"> instead of as an image element
-div.textContent = '<img src=x onerror="alert(\'XSS Attack\')">';
+div.textContent = "<img src=x onerror=\"alert('XSS Attack')\">";
 ```
 
 ### Sanitizing content before adding it to the DOM
@@ -2084,7 +2127,7 @@ private getFileFromServer(filePath:string, fileType:string):void{
     Please try again after some time or try reloading. \
     Thank you for your patience";
     this.contentReady = true;
-  });  
+  });
 }
 ```
 
@@ -2099,8 +2142,8 @@ The **setHTML()** method of the Element interface is used to parse and sanitize 
 Use `setHTML(input, sanitizer)`.
 
 ```js
-const unsanitized_string = "abc <script>alert(1)</script> def";  // Unsanitized string of HTML
-const sanitizer = new Sanitizer();  // Default sanitizer;
+const unsanitized_string = "abc <script>alert(1)</script> def"; // Unsanitized string of HTML
+const sanitizer = new Sanitizer(); // Default sanitizer;
 
 // Get the Element with id "target" and set it with the sanitized string.
 document.getElementById("target").setHTML(unsanitized_string, sanitizer);

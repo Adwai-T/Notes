@@ -56,4 +56,3 @@ end
 --Tell the engine to run the function "SpawnCreature" as soon as the player spawns in the world.
 AddSimPostInit(SpawnCreature)
 ```
-

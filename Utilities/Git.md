@@ -12,71 +12,71 @@ Configure git after installation : To collaborate we need to identify by adding 
 If we have an identity already added to the configuration we can check it by using following which will show us our config.
 `git config --list`.
 
-* `git init`
-* `git status`
-* `git add filename` or `git add .` : to add All files
-* `git reset .` or `git rm filename` : to remove files from staging area.
-* `git commit -m "message"` : -m is for adding message for the commit
-* `git commit -am "message"` : -a adds all the tracked file and hence can skip the `git add` if no new files have to be added to tracked files.
-* `git log` :  see history of all commits.
-* `git remote` : Check all the remote repositories set for your project. For example if you deploy a project that might be a remote(like heroku) and the other can be github.
-* `git remote -v` : Get detail links about all remotes.
-* `git remote rename currentName toName` : Change the current name of remote.
-* `git push` : will push to the default repo and the main branch.
-* `git push origin master` : push to the origin remote repo and its main/master branch.
-* `git push --set-upstream remoteName branchName` : push the current branch and set the remote as upstream use.
-* `git fetch` : fetch updated code from remote repositroy. It need to be used with `git branch, git checkout and git reset`.
-* `git merge branchName` : merge code with remote repo.
-* `git pull` : is a Git command used to update the local version of a repository from a remote
-* `git clone <repo-url> <local-directory>` : clone a remote repo to local directory and optionally change name.
+- `git init`
+- `git status`
+- `git add filename` or `git add .` : to add All files
+- `git reset .` or `git rm filename` : to remove files from staging area.
+- `git commit -m "message"` : -m is for adding message for the commit
+- `git commit -am "message"` : -a adds all the tracked file and hence can skip the `git add` if no new files have to be added to tracked files.
+- `git log` : see history of all commits.
+- `git remote` : Check all the remote repositories set for your project. For example if you deploy a project that might be a remote(like heroku) and the other can be github.
+- `git remote -v` : Get detail links about all remotes.
+- `git remote rename currentName toName` : Change the current name of remote.
+- `git push` : will push to the default repo and the main branch.
+- `git push origin master` : push to the origin remote repo and its main/master branch.
+- `git push --set-upstream remoteName branchName` : push the current branch and set the remote as upstream use.
+- `git fetch` : fetch updated code from remote repositroy. It need to be used with `git branch, git checkout and git reset`.
+- `git merge branchName` : merge code with remote repo.
+- `git pull` : is a Git command used to update the local version of a repository from a remote
+- `git clone <repo-url> <local-directory>` : clone a remote repo to local directory and optionally change name.
 
 Branches in git :
 
-* `git branch` : list of all branches.
-* `git branch branchname` : create a new branch.
-* `git checkout brachname` : move into a branch.
-* `git checkout -b branchname` : create and move into a branch.
-* `git switch -c branchname` : from git 2.23 can be used to create and move into branch. `-c` is `--create`.
-* `git branch -v` : show last commit on each branch.
-* `git log --oneline --decorate` : decorated view of branches and commits
-* `git log branchName` : show commits for that branch
-* `git log --all` : show all branches and commits
-* `git branch -d branchname` : delete a branch.
-* `git branch --merged` : branches that are already merged into the currently active branch.
-* `git branch --no-merged` : branches not already merged with curretly active branch.
+- `git branch` : list of all branches.
+- `git branch branchname` : create a new branch.
+- `git checkout brachname` : move into a branch.
+- `git checkout -b branchname` : create and move into a branch.
+- `git switch -c branchname` : from git 2.23 can be used to create and move into branch. `-c` is `--create`.
+- `git branch -v` : show last commit on each branch.
+- `git log --oneline --decorate` : decorated view of branches and commits
+- `git log branchName` : show commits for that branch
+- `git log --all` : show all branches and commits
+- `git branch -d branchname` : delete a branch.
+- `git branch --merged` : branches that are already merged into the currently active branch.
+- `git branch --no-merged` : branches not already merged with curretly active branch.
 
 > Do not rename branches that are still in use by other collaborators.
 
 Changes to Commits
 
-* `git reset <commit-ID>` Rollback to a previous commit but keep the changes in the working directory.
-* `git reset <commit-ID> --hard` : Rollback to previous commit and discard all changes.
-* `git revert <commit-ID> -m "reverting last commit"` : Undo a commit with a new commit.
-* `git commit --amend -m "better message"` : Update the message of previous commit
-* `git add <your-file>` then `git commit --amend --no-edit` to add a file that we forgot to add in the previous commit.
-* `git log --graph --oneline --decorate` to look at all the commits and branches in a nicer way.
+- `git reset <commit-ID>` Rollback to a previous commit but keep the changes in the working directory.
+- `git reset <commit-ID> --hard` : Rollback to previous commit and discard all changes.
+- `git revert <commit-ID> -m "reverting last commit"` : Undo a commit with a new commit.
+- `git commit --amend -m "better message"` : Update the message of previous commit
+- `git add <your-file>` then `git commit --amend --no-edit` to add a file that we forgot to add in the previous commit.
+- `git log --graph --oneline --decorate` to look at all the commits and branches in a nicer way.
 
-**Git stach** : When we have code that is work in progress and we dont want to commit it yet we can store it in  a stash . Git stash Remove the changes that  are not commited from the current working directory and save them for later use.
+**Git stach** : When we have code that is work in progress and we dont want to commit it yet we can store it in a stash . Git stash Remove the changes that are not commited from the current working directory and save them for later use.
 
-* `git stash` : This will create a  stash of current changes.
-* `git pop` : Add back the changes to current working directory.
-* `git stach save stash-name` : If we want to use multiple stashes we can name the stash and then add particular stash to working directory as needed.
-* `git stash list` : list of all stash with id.
-* `git stash apply stash-id` : to add the stash to working directory.
-* `git stash drop stash-id` : delete stash.
+- `git stash` : This will create a stash of current changes.
+- `git pop` : Add back the changes to current working directory.
+- `git stach save stash-name` : If we want to use multiple stashes we can name the stash and then add particular stash to working directory as needed.
+- `git stash list` : list of all stash with id.
+- `git stash apply stash-id` : to add the stash to working directory.
+- `git stash drop stash-id` : delete stash.
 
 Reset code from remote Repo: Lets say we have a remote repo and a local repo and thing are not working on the local repo after some changes were made and we want the code to be reset to the state on the remote repo.
 
-* `git fetch origin` : first step fetch code from remote repo.
-* `git reset --hard origin/master` : Then we override the local code with remote code. Note that the local changes will be lost forever.
-* `git clean -df` : This will remove all the untracked files form the local repository.
+- `git fetch origin` : first step fetch code from remote repo.
+- `git reset --hard origin/master` : Then we override the local code with remote code. Note that the local changes will be lost forever.
+- `git clean -df` : This will remove all the untracked files form the local repository.
 
-* `git update-git-for-windows` : Update to the lates version of git from windows when git is already installed.
+- `git update-git-for-windows` : Update to the lates version of git from windows when git is already installed.
 
 Following two steps can be used to reset to the last commit.
 
-* git reset HEAD --hard : This will undo any changes you've made to tracked files and restore deleted files.
-* git clean -fd : This will delete any new files that were added since the last commit. Files that are not tracked due to .gitignore are preserved; they will not be removed. The `f` is for files and `d` is for directories. Using `x` will also delete untracked files, it is not recommended to do it as most times we would not want to do that.
+- git reset HEAD --hard : This will undo any changes you've made to tracked files and restore deleted files.
+- git clean -fd : This will delete any new files that were added since the last commit. Files that are not tracked due to .gitignore are preserved; they will not be removed. The `f` is for files and `d` is for directories. Using `x` will also delete untracked files, it is not recommended to do it as most times we would not want to do that.
 
 ## Intermediate Git
 
@@ -108,7 +108,7 @@ When we want to untrack a whole directory we will use the `-r` flag for recursiv
 
 git [update-index](https://mirrors.edge.kernel.org/pub/software/scm/git/docs/git-update-index.html).
 
-Consider we don't want to  track file for some commits. We can set that file to be `--assume-unchanged` so git will not track the changes to that file in the next commits until we set the file to be tracked for changes again `--no-assume-unchanged`.
+Consider we don't want to track file for some commits. We can set that file to be `--assume-unchanged` so git will not track the changes to that file in the next commits until we set the file to be tracked for changes again `--no-assume-unchanged`.
 
 `git update-index --assume-unchanged path/to/file`
 
@@ -126,9 +126,9 @@ Short_Lived branches are created for a purpose and are reintegrated into a Long 
 
 There are two types how git branching strategy can be used.
 
-* GitHub Flow : it is a very simple, very lean, only one long -running branch("main") + feature branches.
+- GitHub Flow : it is a very simple, very lean, only one long -running branch("main") + feature branches.
 
-* GitFlow : This might offer more structure but also needs to follow a lot more rules.
+- GitFlow : This might offer more structure but also needs to follow a lot more rules.
 
 #### Working with Branches
 
@@ -150,7 +150,7 @@ This means, the changes made to the branch here on forward will diverge from the
 
 > Run `git log --oneline --decorate --graph --all` to print the history of all the commits, showing where the branches point and how branches have diverged.
 
-Branches can be merged when we have completed work on them. Say for example we merge *development* branch with the *master*. Now both the pointer will point to the same commit. We can then delete the *development* branch. If we keep the *development* branch and commit to *master* branch, the master pointer will move forward but the development header will still remain on the same commit. If we continue working on the *master* branch and make several commits, we can then merge the master branch with *development* branch so they are both pointing to the same commit.
+Branches can be merged when we have completed work on them. Say for example we merge _development_ branch with the _master_. Now both the pointer will point to the same commit. We can then delete the _development_ branch. If we keep the _development_ branch and commit to _master_ branch, the master pointer will move forward but the development header will still remain on the same commit. If we continue working on the _master_ branch and make several commits, we can then merge the master branch with _development_ branch so they are both pointing to the same commit.
 
 In case of complex tree Git will use the common ancestor and a method called three way merge to merge the two branches and will create a new commit. This is called as a **merge commit** and is special in that it has more than one parent.
 
@@ -208,7 +208,7 @@ If there are multiple commits on the main branch git will have to create a commi
 
 Rebase is used to remove branch history and convert the branched structure into a single branch, mostly the main branch.
 
-We have to consider that rebase will rewrite the last commit and also change the parent of the last commit, this might not be good if the code is already pushed to a remote repository that might be used by other developers on  other projects as the parent of the last commit is changed which effectively makes it a different, distinct commit.
+We have to consider that rebase will rewrite the last commit and also change the parent of the last commit, this might not be good if the code is already pushed to a remote repository that might be used by other developers on other projects as the parent of the last commit is changed which effectively makes it a different, distinct commit.
 
 We ideally want to use rebase for our local repository before it is pushed onto a remote/shared repository
 

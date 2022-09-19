@@ -8,7 +8,7 @@
 
 Sames goes for `\d` being a digit and `\D` being anything other than a digit. `\s` represents a white space and `\S` being anything other than a white space.
 
-> `^` represents the start of the line/string and `$` the end of line/string based on the selection mode.
+> When using newline `\n` in a regex, try to use `\s` instead as in some cases it might not match even if the regular expression is correct.
 
 `.` Represnts any character other than line break. Ex. `e.t` will match eat. As `.` is a special character, when `.` is to be matched it needs to be esacped with `\.`. This is to be done for all reserved characters used in reges like `*`, `!`, `()`, `{}` and `\`.
 
@@ -17,6 +17,8 @@ Sames goes for `\d` being a digit and `\D` being anything other than a digit. `\
 ## Assertions
 
 `^, $, x(?=y), x(?!y), (?<=y)x, (?<!y)x, \b, \B` - Are all the possible assertions.
+
+> `^` represents the start of the line/string and `$` the end of line/string based on the selection mode.
 
 ## Groups and Ranges
 

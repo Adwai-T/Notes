@@ -9,7 +9,7 @@ print("Hello World");
 
 -- [[
     multiline Comments
-]]
+-- ]]
 
 --- Variables are dynamically typed
 

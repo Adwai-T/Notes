@@ -2,7 +2,7 @@
 
 ## Modified Trader Files
 
-Place the file that we create here in `../rootStalkerGameFolder/gamedata\configs\misc\trade`. The files should be placed exactly in the location  specified.
+Place the file that we create here in `../rootStalkerGameFolder/gamedata\configs\misc\trade`. The files should be placed exactly in the location specified.
 
 > Name of the file determines to which trader the file applies. So just by changing the name of the file we can edit the traded items of the trader. eg `trade_sidorovich.ltx` is for **Sidorovich**.
 
@@ -24,7 +24,7 @@ In below file we see configuration for Sidorovich(`trade_sidorovich.ltx`).
 [trader]
 buy_condition                            = trade_generic_buy
 buy_item_condition_factor                = 0
-buy_supplies                             = supplies_generic 
+buy_supplies                             = supplies_generic
 discounts                                = discount_0
 price_profile                            = default
 sell_condition                           = trade_generic_sell

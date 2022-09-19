@@ -25,7 +25,7 @@ Character output streams allow writing text data: char or String.
 
 Some of the most common Methods of the class are as follows :
 
-1. void write(char[] cbuf)  writes a char array
+1. void write(char[] cbuf) writes a char array
 2. void write(char[] cbuf, int off, int len) writes a portion of a char array
 3. void write(int c) writes a single character
 4. void write(String str) writes a string

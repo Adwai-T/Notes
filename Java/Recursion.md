@@ -23,16 +23,16 @@ public class Recusion{
 
 Pros :
 
-* Bridges gap between elegance and complexity.
-* Reduces the need for complex loops and auxiliary data structures.
-* Can reduce time complexity easily with memoization.
-* Works really well with recursive structures like trees and graphs.
+- Bridges gap between elegance and complexity.
+- Reduces the need for complex loops and auxiliary data structures.
+- Can reduce time complexity easily with memoization.
+- Works really well with recursive structures like trees and graphs.
 
 Cons :
 
-* Slowness  due to cpu overhead.
-* Can lead to stack overflow exceptions.
-* Can become complex if poorly constructed.
+- Slowness due to cpu overhead.
+- Can lead to stack overflow exceptions.
+- Can become complex if poorly constructed.
 
 ## Simple Example
 

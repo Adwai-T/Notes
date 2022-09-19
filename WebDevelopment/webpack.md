@@ -17,29 +17,29 @@ Basic Setup for webpack development mode.
 ```js
 //webpack.config.js
 
-const path = require('path');
+const path = require("path");
 
 module.exports = {
-  entry: './index.js',
-  mode: 'development', //could be set to production default is none
+  entry: "./index.js",
+  mode: "development", //could be set to production default is none
   output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: 'bundle.js'
+    path: path.resolve(__dirname, "dist"),
+    filename: "bundle.js",
   },
   devServer: {
-    static: path.join(__dirname, 'dist'),
-    compress : true,
+    static: path.join(__dirname, "dist"),
+    compress: true,
     port: 4200, //can be set to any default is 8080
-  }
-}
+  },
+};
 ```
 
 We can add a script to out npm file so that we use webpack-server to serve our project.
 
 ```json
 {
-  "scripts" : {
-    "start" : "webpack-dev-server --config ./webpack.config.js"
+  "scripts": {
+    "start": "webpack-dev-server --config ./webpack.config.js"
   }
 }
 ```

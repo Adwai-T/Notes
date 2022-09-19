@@ -5,30 +5,30 @@
 ```js
 //Example without async programming
 const posts = [
-    {title: 'Post One', body: 'This is post one' },
-    {title: 'Post Two', body: 'This is post two' }
+  { title: "Post One", body: "This is post one" },
+  { title: "Post Two", body: "This is post two" },
 ];
 
-function getPosts(){
-    //As fetching from server might time we use setTimeout to imulate that time delay.
-    setTimeout(()=>{
-        posts.forEach((post, index)=>{
-            output += `<li>${post.title}</li>`;
-        });
-        //We output it ot the DOM
-        document.body.innerHTML = output;
-    }, 1000)
+function getPosts() {
+  //As fetching from server might time we use setTimeout to imulate that time delay.
+  setTimeout(() => {
+    posts.forEach((post, index) => {
+      output += `<li>${post.title}</li>`;
+    });
+    //We output it ot the DOM
+    document.body.innerHTML = output;
+  }, 1000);
 }
 
-function createPost(post){
-    setTimeout(()=>{
-        posts.push(post);
-    }, 2000);
+function createPost(post) {
+  setTimeout(() => {
+    posts.push(post);
+  }, 2000);
 }
 
 getPosts();
 
-createPost({title: 'Post Three', body: 'This is post three' });
+createPost({ title: "Post Three", body: "This is post three" });
 ```
 
 In the above example DOM will be painted as soon as getPosts is done as we have a method that changes the DOM in the getPosts method.
@@ -37,33 +37,32 @@ By that time our createPost method will not have completed as it takes 2 sec. Th
 
 Aysnchronous programming can help us with this problem.
 
-* In the below code that is the modification of the above code we will use **Callback Functions** to achive asychronous programming.
+- In the below code that is the modification of the above code we will use **Callback Functions** to achive asychronous programming.
 
 ```js
 const posts = [
-    {title: 'Post One', body: 'This is post one' },
-    {title: 'Post Two', body: 'This is post two' }
+  { title: "Post One", body: "This is post one" },
+  { title: "Post Two", body: "This is post two" },
 ];
 
-function getPosts(){
+function getPosts() {
+  setTimeout(() => {
+    posts.forEach((post, index) => {
+      output += `<li>${post.title}</li>`;
+    });
 
-    setTimeout(()=>{
-        posts.forEach((post, index)=>{
-            output += `<li>${post.title}</li>`;
-        });
-
-        document.body.innerHTML = output;
-    }, 1000)
+    document.body.innerHTML = output;
+  }, 1000);
 }
 
-function createPost(post, callback){
-    setTimeout(()=>{
-        posts.push(post);
-        callback();
-    }, 2000);
+function createPost(post, callback) {
+  setTimeout(() => {
+    posts.push(post);
+    callback();
+  }, 2000);
 }
 
-createPost({title: 'Post Three', body: 'This is post three' }, getPosts);
+createPost({ title: "Post Three", body: "This is post three" }, getPosts);
 ```
 
 ## Promises
@@ -136,18 +135,18 @@ Simple and Short on **Async**
 
 ```js
 async function foo() {
-   return 1
+  return 1;
 }
-// Above behaves similar to below 
+// Above behaves similar to below
 function foo() {
-   return Promise.resolve(1)
+  return Promise.resolve(1);
 }
 
 // Even saying that they behave the similar to each other
 //They are not the same, consider the following
 const p = new Promise((res, rej) => {
   res(1);
-})
+});
 
 async function asyncReturn() {
   return p;
@@ -158,15 +157,19 @@ function basicReturn() {
 }
 
 console.log(p === basicReturn()); // true
-console.log(p === asyncReturn()); // false 
+console.log(p === asyncReturn()); // false
 
 //-- Using Await
-//- In await every next await code will run after the inital is resolved. 
+//- In await every next await code will run after the inital is resolved.
 async function foo() {
-   const result1 = await new Promise((resolve) => setTimeout(() => resolve('1')))
-   const result2 = await new Promise((resolve) => setTimeout(() => resolve('2')))
+  const result1 = await new Promise((resolve) =>
+    setTimeout(() => resolve("1"))
+  );
+  const result2 = await new Promise((resolve) =>
+    setTimeout(() => resolve("2"))
+  );
 }
-foo()
+foo();
 ```
 
 We extend on the above code and dont change it.
@@ -174,29 +177,28 @@ We extend on the above code and dont change it.
 The Promise.all code has no effect on this code. We are only concerned with the code above it.
 
 ```js
-async function init(){
+async function init() {
+  await createPost({ title: "Post Three", body: "this is body of post three" });
 
-    await createPost({ title: 'Post Three', body: 'this is body of post three' });
-
-    getPosts();
+  getPosts();
 }
 
 init();
 ```
 
-* We could also use it with fetch that is build in functions that return promises.
+- We could also use it with fetch that is build in functions that return promises.
 
 ```js
-async function fetchUsers(){
-    const res = await fetch('http://jsonplaceholder.typicode.com/users');
+async function fetchUsers() {
+  const res = await fetch("http://jsonplaceholder.typicode.com/users");
 
-    const data = await res.json();
+  const data = await res.json();
 
-    console.log(data);
+  console.log(data);
 }
 
 fetchUsers();
 ```
 
 > Note : Promises are different that rxjs Observables in the sence that they are eager function that is they will fetch data as soon as possible, on the other hand Observables only fetch data when they are subscribed to.
-This becomes important when using frameworks like Angular. Also Promises work on fetch data only once where as an Observable will keep getting data over time.
+> This becomes important when using frameworks like Angular. Also Promises work on fetch data only once where as an Observable will keep getting data over time.

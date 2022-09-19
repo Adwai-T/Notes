@@ -2,17 +2,17 @@
 
 ## Pillars of Java
 
-* Inheritance.
-* Polymorphism.
-* Encapsulation.
-* Abstraction.
+- Inheritance.
+- Polymorphism.
+- Encapsulation.
+- Abstraction.
 
 ## Abstract Classes
 
 Primary differences between Abstract Classes and Interfaces.
 
-* Class can extend only one Abstract Class but can implement any number of Interfaces.
-* The variables declared in Interface are `final` and `static`. Where as they can be instance varible in abstract classes.
+- Class can extend only one Abstract Class but can implement any number of Interfaces.
+- The variables declared in Interface are `final` and `static`. Where as they can be instance varible in abstract classes.
 
 ```java
 public abstract class Bird{
@@ -35,16 +35,16 @@ We can have our methods take in variable number of arguments.
 
 There are some rules that apply.
 
-* All arguments are of the same type.
-* They are treated as an arry within the method.
-* They must be the last of the method.
+- All arguments are of the same type.
+- They are treated as an arry within the method.
+- They must be the last of the method.
 
 ```java
 private static void printAll(String... messages) {
   for(String message: messages){
     System.out.println(message);
   }
-} 
+}
 ```
 
 ## Lambda
@@ -55,10 +55,10 @@ A function can be assigned to a variable and used by accessing the variable.
 
 ### Why
 
-* Enable Functional Programming.
-* Readable and consise code.
-* Enable support for parrel processing.
-* Easier to use API and libraries.
+- Enable Functional Programming.
+- Readable and consise code.
+- Enable support for parrel processing.
+- Easier to use API and libraries.
 
 ### Defining Lambda Function
 
@@ -89,7 +89,7 @@ public class Greeter {
     //--- Passing instance of class
     Greeter greeter = new Greeter();
     greeter.greet(new MorningGreeting());
-    
+
     //--- Create InnerClass
     Greeting afternoonGreeting = new Greeting() {
       public void greet() {
@@ -137,7 +137,7 @@ In the following we are not defining the type of the lambdas with interfaces. We
 
 ```java
 //-- If we have only one line {} can be skipped.
-greetingFunction = () -> System.our.println("Welcome to Lambdas."); 
+greetingFunction = () -> System.our.println("Welcome to Lambdas.");
 
 //-- Inline Lambda
 greet(()-> System.out.println("Good Morning."));
@@ -225,7 +225,7 @@ public class ClosureExample{
     int b = 20;
     //--- Here we have an obvious question where does b
     //come from.
-    //Java will remember b from the context from where we 
+    //Java will remember b from the context from where we
     //passed in the method and use the value from that context.
     //So it will use b=20 in this case.
     process1(a, i -> System.out.println(i+b));
@@ -235,7 +235,7 @@ public class ClosureExample{
     //Following example does the same thing as above.
     public void process2(int i) {
 
-      //if we try to change the value of b in this method it 
+      //if we try to change the value of b in this method it
       //will give us an error.
       b=30;//gives error as it considers the value as final in this method.
 
@@ -293,7 +293,7 @@ public class MyClass{
     myClass.do(1, i -> {
       System.out.println("Value : " + i);
       // System.out.println(this);
-      //The above this will create an error as this will be refered 
+      //The above this will create an error as this will be refered
       //from a static method and we cannot use this in static context
     });
   }
@@ -397,13 +397,13 @@ public class MyClass{
 
 There are Different types of Operations.
 
-* Intermediate Operations
+- Intermediate Operations
 
 map,
 filter,
 sort
 
-* Terminal Operations
+- Terminal Operations
 
 collect,
 forEach,
@@ -430,7 +430,7 @@ public class Student{
 
   //It also gives us a default toStrings method that prints all the fields in a readable manner.
 
-  //It also gives us a equals method that returns equal/true when all the fields in the both the 
+  //It also gives us a equals method that returns equal/true when all the fields in the both the
   //given records are equal.
 }
 

@@ -38,21 +38,21 @@ In the Spring framework, the interface `ApplicationContext` represents the IoC c
 
 ## Configuring Spring Container
 
-* XML Configuration
+- XML Configuration
 
-* Java Annotation
+- Java Annotation
 
-* Java Source Code
+- Java Source Code
 
 Spring Container is generally known as `Application Context`.
 
 Specialized implementation of Application Context :
 
-* ClassPathXmlApplicationContext : XML configuration file. Is legacy, but many old apps might use them.
+- ClassPathXmlApplicationContext : XML configuration file. Is legacy, but many old apps might use them.
 
-* AnnotationConfigApplicationContext
+- AnnotationConfigApplicationContext
 
-* GenericWebApplicationContext
+- GenericWebApplicationContext
 
 When Java objects are created by the `Spring Container`, then Spring refers to them as `Spring Beans`.
 
@@ -70,7 +70,7 @@ Example of ClassPathXmlApplicationContext
     xmlns:context="http://www.springframework.org/schema/context"
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
-    
+
     <!--Example Bean-->
     <!-- <bean class="in.adwait.MyBeanClass">
         <property name="field" value="sample-value"></property>
@@ -88,7 +88,7 @@ We will use the above file every time we have to define a xml configuration for 
 
   <!--id - is an alias-->
   <!--class - should be specified as a fully qualified class name of implementation class-->
-  <bean id="myBean" 
+  <bean id="myBean"
   class="in.adwait.springdemo.myBeanClass">
   </bean>
 </beans>
@@ -263,7 +263,7 @@ public class Main{
 }
 ```
 
-> Note :  The `@ComponentScan` methods will tell Spring to scan for component in the given package. Spring Will revursively scan for components starting at the base package and also can all the sub packages.
+> Note : The `@ComponentScan` methods will tell Spring to scan for component in the given package. Spring Will revursively scan for components starting at the base package and also can all the sub packages.
 
 ## Bean Scope
 
@@ -307,14 +307,14 @@ It is not recommended to use prototype scope for a bean unless in very sepcific 
 
 ### Other bean Scopes
 
-|scope|Description|
-|:---:|:---------|
-|singleton|Create a single instance of bean.(Default Scope)|
-|prototype|Create a new bean instance for each container request|
-|request|Scoped to an HTTP web request. Only used for web applicaitions|
-|session|Scoped to an HTTP web session.|
-|global-session|Scoped to a global HTTP web session|
-|websocket|Scoped to a websocket|
+|     scope      | Description                                                    |
+| :------------: | :------------------------------------------------------------- |
+|   singleton    | Create a single instance of bean.(Default Scope)               |
+|   prototype    | Create a new bean instance for each container request          |
+|    request     | Scoped to an HTTP web request. Only used for web applicaitions |
+|    session     | Scoped to an HTTP web session.                                 |
+| global-session | Scoped to a global HTTP web session                            |
+|   websocket    | Scoped to a websocket                                          |
 
 ### Bean Life-Cycle Methods / Hooks
 
@@ -324,17 +324,17 @@ Bean Lifecycle Methods/Hooks are used to custom code during bean initialization 
 
 We can also use hooks or lifecycle methods when the beans are destroied `destroy-method`.
 
-The methods specifed below can have any access type(`public`, `protected`, `private`). They can have a return  but the return can never be captured for use, so most commonly `void` is used. The methods should be no-arg.
+The methods specifed below can have any access type(`public`, `protected`, `private`). They can have a return but the return can never be captured for use, so most commonly `void` is used. The methods should be no-arg.
 
-* With XML configurations
+- With XML configurations
 
 ```xml
 <!--beanlifeCycle-applicationContext.xml-->
 <beans >
 <!--When bean is initalized and destoried-->
-  <bean 
-    id"myBean" 
-    class="in.adwait.springDemo.MyBean" 
+  <bean
+    id"myBean"
+    class="in.adwait.springDemo.MyBean"
     init-method="doOnBeanInit"
     destroy-method="doOnBeanDestroied">
   </bean>
@@ -377,9 +377,9 @@ In short : In contrast to the other scopes, Spring does not manage the complete 
 
 So unless you know what you are doing and you are implementing custom code to release resources used by there prototype beans, and there is a good reason to use prototype scope in the first place dont use prototype scope.
 
-* With Java Annotations
+- With Java Annotations
 
-> Important : For modularity Java 9+  `javax.annotation` has been removed from its default classpath, so our ide will not be able to import the lifecycle hook annotations for us.
+> Important : For modularity Java 9+ `javax.annotation` has been removed from its default classpath, so our ide will not be able to import the lifecycle hook annotations for us.
 > [Download or add to maven/gradle 'Javax Annotation API'](https://mvnrepository.com/artifact/javax.annotation/javax.annotation-api) to use it in the project if needed to us the lifecycle hooks of the beans.
 
 ```java
@@ -496,7 +496,7 @@ public class MyBean implements MyBeanInterface {
   public void setEmailAddress(String emailAddress) {
     this.emailAddress = emailAddress;
   }
-  
+
   public void setName(String name) {
     this.name = name;
   }
@@ -504,7 +504,7 @@ public class MyBean implements MyBeanInterface {
   public String getEmailAddress() {
     return emailAddress;
   }
-  
+
   public String getName() {
     return emailAddress;
   }
@@ -549,9 +549,9 @@ public class MyBean{
 
 Which Injection should we use?
 
-* First and most important is be consistent through out the project.
+- First and most important is be consistent through out the project.
 
-* Even thought most will recommend constructor injection in most places, we can use any we want as spring documentation suggests that all types of injection give the same functionality.
+- Even thought most will recommend constructor injection in most places, we can use any we want as spring documentation suggests that all types of injection give the same functionality.
 
 ### @Qualifier
 
@@ -561,8 +561,8 @@ Which Injection should we use?
 
 //Specify a name for our bean
 @Component("myService")
-public class MyService{ 
-  //... 
+public class MyService{
+  //...
 }
 
 @Component
@@ -580,9 +580,9 @@ public class MyBean implements MyBeanService{
 
 > If the annotation's value doesn't indicate a bean name, an appropriate name will be built based on the short name of the class (with the first letter lower-cased). eg `MyService` -> `myService`.
 > However, for the special case of when BOTH the first and second characters of the class name are upper case, then the name is NOT converted. eg `MYBeanService` -> `MYBeanService`.
->**Java Beans Introspector** is used behind the sence to generate default names for each bean.
+> **Java Beans Introspector** is used behind the sence to generate default names for each bean.
 
-* `@Qualifier` with field injection is easy as we just specify it on top of the variable. But it is different when we use it with a constructor as we can have many services that implement the same interface being injected into the construtor.
+- `@Qualifier` with field injection is easy as we just specify it on top of the variable. But it is different when we use it with a constructor as we can have many services that implement the same interface being injected into the construtor.
 
 ```java
 @Component
@@ -659,7 +659,7 @@ private String name;
 ## Dependency Injection Without Xml
 
 > `@Bean` : We can use `@Bean` to make an existing third-party class available to our Spring framework application context.
-.
+> .
 > We use `@PropertySource` to specify class path for our properties files being used.
 
 ```java
@@ -764,7 +764,7 @@ public static PropertySourcesPlaceholderConfigurer
 }
 ```
 
-* While using Spring 4.2 and lower we will have to configure Spring manually to get spring to load our properties file. We can simply add the following code to our class marked with `@Configuration` annotaion.
+- While using Spring 4.2 and lower we will have to configure Spring manually to get spring to load our properties file. We can simply add the following code to our class marked with `@Configuration` annotaion.
 
 ```java
 @Bean
@@ -773,7 +773,7 @@ public static PropertySourcesPlaceholderConfigurer propertySourcePlaceHolderConf
 }
 ```
 
-* In Spring 4.3 and higher which we will use most of the times, we do not need the above code.
+- In Spring 4.3 and higher which we will use most of the times, we do not need the above code.
 
 ### @Bean
 
@@ -782,7 +782,7 @@ The `@Bean` annotation tells Spring that we are creating a bean component manual
 Creating a Bean.
 
 ```java
-@Bean 
+@Bean
 public MyBeanInterface myBeanId() {
   MyBean mybean = new MyBean();
   return myBean;
@@ -876,7 +876,7 @@ person.get(2).getStartAge() //-> 18
 
 ## Advance DI
 
-* We can also Inject Collection From Java.utils by defining them as beans.
+- We can also Inject Collection From Java.utils by defining them as beans.
 
 ### Factory Beans
 
@@ -885,7 +885,7 @@ Spring beans container manages two types of beans, ordinary beans that are used 
 FactoryBean is a interface that can be implemented to create a bean that creates objects that are managed by spring container.
 
 ```java
-//--- This is the FactoryBean interface 
+//--- This is the FactoryBean interface
 public interface FactoryBean<T> {
   //Returns an object produced by the factory, that will be used by the Spring Contianer
   T getObject() throws Exception;
@@ -938,7 +938,7 @@ public class BeanConfigurationClass{
   }
 }
 
-//The we can use 
+//The we can use
 @Autowired
 private Vehicle vehicle;
 //Will inject the vehicle object from above.
@@ -1036,7 +1036,7 @@ As of Spring 4.3, `@PropertySource` comes with the factory attribute. We can mak
 public class YamlPropertySourceFactory implements PropertySourceFactory {
 
     @Override
-    public PropertySource<?> createPropertySource(String name, EncodedResource encodedResource) 
+    public PropertySource<?> createPropertySource(String name, EncodedResource encodedResource)
       throws IOException {
         YamlPropertiesFactoryBean factory = new YamlPropertiesFactoryBean();
         factory.setResources(encodedResource.getResource());
@@ -1103,7 +1103,7 @@ public class DevDatasourceConfig{}
 public class MyWebApplicationInitializer implements WebApplicationInitializer {
     @Override
     public void onStartup(ServletContext servletContext) throws ServletException {
- 
+
         servletContext.setInitParameter(
           "spring.profiles.active", "dev");
     }
@@ -1143,20 +1143,20 @@ Basic flow of MVC : WebBrowser -> Front Controller -> Controller -> View templat
 
 Responsibilities of FrontView Controller
 
-* Intercepts incoming requests
-* Converts the payload of the request to the internal structure of the data
-* Sends the data to Model for further processing
-* Gets processed data from the Model and advances that data to the View for rendering
+- Intercepts incoming requests
+- Converts the payload of the request to the internal structure of the data
+- Sends the data to Model for further processing
+- Gets processed data from the Model and advances that data to the View for rendering
 
 The `DispatcherServlet` acts as the main controller to route requests to their intended destination
 
 Components of a Spring MVC Application
 
-* A set of web pages to layout UI components.
+- A set of web pages to layout UI components.
 
-* A collection of Spring beans (controllers, services, etc).
+- A collection of Spring beans (controllers, services, etc).
 
-* Spring configurations.
+- Spring configurations.
 
 **Spring MVC Front Controller**: It is also known as Dispatcher Servlet. It is a part of the Spring Framework and is already implemented.
 
@@ -1216,7 +1216,7 @@ The base code for the above files is as given in following starter files.
 <!-- spring-mvc-demo-serverlet.xml -->
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:context="http://www.springframework.org/schema/context"
   xmlns:mvc="http://www.springframework.org/schema/mvc"
   xsi:schemaLocation="
@@ -1335,7 +1335,7 @@ Properties used to configure `@RequestMapping` are path/name/value, params, head
 
 ```java
 @RequestMapping(
-  value = "/ex/foos/{id}", //can have path variables 
+  value = "/ex/foos/{id}", //can have path variables
   headers = { "key1=val1", "Accept=application/json" }, //What the method expects
   method = GET, //Or it could also be method = RequestMethod.GET
   produces = {"application/json", "application/xml" } //what this method will produce
@@ -1346,23 +1346,23 @@ Properties used to configure `@RequestMapping` are path/name/value, params, head
 
 //-- Multiple requests
 @RequestMapping(
-  value = { "school/student/id", "college/student/id" }, 
+  value = { "school/student/id", "college/student/id" },
   method = GET)
 
 //-- Multiple Methods
 @RequestMapping(
-  value = "school/student/{id}", 
+  value = "school/student/{id}",
   method = { RequestMethod.PUT, RequestMethod.POST }
 )
 ```
 
 #### Aliases for @RequestMapping
 
-* @GetMapping
-* @PostMapping
-* @PutMapping
-* @DeleteMapping
-* @PatchMapping
+- @GetMapping
+- @PostMapping
+- @PutMapping
+- @DeleteMapping
+- @PatchMapping
 
 #### @RequestMapping on Class
 
@@ -1381,7 +1381,7 @@ As we have set up the server configuration to serve pages, the following request
 ```java
 @Controller
 public class HomeController {
-  
+
   @RequestMapping("/")
   public String showPage() {
     return "homePage"; //This is the name of the page that is returned.
@@ -1410,7 +1410,7 @@ public class HomeController {
 <!-- showFrom.jsp-->
 <html>
   <body>
-    <form action="processForm" method="GET"> 
+    <form action="processForm" method="GET">
       <input type="text" name="studentName" placeholder ="Student Name"/>
       <input type="submit" />
     </form>
@@ -1419,7 +1419,7 @@ public class HomeController {
 
 <!-- successMessage.jsp -->
 <html>
-  <body> 
+  <body>
     From Submitted Successfully. <br>
     <!--Below we read the data from the above form-->
     Student Name Submitted is ${param.studentName}
@@ -1451,7 +1451,7 @@ public String customMessage(HttpServletRequest request, Model model) {
   model.addAttribute("message", mesg);
   /*
    * Model holds values as key value pair.
-   * Above "message" string is passed as a key and the mesg variable is passed as value. 
+   * Above "message" string is passed as a key and the mesg variable is passed as value.
    * We can add as many attributes to the model as we want, also Model varaible can have any name.
   */
   return "successMessage" //Page returned
@@ -1462,7 +1462,7 @@ As discussed above Model holds data for us. We can use this data in the page tha
 
 ```jsp
 <!-- In the form we need to change the request as we have changed the name of the request in the controller -->
-<form action="processFromVersionTwo" method="GET"> 
+<form action="processFromVersionTwo" method="GET">
 
 <!-- successMessage.jsp -->
 <html>
@@ -1487,7 +1487,7 @@ model.mergeAttributes(map);
 
 Like Model, ModelMap can also be used to pass values to the view.
 
-ModelMap gives us the ability of passing  a collection of values and treat it as if it was a map.
+ModelMap gives us the ability of passing a collection of values and treat it as if it was a map.
 
 ```java
 @GetMapping("/welcome")
@@ -1531,7 +1531,7 @@ public String customMessage(@RequestParam("studentName") String name, Model mode
 
 //-- Set Defualt value, or if the value is required
 @RequestParam(name="studentName", defaultValue = "Adwait", required=false) String name
-//-- Mapping All parameters 
+//-- Mapping All parameters
 @RequestParam Map<String,String> allParams
 //-- Mapping multi-value parameter like /?id=1,2,3 or ?id=1&id=2&id=3
 @RequestParam List<String> id
@@ -1564,7 +1564,7 @@ Student getStudent(@PathVariable("id") int id) {
 //---Multiple Path variables
 @RequestMapping(value="/{school}/students/{id}")
 public Student getStudent(
-  @PathVariable String school, 
+  @PathVariable String school,
   @PathVarible("id") int studentId
 ){
   //...
@@ -1656,7 +1656,7 @@ To Reference Spring MVC Form Tags we use `<%@ taglib prefix="form" uri="http://w
 
 There are many form tags provided by MVC that we can find [here](https://docs.spring.io/spring-framework/docs/5.0.2.RELEASE/spring-framework-reference/web.html#mvc-view-jsp-tags).
 
-* Text Input
+- Text Input
 
 In the Spring Controller we have to add a model attribute, this is a bean that will hold form data for the data binding.
 
@@ -1712,7 +1712,7 @@ public String processForm(@ModelAttribute("student") Student student) {
 </html>
 ```
 
-* Drop Down Lists
+- Drop Down Lists
 
 ```jsp
 <form:select path="country">
@@ -1741,7 +1741,7 @@ public class Student{
 
   private String firstName;
   private String lastName;
-  private LinkedHashMap<String, String> countries; 
+  private LinkedHashMap<String, String> countries;
 
   public Student() {
     countries = new LinkedHashMap<>();
@@ -1763,7 +1763,7 @@ public class Student{
 </form:select>
 ```
 
-* Radio Button
+- Radio Button
 
 ```jsp
 Java <form:radiobutton path="language" value="Java">
@@ -1778,7 +1778,7 @@ Similar to `select` tag we can populate the `radiobuttons` from Java class. We c
 
 `<form:radiobuttons path="language" items="${student.languages}" />
 
-* Check Boxes
+- Check Boxes
 
 As check boxes can be used to select multiple options it retruns a collection of data. So this collection is in the form of String array in the Java controller.
 
@@ -1828,7 +1828,7 @@ Hibernate validator 6.2 is based on Java EE and version later than that are base
 
 We here will use [Hibernate Validator 6.2](https://hibernate.org/validator/releases/6.2/).
 
-* Required Fields Validation
+- Required Fields Validation
 
 ```java
 
@@ -1875,7 +1875,7 @@ public String processForm(@Valid @ModelAttribute("customer") Customer customer, 
   <form:input type="submit" value="Submit" />
 ```
 
-* Number Range Validation
+- Number Range Validation
 
 This will help us validate whether a number is between minimum and maximum value.
 
@@ -1913,7 +1913,7 @@ We first create a new folder name `resources` in the `src` directory. In this fo
 typeMismatch.student.age=Please Enter a Number
 ```
 
-The formate in the properties file is *error-code + . + object-name + . + field*.
+The formate in the properties file is _error-code + . + object-name + . + field_.
 
 We also now need to make spring aware of the file that we have created and create a bean so that Spring can use these messages
 
@@ -1928,7 +1928,7 @@ We can even generalize the messages for just the error-code or error-code and ob
 
 For more information on [error code resolve](http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/validation/DefaultMessageCodesResolver.html).
 
-* Using Regular Expression for Validation
+- Using Regular Expression for Validation
 
 We use the `@Pattern(regexp="", message="")` to Validate data with regular expression.
 
@@ -1951,7 +1951,7 @@ We are creating an annotation that will add a check if the String that is return
 
 And the Annotation will look like `@PrefixCheck(value="NES", message="Must start with NES") private String schoolCourseName;`
 
-So *PrefixCheck* will be the name of the class, that defines the Annotation.
+So _PrefixCheck_ will be the name of the class, that defines the Annotation.
 
 ```java
 //-@Constraint: Defines the class that will hold the buisness logic for the annotation
@@ -2016,7 +2016,7 @@ Now we can access the resources and assets from the folder by referencing them i
 
 `<img src="${pageContext.request.contextPath}/resources/images/img.png">`
 
- `<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/index.css">`
+`<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/index.css">`
 
 `<script src="${pageContext.request.contextPath}/resources/js/index.js"></script>`
 
@@ -2055,9 +2055,9 @@ The lifecycle of a Session is bounded by the beginning and end of a logical tran
 
 The main function of the Session is to offer create, read and delete operations for instances of mapped entity classes. Instances may exist in one of three states.
 
-* transient: never persistent, not associated with any Session
-* persistent: associated with a unique Session
-* detached: previously persistent, not associated with any Session
+- transient: never persistent, not associated with any Session
+- persistent: associated with a unique Session
+- detached: previously persistent, not associated with any Session
 
 #### SessionFactory
 
@@ -2110,7 +2110,7 @@ We will place the hibernate configuration file `hibernate.cfg.xml` in the src fo
 The following is a example of the xml configuration for hibernate to communicate with a sql data base.
 
 ```xml
-<!DOCTYPE hibernate-configuration PUBLIC 
+<!DOCTYPE hibernate-configuration PUBLIC
   "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
   "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd"
 >
@@ -2139,7 +2139,7 @@ The following is a example of the xml configuration for hibernate to communicate
 </hibernate-configuration>
 ```
 
-* Usage
+- Usage
 
 ```java
 SessionFactory factory = new Configuration()
@@ -2180,7 +2180,7 @@ public class HibernateConfiguration{
     dataSource.setUserName("students");
     dataSource.setPassword("students_password");
     dataSource.setMaxActive(1);//Set max poolsize- max active connection
-    
+
     return dataSource;
   }
 
@@ -2204,7 +2204,7 @@ public class HibernateConfiguration{
 }
 ```
 
-* Usage
+- Usage
 
 ```java
 @Autowired
@@ -2226,7 +2226,7 @@ For more details official docs on [@EnableTransactionManagement](https://docs.sp
 This is the usual way to set up a shared Hibernate SessionFactory in a Spring application context; the SessionFactory can then be passed to data access objects via dependency injection.
 
 > While looking for this `SessionFactoryBean` Spring will look for `entityManagerFactory` bean so we name this bean accordingly.
-.
+> .
 > Alternatively we can inform Spring Boot that our bean is named differently by: `@EnableJpaRepositories(basePackages = "in.adwait.website.repository", entityManagerFactoryRef = "sessionFactory")`.
 
 #### DataSource And BasicDataSource
@@ -2247,7 +2247,7 @@ JdbcTransactionManager, JpaTransactionManager, HibernateTransactionManager are d
 
 > While looking for the `PlatfromTransactionManager` bean Spring will look for bean with name `transactionManager` so name the bean accordingly.
 
-* HibernateTransactionManager
+- HibernateTransactionManager
 
 `PlatformTransactionManager` implementation for a single Hibernate SessionFactory. `SessionFactory.getCurrentSession()` gives us the session that we use to communicate with db.
 
@@ -2271,11 +2271,11 @@ Hibernate implements all JPA annotations.
 
 There are different states that an entity can be in or go through during its lifecycle based on the operations being performed.
 
-* Detach : It is not associated with a hibernate session.
-* Merge : If instance is detached from session, then merge will reattach it to the session.
-* Persist : Transitions new instance to managed state, that is when commit/flush is done save it to the database.
-* Remove : Transition managed entity to be removed when next commit is done.
-* Refresh : Reload/sync object with data from db.
+- Detach : It is not associated with a hibernate session.
+- Merge : If instance is detached from session, then merge will reattach it to the session.
+- Persist : Transitions new instance to managed state, that is when commit/flush is done save it to the database.
+- Remove : Transition managed entity to be removed when next commit is done.
+- Refresh : Reload/sync object with data from db.
 
 We need to understand this to understand the cascade type that we will use in the mapping section of hibernate.
 
@@ -2310,9 +2310,9 @@ public class Student {
 
 There are two key components of hibernate that we use to communicate with our database.
 
-* SessionFactory : Reads the hibernate config file, creates session objects. It is created only once and thus is called as a heavy weight object.
+- SessionFactory : Reads the hibernate config file, creates session objects. It is created only once and thus is called as a heavy weight object.
 
-* Session : It wraps a JDBC connection and is a short lived object that is it will be used for a method and destoried. It is used to save and retrieve objects. It is created and retrieved from SessionFactory.
+- Session : It wraps a JDBC connection and is a short lived object that is it will be used for a method and destoried. It is used to save and retrieve objects. It is created and retrieved from SessionFactory.
 
 In the following all examples we use the xml configuration to set up the `SessionFactory`.
 
@@ -2334,7 +2334,7 @@ public static void main(String[] args) {
     session.save(student);
     session.getTransaction().commit();
 
-    //--- Reading object from database table. 
+    //--- Reading object from database table.
     session = factory.getCurrentSession();
     session.beginTransaction();
     //Finding students id. AS we have already commited to the database the database would have generate the ide that we can retrieve as
@@ -2368,7 +2368,7 @@ public static void main(String[] args) {
     //- Edit data for multiple students
     session = factory.getCurrentSession();
     session.beginTranscation();
-    session.createQuery("update Student set age='10'").executeUpdate(); 
+    session.createQuery("update Student set age='10'").executeUpdate();
     session.getTransaction().commit();
     //Assuming that there is a property age for all students, all the students age will now be set to 10. We can have more specific queries.
 
@@ -2397,10 +2397,10 @@ A transcation is a single unit of logic or work, sometimes made up of multiple o
 
 Database transaction must be
 
-* Atomic : It must either be complete entirely or have no effect otherwise.
-* Consistent : They should conform to the existing constrains of the database.
-* Isolated : It must not effect other transactions.
-* Durable : It must get written to persistent storage.
+- Atomic : It must either be complete entirely or have no effect otherwise.
+- Consistent : They should conform to the existing constrains of the database.
+- Isolated : It must not effect other transactions.
+- Durable : It must get written to persistent storage.
 
 `session.beginTransaction` is used to start a transaction, where as `session.getTransaction().commit()` is used to make the changes to the database, before we do commit, all the changes that we made in that session are still in the memory and have no effect on the database itself.
 
@@ -2410,34 +2410,34 @@ Database transaction must be
 
 Important Terminology
 
-* Primary Key : Identify a unique row in a table.
+- Primary Key : Identify a unique row in a table.
 
-* Foreign Key : It links tables together and is a field in one table that refers to primary key in another table.
+- Foreign Key : It links tables together and is a field in one table that refers to primary key in another table.
 
 > Whoever owns the foreign key column gets the `@JoinColumn` annotation, and the other side of the relationship is called the non-owning side.
 
-Main purpose is to preserve relationship between tables also called *Referential Integrity*. It prevents operations that would destroy reationship.
+Main purpose is to preserve relationship between tables also called _Referential Integrity_. It prevents operations that would destroy reationship.
 
 It ensures only valid data is inserted into the foreign key column.
 
-* Cascade :  We can cascade the same operations to the related tables that are linked with mapping. For example we delete a user then we might also want to delete all the comments that were made by that user. This will be known as CASCADE DELETE. We might not want cascade all the time.
+- Cascade : We can cascade the same operations to the related tables that are linked with mapping. For example we delete a user then we might also want to delete all the comments that were made by that user. This will be known as CASCADE DELETE. We might not want cascade all the time.
 
-* Fetch Type :
-Eager will retrieve everthing.
-Lazy will retieve data on request.
+- Fetch Type :
+  Eager will retrieve everthing.
+  Lazy will retieve data on request.
 
-* Uni-Directional And Bidirectional Mapping : We can have a user and his comments that will have a unidirectional mapping or User is Friend with other user will have a bidirectional mapping.
+- Uni-Directional And Bidirectional Mapping : We can have a user and his comments that will have a unidirectional mapping or User is Friend with other user will have a bidirectional mapping.
 
 #### One To One Mapping
 
 One To One Cascade Types
 
-* PERSIST : If entity persisted, related entity will also be persisted. Similarly for all other following cascade types.
-* REMOVE
-* REFRESH
-* DETACH
-* MERGE
-* ALL
+- PERSIST : If entity persisted, related entity will also be persisted. Similarly for all other following cascade types.
+- REMOVE
+- REFRESH
+- DETACH
+- MERGE
+- ALL
 
 By default no operations are cascaded.
 
@@ -2575,15 +2575,15 @@ Official Docs On [@JoinColumn](https://docs.oracle.com/javaee/7/api/javax/persis
 
 When we use the `@JoinColumn` and give it a name, the table in which the foreign key column is found depends upon the context.
 
-* If the join is for a OneToOne or ManyToOne mapping using a foreign key mapping strategy, the foreign key column is in the table of the sourse entity.
-* If the join is for a unidirectional OneToMany mapping using foreign key mapping strategy, the foreign key is in the table of the target entity.
-* If the join is for a ManyToMany mapping or for a OneToOne or bidirectional ManyToOne/OneToMany mapping using a join table, the foreign key is in a join table.
+- If the join is for a OneToOne or ManyToOne mapping using a foreign key mapping strategy, the foreign key column is in the table of the sourse entity.
+- If the join is for a unidirectional OneToMany mapping using foreign key mapping strategy, the foreign key is in the table of the target entity.
+- If the join is for a ManyToMany mapping or for a OneToOne or bidirectional ManyToOne/OneToMany mapping using a join table, the foreign key is in a join table.
 
 #### Many To One Mapping
 
 One to Many mapping is used when we have to map many objects to one object.
 
-* In the following example we will have a course and all its reviews. So If can get from the course all its review and when a course is deleted all the reviews are deleted with the course.
+- In the following example we will have a course and all its reviews. So If can get from the course all its review and when a course is deleted all the reviews are deleted with the course.
 
 ```java
 //--- Unidirectional Mapping
@@ -2606,7 +2606,7 @@ public class Course{
   @OneToMany(cascade=CascadeType.ALL)
   @JoinColumn(name="course_id")
   private List<Review> reviews;
-  
+
   //Constructor
 
   public void add(Review review) {
@@ -2620,7 +2620,7 @@ public class Course{
 }
 ```
 
-* In the following example we will have a teacher and all the courses that that teacher teaches.
+- In the following example we will have a teacher and all the courses that that teacher teaches.
 
 ```java
 //--- Bidirectional mapping
@@ -2681,7 +2681,7 @@ public static void main(String[] args) {
                             .addAnnotatedClass(Teacher.class)
                             .addAnootatedClass(Course.class)
                             .buildSessionFactory();
-  
+
   Session session = factory.getCurrentSession();
 
   try{
@@ -2743,10 +2743,10 @@ When the dependent entities are few and we want to work on the dependent entitie
 
 Default Fetch Types are applied if we do not specify the FetchType with with our mappings.
 
-* OneToOne : FetchType.EAGER
-* OneToMany : FetchType.LAZY
-* ManyToOne : FetchType.EAGER
-* ManyToMany : FetchType.LAZY
+- OneToOne : FetchType.EAGER
+- OneToMany : FetchType.LAZY
+- ManyToOne : FetchType.EAGER
+- ManyToMany : FetchType.LAZY
 
 Let take the example of Teacher and Course thought by that Teacher.
 
@@ -2811,7 +2811,7 @@ CREATE TABLE `course_student` (
   `student_id` int(1) NOT NULL
 
   PRIMARY KEY (`course_id`, `student_id`),
-  
+
   CONSTRAINT `FK_COURSE`
   FOREIGN KEY (`course_id`)
   REFERENCES `course` (`id`),
@@ -2871,87 +2871,87 @@ AOP includes programming methods and tools that support the modularization of co
 
 #### Benifits of AOP
 
-* Code For Apect is defined in a single class, which prevents scattering and promotes code reuse and easier to change.
-* Buisness code in our application is clean, which reduces complexity and only applies to the buisness functionality.
-* Aspects can be selectively applied to parts of the app based on the need only by changing the configuration and keeping the buisness code unchanged.
+- Code For Apect is defined in a single class, which prevents scattering and promotes code reuse and easier to change.
+- Buisness code in our application is clean, which reduces complexity and only applies to the buisness functionality.
+- Aspects can be selectively applied to parts of the app based on the need only by changing the configuration and keeping the buisness code unchanged.
 
 #### AOP Use Cases
 
-* Security, transactions, logging.
-* Audit logging - who, what, where when.
-* Exception handling and notification to relevant authority
-* API management and analytics. How many times called, load, top users.
+- Security, transactions, logging.
+- Audit logging - who, what, where when.
+- Exception handling and notification to relevant authority
+- API management and analytics. How many times called, load, top users.
 
 #### Disadvantages of AOP
 
-* Too many aspects can make app flow hard to follow.
-* Minor performance cost for aspect execution.
+- Too many aspects can make app flow hard to follow.
+- Minor performance cost for aspect execution.
 
 #### AOP Terminology
 
-* Aspect : Module of code for cross cutting concern(logging, security, etc).
-* Advice : What action is taken and when it should be applied.
-* Join Point : When to apply code during program execution.
-* Pointcut : A predicate expression for where advice should be applied.
-* Weaving : Linking aspects with other application types or objects to create an advised object
+- Aspect : Module of code for cross cutting concern(logging, security, etc).
+- Advice : What action is taken and when it should be applied.
+- Join Point : When to apply code during program execution.
+- Pointcut : A predicate expression for where advice should be applied.
+- Weaving : Linking aspects with other application types or objects to create an advised object
 
 #### Advice Types
 
-* Before Advice : Run before the method.
-* After finally advice : Run after the method(finally).
-* After returning advice : Run after the method(sucessful execution).
-* After throwing advice : Run after method(if exeception thrown).
-* Around advice : Run before and after method.
+- Before Advice : Run before the method.
+- After finally advice : Run after the method(finally).
+- After returning advice : Run after the method(sucessful execution).
+- After throwing advice : Run after method(if exeception thrown).
+- Around advice : Run before and after method.
 
 #### Weaving
 
-* Connecting aspects to target object to create an adviced object.
-* Different types of weaving are Compile time, load-time or runtime
-* Run-Time Weaving is slow as it happens at runtime.
+- Connecting aspects to target object to create an adviced object.
+- Different types of weaving are Compile time, load-time or runtime
+- Run-Time Weaving is slow as it happens at runtime.
 
 #### AOP Frameworks
 
-* AspectJ
-* Spring AOP
+- AspectJ
+- Spring AOP
 
 Spring AOP
 
-* Spring provides AOp support out of the box.
-* Key components that use AOP in spring are Security, transactions, caching, etc.
-* Spring AOP uses run-time weaving of aspects.
-MainApp -> AOP proxy -> Logging or/and Secutity Aspect -> Target Object.
+- Spring provides AOp support out of the box.
+- Key components that use AOP in spring are Security, transactions, caching, etc.
+- Spring AOP uses run-time weaving of aspects.
+  MainApp -> AOP proxy -> Logging or/and Secutity Aspect -> Target Object.
 
 Advantages of Spring AOP over AspectJ
 
-* Simpler to use and is a light implementation of AOP.
-* Uses Proxy Pattern
-* Can migrate to AspectJ when using @Aspect annotation
+- Simpler to use and is a light implementation of AOP.
+- Uses Proxy Pattern
+- Can migrate to AspectJ when using @Aspect annotation
 
 Disadvantages of Spring AOP over AspectJ
 
-* Only supports method-level join points.
-* Can only apply aspects to beans created by Spring App context.
-* Minor performance cost for aspect execution as it uses run-time weaving.
+- Only supports method-level join points.
+- Can only apply aspects to beans created by Spring App context.
+- Minor performance cost for aspect execution as it uses run-time weaving.
 
 AspectJ
 
-* It is the original AOP framework, released in 2001.
-* Provides complete support for AOP.
-* Rich support for join points and code weaving.
-* Join Point : Method level, constructor, field.
-* Code weaving : Compile-time, post compile-time and load-time.
+- It is the original AOP framework, released in 2001.
+- Provides complete support for AOP.
+- Rich support for join points and code weaving.
+- Join Point : Method level, constructor, field.
+- Code weaving : Compile-time, post compile-time and load-time.
 
 Advantages of AspectJ over Spring AOP
 
-* Support all join points.
-* Works with any POJO not just beans from app context.
-* Faster performance compared to Spring AOP.
-* Complete AOP support.
+- Support all join points.
+- Works with any POJO not just beans from app context.
+- Faster performance compared to Spring AOP.
+- Complete AOP support.
 
 Disadvantages of AspectJ over Spring AOP
 
-* Compile-time weaving requires extra comilation steps.
-* AspectJ pointcut syntax can become complex.
+- Compile-time weaving requires extra comilation steps.
+- AspectJ pointcut syntax can become complex.
 
 ### Setting Up AOP
 
@@ -2965,9 +2965,9 @@ Main App <-> AOP proxy -> Logging/Security Aspect -> Target Object.
 
 Most Common Uses
 
-* Logging, Security, Transcations.
-* Audit Logging.
-* API Management.
+- Logging, Security, Transcations.
+- Audit Logging.
+- API Management.
 
 ```java
 
@@ -3020,26 +3020,26 @@ Spring AOP uses AspectJ's pointcut expression language.
 
 Following are examples of PointCut Expression for execution.
 
-* `@Before("execution(public void in.adwait.project.Account.addAccount())")` : Match only `addAccount()` method in Account class.
-* `@Before("execution(public void addAccount())")` : Match any `addAccount()` method in any class.
-* `@Before("execution(public void add*())")` : Match methods starting with add in any class.
-* `@Before("execution(* processCard*())")` : Modifiers are optional hence we dont have to list it, we can use * for optional patterns.
-* `@Before("execution(public * processCard*())")` : Match method that has a public modifier with any return type and processCard as the start of the method name in any class.
-* `@Before("execution(void processCard*())")` : Match method that has any modifier, and a return type of void in any class, starting with processCard.
+- `@Before("execution(public void in.adwait.project.Account.addAccount())")` : Match only `addAccount()` method in Account class.
+- `@Before("execution(public void addAccount())")` : Match any `addAccount()` method in any class.
+- `@Before("execution(public void add*())")` : Match methods starting with add in any class.
+- `@Before("execution(* processCard*())")` : Modifiers are optional hence we dont have to list it, we can use \* for optional patterns.
+- `@Before("execution(public * processCard*())")` : Match method that has a public modifier with any return type and processCard as the start of the method name in any class.
+- `@Before("execution(void processCard*())")` : Match method that has any modifier, and a return type of void in any class, starting with processCard.
 
 #### Parameter Patterns
 
 For Param-pattern WildCards
 
-* `()` : matches a method with no arguments
-* `(*)` : matches a method with one argument of any type.
-* `(..)` : matches a method with 0 or more arguments of any type.
+- `()` : matches a method with no arguments
+- `(*)` : matches a method with one argument of any type.
+- `(..)` : matches a method with 0 or more arguments of any type.
 
 Match on method Parameter examples.
 
-* `@Before("execution(* addAccount(in.adwait.project.Account))")` : In the method we specify a fully qualified class path for the argument type.
-* `@Before("execution(* addAccount(in.adwait.project.Account, ..))")` : matches with method with name addAccount having a Account as argument and any number of other arguments.
-* `@Before("execution(void in.adwait.project.dao.*.*(..))")` : Match any method in our DAO package(in.adwait.project.dao). The first * represents any class and the second any mwthod in the class.
+- `@Before("execution(* addAccount(in.adwait.project.Account))")` : In the method we specify a fully qualified class path for the argument type.
+- `@Before("execution(* addAccount(in.adwait.project.Account, ..))")` : matches with method with name addAccount having a Account as argument and any number of other arguments.
+- `@Before("execution(void in.adwait.project.dao.*.*(..))")` : Match any method in our DAO package(in.adwait.project.dao). The first \* represents any class and the second any mwthod in the class.
 
 #### Declaring PointCut Expression
 
@@ -3047,9 +3047,9 @@ We can use the pointcut expression by add them to each method separately or we c
 
 Benefits of Pointcut Declarations over using them directly.
 
-* Easily resuse.
-* Easy Update in one location.
-* Can also share and combine pointcut expression.
+- Easily resuse.
+- Easy Update in one location.
+- Can also share and combine pointcut expression.
 
 ```java
 @Aspect
@@ -3092,10 +3092,10 @@ The Advice type work like a if statement when we pass in multiple pointcut expre
 
 Following are the Operators that can be used in combination to define our pointcut combination.
 
-* `@Before("expressionOne() && expressionTwo()")
-* `@Before("expressionOne() || expressionTwo()")
-* `@Before("expressionOne() && !expressionTwo()")
-* `@Before("expressionOne() && (expressionTwo() || expressionThree())")
+- `@Before("expressionOne() && expressionTwo()")
+- `@Before("expressionOne() || expressionTwo()")
+- `@Before("expressionOne() && !expressionTwo()")
+- `@Before("expressionOne() && (expressionTwo() || expressionThree())")
 
 We can also declare a combination of pointcut expression as a single pointcut expression and then use it.
 
@@ -3121,10 +3121,10 @@ The Spring AOP does not have any order by which it will run different Advice.
 
 To Control order we would have to place advices in separate aspects. The we can control the order of the aspects using `@Order` annotation. This will guarantee the order of when aspects are applied.
 
-* The lower the number of Order the higher the preference.
-* Negative Numbers are allowed
-* Numbers do not have be consecutive.
-* If two aspect have the same number, for them both the order will be random, but they will still run in order as compared to others.
+- The lower the number of Order the higher the preference.
+- Negative Numbers are allowed
+- Numbers do not have be consecutive.
+- If two aspect have the same number, for them both the order will be random, but they will still run in order as compared to others.
 
 In the following example we have three Advices that will run on the same method and we want to order them. So we create three different Aspects for the three Advices and mark them with `@Order`.
 
@@ -3202,7 +3202,7 @@ public class AccountAspect{
   @AfterReturning(pointcut="execution(* in.adwait.project.AccountDAO.findAccount(..))", returning="result")
   public void afterReturningFindAccountAdvice(JointPoint joinPoint,  List<Account> result) {
     //The returning String and the name of used in the above arguments must be the same. It is not related to the name of the return in the actual method that the Advice targets.
-    
+
     System.out.println(result);
     //The result contains what ever is returned by the targeted method.
   }

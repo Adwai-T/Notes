@@ -10,26 +10,26 @@ Spring Secutity Defines a framework for security, implemented using servlet filt
 
 There are two methods of securing a web app one by using Declarative Security or by using Programmatic Security.
 
-* Spring Security With Serverlet Filters
-  
+- Spring Security With Serverlet Filters
+
 Serverlet Filters are used to pre-preocess and postprocess web requests.
 
 Servlet filters can reoute web requests based on security logic.
 
 Spring provides a bulk of secrity functionality using servlet.
 
-* Spring Security Concepts
+- Spring Security Concepts
 
 1. Atuhentication : Check user id and password with crednetials stored in the app/db.
 2. Authorization : Check to see if user has an authorized role.
 
-* Declarative Security
+- Declarative Security
 
 Define application's security constraints in configuration with a class annotated with `@Configuration` or with a xml file configuration.
 
 This provides separation of concerns between security and Application code.
 
-* Programmatic Security
+- Programmatic Security
 
 Spring Security provides an API for custom application coding. Thus we can extend the basic security API provided by spring to write our own security logic.
 
@@ -93,10 +93,10 @@ Filters basically intercept every request that goes to different Servlets. Sprin
 
 When we add Spring Security to the class path of the applicaiton Spring Security exibits some default behavious.
 
-* Adds manadatory authentication for all request Urls.
-* Adds Login form.
-* Handles Login errors.
-* Creates a user and sets a default password that is printed to console when app runs. The default user-name is user.
+- Adds manadatory authentication for all request Urls.
+- Adds Login form.
+- Handles Login errors.
+- Creates a user and sets a default password that is printed to console when app runs. The default user-name is user.
 
 When are using Spring Secuity with spring boot we can add a user and passowrd to the application properties file which will be loaded automaically.
 
@@ -197,7 +197,7 @@ Delegating Filter Proxy does not handle the filtering itself rather it delegates
 
 ### Authentication Process
 
-For Authentication Spring Security takes credentials as input and  when done, the authentication return a `Principal`.
+For Authentication Spring Security takes credentials as input and when done, the authentication return a `Principal`.
 
 When Spring Secuirty Perfroms authentication It keeps track of both the input credentials and returned Principal in an Object called `Authentication` which is an internal Spring Security Interface.
 
@@ -336,7 +336,7 @@ public class MyUserDetails implements UserDetails{
   //We implement all the method of the interface as needed.
 
   //-- creating A Role with GrantedAuthority
-  @Override 
+  @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
     return Arrays.asList(new SimpleGrantedAuthority("ROLE_USER"));
   }
@@ -429,9 +429,9 @@ It is often used to store organizational information, often with a hierarchical 
 
 We need some dependencies that will help us use ldap with spring.
 
-* com.unboundedid - unboundedid-ldapsdk : Opensource in memory implementation of ldap used for testing.
-* org.springframework.ldap - spring-ldap-core : ldap interaction with spring.
-* org.springframework.security - spring-security-ldap : Help spring security with ldap.
+- com.unboundedid - unboundedid-ldapsdk : Opensource in memory implementation of ldap used for testing.
+- org.springframework.ldap - spring-ldap-core : ldap interaction with spring.
+- org.springframework.security - spring-security-ldap : Help spring security with ldap.
 
 The full code for the [Authentication with LDAP](https://spring.io/guides/gs/authenticating-ldap/).
 
@@ -475,9 +475,9 @@ But Modern web apps are often split into several instance with a load balancer. 
 
 To solve this there are two techinque that are employed.
 
-* Sicky Sessions : The Load balancer will remember which client is handled by which server initailly and the route all subsequent request to the same server. But this has the obvious disadvantage that increases the work done by Load Balancer.
+- Sicky Sessions : The Load balancer will remember which client is handled by which server initailly and the route all subsequent request to the same server. But this has the obvious disadvantage that increases the work done by Load Balancer.
 
-* Shared Session Store : Shared Session store like redish can be used between all the web app instances to store the session. This has the disadvantage that it creates a single point of failure, if session store goes down, all session also go down.
+- Shared Session Store : Shared Session store like redish can be used between all the web app instances to store the session. This has the disadvantage that it creates a single point of failure, if session store goes down, all session also go down.
 
 ### JWT vs Session Tokens
 
@@ -535,7 +535,7 @@ We Will use the [auth0/java-jwt](https://github.com/auth0/java-jwt) to create an
 //-SimpleUserDetailsService implements UserDetailsService
 //-SimpleUserDetials implements UserDetails
 
-//--- To provide and configure UserDetails for Spring Security to use please look at the sections. 
+//--- To provide and configure UserDetails for Spring Security to use please look at the sections.
 
 //---Models and other Contoller methods
 //-AuthRequest [username, password] and AuthResponse [username, jwt] are models
@@ -554,7 +554,7 @@ public class JwtService {
     if(algorithm == null) algorithm = Algorithm.HMAC256(secret);
     // We can add any number of custom claims to the map
     Map<String, Object> payload = new HashMap<>();
-    
+
     String token = JWT.create()
             .withIssuer(provider)
             .withIssuedAt(new Date())
@@ -586,7 +586,7 @@ public class AuthenticationController {
   private JwtService jwtService;
   @Autowired
   private SimpleUserDetailsService userDetailsService;
-    
+
   @PostMapping("")
   public ResponseEntity<AuthResponse> auth(
           @RequestBody AuthRequest requestBody)

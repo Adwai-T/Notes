@@ -5,8 +5,7 @@ jQuery is one of the many libraries for JavaScript. It is designed to simplify s
 ```html
 <!--use use (document).ready to run the script after the dom has already loaded-->
 <script>
-  $(document).ready(function(){
-
+  $(document).ready(function () {
     //All jQuery functions start with a `$`.
     //Here we will select button to add function to the button.
     //This is just the selector the function of bounce animation will actually be appied bycss
@@ -16,7 +15,7 @@ jQuery is one of the many libraries for JavaScript. It is designed to simplify s
     $(".text-primary").addClass("animated shake");
 
     //Select Target Element by id
-    $("#target6").addClass("animated fadeOut")
+    $("#target6").addClass("animated fadeOut");
 
     //Remove class from Elements
     $("button").removeClass("animated");
@@ -54,7 +53,6 @@ jQuery is one of the many libraries for JavaScript. It is designed to simplify s
 
     //Use jQuery to Modify the Entire Page
     $("body").addClass("animated fadeOut");
-
   });
 </script>
 ```

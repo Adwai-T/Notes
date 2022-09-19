@@ -1,27 +1,27 @@
 # Spring Boot
 
-* Ctrl + Enter : Open create new menu.
+- Ctrl + Enter : Open create new menu.
 
-* Double Shift : Search Everywhere
+- Double Shift : Search Everywhere
 
-* Ctrl+Shift+A : Find command
+- Ctrl+Shift+A : Find command
 
-* Alt+Enter : quick fix
+- Alt+Enter : quick fix
 
-* F2 : Navigate code issues
+- F2 : Navigate code issues
 
-* Shift+F2 : next code errors
+- Shift+F2 : next code errors
 
-* Ctrl+Alt+L : Reformate code.
+- Ctrl+Alt+L : Reformate code.
 
-* Ctrl+B : Go to declaration
+- Ctrl+B : Go to declaration
 
-* Alt+F7 : Show all uses where the code is used.
+- Alt+F7 : Show all uses where the code is used.
 
-* Alt+1 : Focus tool window
+- Alt+1 : Focus tool window
 
-* Esc : Focus editor
+- Esc : Focus editor
 
-* clrt + alt + v : Refactor a method or code block
+- clrt + alt + v : Refactor a method or code block
 
-* clrt + o : Get the Override methods menu
+- clrt + o : Get the Override methods menu

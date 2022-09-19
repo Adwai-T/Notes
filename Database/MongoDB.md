@@ -2,12 +2,12 @@
 
 ## Setting up
 
-* Create a new DataBase or start the already existing bd at file path :
-`"(location where mongodb is  installed)\mongodb\bin\mongod.exe" --dbpath="(location where the database exists)\Database"`
+- Create a new DataBase or start the already existing bd at file path :
+  `"(location where mongodb is installed)\mongodb\bin\mongod.exe" --dbpath="(location where the database exists)\Database"`
 
 Or we can add the bin folder of mongodb to the path and then direcly.
 
-* Use Roto-3T or Mongodb Compass to access the database locally at 27017 port : which is the default port for MongoDB.
+- Use Roto-3T or Mongodb Compass to access the database locally at 27017 port : which is the default port for MongoDB.
 
 ## Creating Account
 
@@ -56,13 +56,13 @@ MongoClient mongoClient = MongoClients.create("mongodb://hostOne:27017,hostTwo:2
 
 ### Access Data-Base
 
-* Use the `MongoClient.getDatabase()` method to access a database. If a database does not exist, MongoDB creates the database when we first store data for that database.
+- Use the `MongoClient.getDatabase()` method to access a database. If a database does not exist, MongoDB creates the database when we first store data for that database.
 
-* Use its `getCollection()` method to access a collection. If a collection does not exist, MongoBD creates the collection when we first store data for that collection.
+- Use its `getCollection()` method to access a collection. If a collection does not exist, MongoBD creates the collection when we first store data for that collection.
 
->Note : MongoDatabase instances are immutable.
+> Note : MongoDatabase instances are immutable.
 
-* To create the document using the Java driver, use the `Document` class.
+- To create the document using the Java driver, use the `Document` class.
 
 ```java
 MongoDatabase database = mongoClient.getDatabase("mydb");
@@ -71,13 +71,13 @@ MongoCollection<Document> collection = database.getCollection("test");
 ```
 
 ```json
-  {
-   "name" : "MongoDB",
-   "type" : "database",
-   "count" : 1,
-   "versions": [ "v3.2", "v3.0", "v2.6" ],
-   "info" : "{ x : 203, y : 102 }"
-  }
+{
+  "name": "MongoDB",
+  "type": "database",
+  "count": 1,
+  "versions": ["v3.2", "v3.0", "v2.6"],
+  "info": "{ x : 203, y : 102 }"
+}
 ```
 
 ```java
@@ -89,11 +89,11 @@ MongoCollection<Document> collection = database.getCollection("test");
                 .append("info", new Document("x", 203).append("y", 102));
 ```
 
->Note : The BSON type of array corresponds to the Java type java.util.List
+> Note : The BSON type of array corresponds to the Java type java.util.List
 
-* Insert One document into a collection use `insertOne` method of `MongoCollection` class.
+- Insert One document into a collection use `insertOne` method of `MongoCollection` class.
 
-* To insert multiple documents use the `insertMany` method of `MongoCollection` class, which takes a `List` of `Document`s to insert.
+- To insert multiple documents use the `insertMany` method of `MongoCollection` class, which takes a `List` of `Document`s to insert.
 
 ```java
 collection.insertOne(doc);
@@ -105,9 +105,9 @@ for (int i = 0; i < 100; i++) {
 collection.insertMany(documents);
 ```
 
->Note : If no top-level `_id` field is specified in the document, MongoDB automatically adds the `_id` field to the inserted document.
+> Note : If no top-level `_id` field is specified in the document, MongoDB automatically adds the `_id` field to the inserted document.
 
-* Count `Document`s in `MongoCollection` use `collection.countDocuments()`.
+- Count `Document`s in `MongoCollection` use `collection.countDocuments()`.
 
 ### Query the Collection
 
@@ -177,17 +177,17 @@ System.out.println(deleteResult.getDeletedCount());
 
 ## Using with Spring
 
-* A model of how the data needs to be stored is created with a Java class.
+- A model of how the data needs to be stored is created with a Java class.
 
-* A repository interface that extends the `MongoRepository` need to be created. The methods specified in the interface are automatically implemented by Spring Boot.
+- A repository interface that extends the `MongoRepository` need to be created. The methods specified in the interface are automatically implemented by Spring Boot.
 
-* They could then be used with a `@Autowired` instance of the interface.
+- They could then be used with a `@Autowired` instance of the interface.
 
-* [Mongo Docs Spring Boot](https://docs.spring.io/spring-data/mongodb/docs/current/api/org/springframework/data/mongodb/repository/MongoRepository.html)
+- [Mongo Docs Spring Boot](https://docs.spring.io/spring-data/mongodb/docs/current/api/org/springframework/data/mongodb/repository/MongoRepository.html)
 
-* [Spring Boot with Remote Mongo Repository](https://www.opencodez.com/java/use-mongodb-atlas-with-spring-boot.htm).
+- [Spring Boot with Remote Mongo Repository](https://www.opencodez.com/java/use-mongodb-atlas-with-spring-boot.htm).
 
-* [Spring Working with NOSQL databases](https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-nosql).
+- [Spring Working with NOSQL databases](https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-nosql).
 
 > Note : Mongodb has Database which has collections which have fields. So In Spring we can name them with `@Document(collection = "Comments")` on Model, and `@Field(value = "userId")` on the fields.
 

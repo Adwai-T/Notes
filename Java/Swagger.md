@@ -71,16 +71,15 @@ This issue is caused by Spring Fox 3.0.0 not supporting new PathPattern Based Pa
 
 Spring is using mvcmatchers by default which conflicts with swagger because it uses the antmatchers so we can solve this by the following methods.
 
-* Downgrading Spring-Version will solve the issue but should not be done just to use swagger.
-  
-* Changing PathPattern matching back to AntPatternMatching in properites/yml file.
+- Downgrading Spring-Version will solve the issue but should not be done just to use swagger.
+- Changing PathPattern matching back to AntPatternMatching in properites/yml file.
 
 ```properites
 # In application.properties
 spring.mvc.pathmatch.matching-strategy=ant_path_matcher
 ```
 
-* Enable MVCmatchers in spring creating a configuration file for swagger to use.
+- Enable MVCmatchers in spring creating a configuration file for swagger to use.
 
 ```java
 @EnableWebMvc
@@ -90,7 +89,7 @@ public class SwaggersConfigs {
 }
 ```
 
-* Migrate to [Spring Doc](https://springdoc.org/#migrating-from-springfox) as swagger did not have any updates for a long time.
+- Migrate to [Spring Doc](https://springdoc.org/#migrating-from-springfox) as swagger did not have any updates for a long time.
 
 #### Spring Security Access
 
@@ -165,14 +164,14 @@ public Contact getContact(
     @ApiParam(value="ID value for contact", required=true) @PathVariable String id
     ) {
     return contacts.get(id);
-    
+
 }
 
 
 //For model
 @ApiModel(description="Details about the contact")
 public class Contact {
-    
+
     @ApiModelProperty(notes="The unique id of the contact")
     private String id;
 

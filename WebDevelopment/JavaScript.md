@@ -8,17 +8,17 @@ var obj = new Object();
 
 //Object literal syntax can be used to initialize an object in its entirety:
 var obj = {
-  name: 'Carrot',
-  for: 'Max', // 'for' is a reserved word, use '_for' instead.
+  name: "Carrot",
+  for: "Max", // 'for' is a reserved word, use '_for' instead.
   details: {
-    color: 'orange',
-    size: 12
-  }
+    color: "orange",
+    size: 12,
+  },
 };
 
 //Attribute access can be chained together:
 obj.details.color; // orange
-obj['details']['size']; // 12
+obj["details"]["size"]; // 12
 
 //Creates an object prototype(Person) and an instance of that prototype(you)
 function Person(name, age) {
@@ -27,13 +27,13 @@ function Person(name, age) {
 }
 
 // Define an object
-var you = new Person('You', 24);
+var you = new Person("You", 24);
 // We are creating a new person named "You" aged 24.
 
 //Once Create and object can be access in simlar way as shown above
 var name = obj.name;
-var name = obj['name'];
-obj['name'] = 'Simon';
+var name = obj["name"];
+obj["name"] = "Simon";
 ```
 
 ## Array
@@ -41,16 +41,15 @@ obj['name'] = 'Simon';
 ```javascript
 //Method 1 :
 var a = new Array();
-a[0] = 'dog';
-a[1] = 'cat';
-a[2] = 'hen';
+a[0] = "dog";
+a[1] = "cat";
+a[2] = "hen";
 a.length; // 3
 
 //Method 2 :
-var a = ['dog', 'cat', 'hen'];
-a[100] = 'fox';
+var a = ["dog", "cat", "hen"];
+a[100] = "fox";
 a.length; // 101
-
 
 //Query non existing array item will return undefined
 typeof a[90]; // undefined
@@ -59,42 +58,66 @@ typeof a[90]; // undefined
 for (const currentValue of a) {
   // Do something with currentValue
 }
-
 ```
 
 ### Array Operations
 
-|Array Method|Description|
-|:---|:---|
-|`a.toString()` | Returns a string with the toString() of each element separated by commas.|
-|`a.toLocaleString()`|Returns a string with the toLocaleString() of each element separated by commas.|
-|`a.concat(item1[, item2[, ...[, itemN]]])`|Returns a new array with the items added on to it.|
-|`a.join(sep)`|Converts the array to a string — with values delimited by the sep param|
-|`a.pop()`|Removes and returns the last item.|
-|`a.push(item1, ..., itemN)`|Appends items to the end of the array.|
-|`a.shift()`|Removes and returns the first item.|
-|`a.unshift(item1[, item2[, ...[, itemN]]])`|Prepends items to the start of the array.|
-|`a.slice(start[, end])`|Returns a sub-array.|
-|`a.sort([cmpfn])`|Takes an optional comparison function.|
-|`a.splice(start, delcount[, item1[, ...[, itemN]]])`|Lets you modify an array by deleting a section a`nd |replacing it with more items.|
-|`a.reverse()`|Reverses the array.|
+| Array Method                                         | Description                                                                       |
+| :--------------------------------------------------- | :-------------------------------------------------------------------------------- |
+| `a.toString()`                                       | Returns a string with the toString() of each element separated by commas.         |
+| `a.toLocaleString()`                                 | Returns a string with the toLocaleString() of each element separated by commas.   |
+| `a.concat(item1[, item2[, ...[, itemN]]])`           | Returns a new array with the items added on to it.                                |
+| `a.join(sep)`                                        | Converts the array to a string — with values delimited by the sep param           |
+| `a.pop()`                                            | Removes and returns the last item.                                                |
+| `a.push(item1, ..., itemN)`                          | Appends items to the end of the array.                                            |
+| `a.shift()`                                          | Removes and returns the first item.                                               |
+| `a.unshift(item1[, item2[, ...[, itemN]]])`          | Prepends items to the start of the array.                                         |
+| `a.slice(start[, end])`                              | Returns a sub-array.                                                              |
+| `a.sort([cmpfn])`                                    | Takes an optional comparison function.                                            |
+| `a.splice(start, delcount[, item1[, ...[, itemN]]])` | Lets you modify an array by deleting a section replacing it with more items. a`nd |
+| `a.reverse()`                                        | Reverses the array.                                                               |
 
 ### Array Functions
 
 ```js
 //Reduce allows to go through the array and returns an accumlated value from the whole operation
 const arr = [1, 2, 5, 8, 2, 3];
-const total  = arr.reduce((acc, num) => {
+const total = arr.reduce((acc, num) => {
   return acc + num;
 });
 //acc represents the accumalated value
 
 //map
-const squares = arr.map(num => num*num);
+const squares = arr.map((num) => num * num);
 //It will return a new array of the squares of the array elements.
 
 //filter - also returns a new array
-const greaterThan3 = arr.filter(num => num > 3);
+const greaterThan3 = arr.filter((num) => num > 3);
+```
+
+### Difference between For...in and For...of
+
+**For...of** is used to iterate over enumerable string properties of an object.
+
+**For...in** is used to iterate over sequence of values sourced from an iterable object such as an array, set, string etc.
+
+```javascript
+const arr = [1, 2, 3, 4];
+
+for (let element of arr) {
+  console.log(element);
+}
+
+const obj = {
+  a: 1,
+  b: 2,
+  c: 3,
+  d: 4,
+};
+
+for (let property in obj) {
+  console.log(property + " : " + obj[property]);
+}
 ```
 
 ## Functions
@@ -113,11 +136,12 @@ avg(2, 3, 4, 5); // 3.5
 
 //Recursion In function
 function countChars(elm) {
-  if (elm.nodeType == 3) { // TEXT_NODE
+  if (elm.nodeType == 3) {
+    // TEXT_NODE
     return elm.nodeValue.length;
   }
   var count = 0;
-  for (var i = 0, child; child = elm.childNodes[i]; i++) {
+  for (var i = 0, child; (child = elm.childNodes[i]); i++) {
     count += countChars(child);
   }
   return count;
@@ -125,22 +149,26 @@ function countChars(elm) {
 
 //Recursion with IIFEs : (Immediately Invoked Function Expressions)
 var charsInBody = (function counter(elm) {
-  if (elm.nodeType == 3) { // TEXT_NODE
+  if (elm.nodeType == 3) {
+    // TEXT_NODE
     return elm.nodeValue.length;
   }
   var count = 0;
-  for (var i = 0, child; child = elm.childNodes[i]; i++) {
+  for (var i = 0, child; (child = elm.childNodes[i]); i++) {
     count += counter(child);
   }
   return count;
 })(document.body);
-
 ```
 
 ```javascript
 //Ternary Operator with multiple conditions
 function findGreaterOrEqual(a, b) {
-  return (a === b) ? "a and b are equal" : (a > b) ? "a is greater" : "b is greater";
+  return a === b
+    ? "a and b are equal"
+    : a > b
+    ? "a is greater"
+    : "b is greater";
 }
 ```
 
@@ -162,11 +190,12 @@ blueBird.color = "Blue";
 blueBird instanceof Bird; // => true
 
 //Also this can be done by directly checking which is the contructor for the instance
-console.log(blueBird.constructor === Bird);  //prints true
+console.log(blueBird.constructor === Bird); //prints true
 
 //---Iterate Over all properties of an Object instance created.
 for (let property in duck) {
-  if(duck.hasOwnProperty(property)) { //hasOwnProperty
+  if (duck.hasOwnProperty(property)) {
+    //hasOwnProperty
     ownProps.push(property);
   } else {
     prototypeProps.push(property);
@@ -177,22 +206,23 @@ for (let property in duck) {
 //Prototype properties of a constructor function work similar to static in other programming languages.
 //All instances share the same value.
 Bird.prototype.numLegs = 2; //Variable
-Bird.prototype.eat = function() { //Function
+Bird.prototype.eat = function () {
+  //Function
   console.log("nom nom nom");
-}
+};
 
 //Prototype of a constructor function can be direclty be set to a object
 //These are easy to manage.
 Bird.prototype = {
   constructor: Bird, // define the constructor property
   numLegs: 2,
-  eat: function() {
+  eat: function () {
     console.log("nom nom nom");
   },
-  describe: function() {
+  describe: function () {
     console.log("My name is " + this.name);
-  }
-}
+  },
+};
 
 //Sequence of inheritance
 //Object -> Bird -> blueBird
@@ -210,10 +240,10 @@ duck.eat(); // prints "nom nom nom"
 //Inheritance properties and functions can be overwritten in the the proptotype of the child object.
 
 //--- Mixins
-let flyMixin = function(obj) {
-  obj.fly = function() {
+let flyMixin = function (obj) {
+  obj.fly = function () {
     console.log("Flying, wooosh!");
-  }
+  };
 };
 
 flyMixin(bird);
@@ -227,7 +257,7 @@ function Bird() {
   let hatchedEgg = 10; // private variable
 
   /* publicly available method that a bird object can use */
-  this.getHatchedEggCount = function() { 
+  this.getHatchedEggCount = function () {
     return hatchedEgg;
   };
 }
@@ -243,22 +273,18 @@ Following examples shows fetching a raw file data from server with XMLHttpReques
 
 ```js
 //--- With XMLHttpRequest
-function readTextFile(file)
-{
-    var rawFile = new XMLHttpRequest();
-    rawFile.open("GET", file, false);
-    rawFile.onreadystatechange = function ()
-    {
-        if(rawFile.readyState === 4)
-        {
-            if(rawFile.status === 200 || rawFile.status == 0)
-            {
-                var allText = rawFile.responseText;
-                console.log(allText);//- logs text
-            }
-        }
+function readTextFile(file) {
+  var rawFile = new XMLHttpRequest();
+  rawFile.open("GET", file, false);
+  rawFile.onreadystatechange = function () {
+    if (rawFile.readyState === 4) {
+      if (rawFile.status === 200 || rawFile.status == 0) {
+        var allText = rawFile.responseText;
+        console.log(allText); //- logs text
+      }
     }
-    rawFile.send(null);
+  };
+  rawFile.send(null);
 }
 
 readTextFile("path.txt");
@@ -266,10 +292,9 @@ readTextFile("path.txt");
 //--- With fetch
 function readTextFile(file) {
   fetch(file)
-    .then(response => response.text()) //-- Details of response are described below
-    .then(text => console.log(text)) //- logs text
-} 
-
+    .then((response) => response.text()) //-- Details of response are described below
+    .then((text) => console.log(text)); //- logs text
+}
 ```
 
 ### [Response](https://developer.mozilla.org/en-US/docs/Web/API/Response)
@@ -280,13 +305,13 @@ Response also has **methods** that help us process it. The response can be conve
 
 ```js
 //--- Fetch Image
-const image = document.querySelector('.my-image');
-fetch('flowers.jpg')
-.then(response => response.blob())
-.then(blob => {
-  const objectURL = URL.createObjectURL(blob);
-  image.src = objectURL;
-});
+const image = document.querySelector(".my-image");
+fetch("flowers.jpg")
+  .then((response) => response.blob())
+  .then((blob) => {
+    const objectURL = URL.createObjectURL(blob);
+    image.src = objectURL;
+  });
 ```
 
 ## Working With HTMLElements
@@ -294,9 +319,9 @@ fetch('flowers.jpg')
 ### Get position of an HTMLElement
 
 ```javascript
-const el = document.getElementById('element-id');
+const el = document.getElementById("element-id");
 const rect = el.getBoundingClientRect();
-//we can then access the values for the rect 
+//we can then access the values for the rect
 console.log(rect);
 console.log(rect.bottom, rect.top, rect.left, rect.right);
 ```
@@ -311,15 +336,15 @@ I-frames are used to display a different page in our website, we can communicate
 
 We use the `postMessage(message, targetOrigin, transfer)` or `postMessage(message, targetOrigin)` property of the `iframe.contentWindow`.
 
-* message : can be string, object, or arrays. There are more that are [supported](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Structured_clone_algorithm).
+- message : can be string, object, or arrays. There are more that are [supported](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Structured_clone_algorithm).
 
-* targetOrigin : `"*"` can be used for any origin, or a URL can be set specifically, if the target is not matched the event will not be dipatched.
+- targetOrigin : `"*"` can be used for any origin, or a URL can be set specifically, if the target is not matched the event will not be dipatched.
 
 > Always provide a specific targetOrigin, not `*`, if you know where the other window's document should be located. Failing to provide a specific target discloses the data you send to any interested malicious site.
 
 Ex. `postMessage("message", "http://example.com");` will only be sent if `<iframe src="http://example.com">`
 
-* target : (Optional) Is a sequence of transferable objects that are transferred with the message.
+- target : (Optional) Is a sequence of transferable objects that are transferred with the message.
 
 Get message in the iframe:
 
@@ -337,11 +362,11 @@ The `event` object has special properties:
 // --- parent -> iframe
 
 //i-frame.contentWindow.postMessage(message, targetOrigin, [transfer]);
-i-frame.contentWindow.postMessage('message', '*');
+i - frame.contentWindow.postMessage("message", "*");
 
 //in iframe
-window.onmessage = function(e) {
+window.onmessage = function (e) {
   console.log(e);
-  console.log(e.data) //message
-}
+  console.log(e.data); //message
+};
 ```

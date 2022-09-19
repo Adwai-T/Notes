@@ -39,7 +39,7 @@ A daemon thread (comes from UNIX terminology) is a low priority thread that runs
 
 ## Creating Thread in Java : Two different approaches
 
-* Extend Thread and override run method:
+- Extend Thread and override run method:
 
 ```java
 class HelloThread extends Thread {
@@ -52,7 +52,7 @@ class HelloThread extends Thread {
 }
 ```
 
-* Implement Runnable and Override run :
+- Implement Runnable and Override run :
 
 ```java
 class HelloRunnable implements Runnable {
@@ -66,7 +66,7 @@ class HelloRunnable implements Runnable {
 }
 ```
 
-* Creating threads from above code
+- Creating threads from above code
 
 ```java
 
@@ -76,7 +76,7 @@ Thread t2 = new Thread(new HelloRunnable()); // passing runnable
 
 ```
 
-* With Lambda Expression
+- With Lambda Expression
 
 ```java
 Thread t3 = new Thread(() -> {
@@ -90,12 +90,12 @@ Thread t3 = new Thread(() -> {
 
 ## Thread Management
 
-* *Make thread Sleep*
+- _Make thread Sleep_
 
-* We could use the regular `Thread.sleep();` static method or.
-* we could use `TimeUnit.MILLISECONDS.sleep(2000)`
+- We could use the regular `Thread.sleep();` static method or.
+- we could use `TimeUnit.MILLISECONDS.sleep(2000)`
 
-* *Thread.join()*
+- _Thread.join()_
 
 ```java
 public class JoiningExample {
@@ -123,17 +123,17 @@ Threads that belong to the same process share the common memory (that is called 
 
 NOTE : Atomic operations are those that finish in one step. Like read an integer. In some platforms reading a long or a 64 bit double might not be an atomic operation.
 
-* Visibility between Threads :
-The variables might not always be visible to threads that work on the same varible due to optimization of either JVM or the system itself, and also due to caching of variables in the memory for faster performance. Thus we use the `volatile` keywork to make the varaible be visible and make the all threads see the changes that happen on the varaible. Also these variables are not cached for oprimization.
+- Visibility between Threads :
+  The variables might not always be visible to threads that work on the same varible due to optimization of either JVM or the system itself, and also due to caching of variables in the memory for faster performance. Thus we use the `volatile` keywork to make the varaible be visible and make the all threads see the changes that happen on the varaible. Also these variables are not cached for oprimization.
 
 Note : volatile also makes writting doubles and longs atomic.
 
-* Thread Synchronization :
-The monitor is a special mechanism to control concurrent access to an object. In Java, each object and class has an associated implicit monitor. A thread can acquire a monitor, then other threads cannot acquire this monitor at the same time. They will wait until the owner (the thread that acquired the monitor) releases it.
+- Thread Synchronization :
+  The monitor is a special mechanism to control concurrent access to an object. In Java, each object and class has an associated implicit monitor. A thread can acquire a monitor, then other threads cannot acquire this monitor at the same time. They will wait until the owner (the thread that acquired the monitor) releases it.
 
 Thus, a thread can be locked by the monitor of an object and wait for its release. This mechanism allows programmers to protect critical sections from being accessed by multiple threads concurrently.
 
-`synchronized` : can be used on classes, methods as well as on blocks of code. Following is example of synchronized on  block of codes in a class and methods.
+`synchronized` : can be used on classes, methods as well as on blocks of code. Following is example of synchronized on block of codes in a class and methods.
 
 ```java
 

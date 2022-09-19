@@ -21,13 +21,19 @@ Tasks are stored in `.vscode\tasks.json`
       "type": "cppbuild", //The task's type. For a custom task, this can either be shell or process
       "label": "C/C++: build", //Task label used in UI
       "command": "G:/CodeBlocks/MinGW/bin/g++.exe", //Actual command to execute
-      "args": ["-g", "${file}", "-o", "${fileDirname}\\${fileBasenameNoExtension}.o"],
+      "args": [
+        "-g",
+        "${file}",
+        "-o",
+        "${fileDirname}\\${fileBasenameNoExtension}.o"
+      ],
       //The args array specifies the command-line arguments that will be passed to g++
       "options": {
         "cwd": "${fileDirname}" //current working directory
       },
       "problemMatcher": ["$gcc"], //lint tool
-      "group": {  //defines to which group the task belongs 
+      "group": {
+        //defines to which group the task belongs
         "kind": "build",
         "isDefault": true
       },
@@ -38,11 +44,13 @@ Tasks are stored in `.vscode\tasks.json`
       "label": "C++: build run",
       "command": "${fileDirname}\\${fileBasenameNoExtension}.o",
       "dependsOrder": "sequence", //Sequence of task
-      "dependsOn": [ //Runs the tasks defined in the array before this task is run.
+      "dependsOn": [
+        //Runs the tasks defined in the array before this task is run.
         "C++: build"
       ],
       "detail": "C++ : Build and Run",
-      "problemMatcher": [ //defines the pattern for the errors that are displayed in the terminal
+      "problemMatcher": [
+        //defines the pattern for the errors that are displayed in the terminal
         "$gcc"
       ]
     }
@@ -51,7 +59,7 @@ Tasks are stored in `.vscode\tasks.json`
 }
 
 //-- type -> For custom tasks
-//If shell is specified, the command is interpreted as a shell command 
+//If shell is specified, the command is interpreted as a shell command
 //(for example: bash, cmd, or PowerShell).
 //If process is specified, the command is interpreted as a process to execute.
 

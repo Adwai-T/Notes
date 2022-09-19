@@ -4,7 +4,7 @@
 
 ### Unit Tests
 
-Are used to test pure functions. They arent used to test *Contracts*, that is connection between function, classes or components.
+Are used to test pure functions. They arent used to test _Contracts_, that is connection between function, classes or components.
 
 ### Integration Tests
 
@@ -34,8 +34,8 @@ Setting up Jest in npm package.json. We can just have `"test" : "jest"` but it w
 
 ```json
 {
-  "scripts" : {
-    "test" : "jest --watch *.js"
+  "scripts": {
+    "test": "jest --watch *.js"
   }
 }
 ```
@@ -142,7 +142,7 @@ const swapi = require('./script2');
 //For a aync function the test might complete without before it gets value and still pass
 //Thus we can use done, that gets automatically passed to test function. The test will only end when the done() function is called. We usually put done after an expect call.
 it('calls swapi to get people', (done)=>{
-  expect.assertions(1) //assertions takes in a value representing number of expect that should run in this test. In this case only one. 
+  expect.assertions(1) //assertions takes in a value representing number of expect that should run in this test. In this case only one.
   swapi.getPeople(fetch).then(data => {
     expect(data.count).toEqual(87)
     done();
@@ -197,7 +197,7 @@ const swapi = require('./script');
 
 //Previous Test code using fetch function
 it('calls swapi to get people', (done)=>{
-  expect.assertions(2) 
+  expect.assertions(2)
   swapi.getPeople(fetch).then(data => {
     expect(data.count).toEqual(87)
     expect(data.results.length).toBeGreaterThan(5);
@@ -211,7 +211,7 @@ it('getPeople return count and results', ()=>{
   //jest.fn() creates the mock function
   const mockFetch = jest.fn().mockReturnValue(
     //the return value of fetch is a promise which resolves to json which is itself a promise.
-    Promise.resolve({ 
+    Promise.resolve({
       json: () => Promise.resolve({
         count:87,
         result: [0,1,2,3,4,5,6]

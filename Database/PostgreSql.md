@@ -14,7 +14,7 @@ Creating a new Database on the server. `CREATE DATABASE`.
 
 Connect to database using `\c databaseName`
 
-Connection the database from Spring boot  : `application.properties`
+Connection the database from Spring boot : `application.properties`
 
 ```properites
 spring.datasource.url=jdbc:postgresql://localhost:5432/postgres

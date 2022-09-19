@@ -8,9 +8,9 @@ The entry point into a Spring Boot application is through a class annotated with
 
 `@SpringBootApplication` is a combination of `@EnableAutoConfiguration`, `@ComponentScan` and `@SpringBootConfiguration`.
 
-* `@EnableAutoConfiguration` : Is the annotation of Spring Boot that as discused above is what tell Spring Boot to automatically configure the project according to the dependencies that are add to the project.
-* `@ComponentScan` : Enables component scanning so that beans can be create by Spring framework.
-* `@SpringBootConfiguration` : It indicates that the class provides application configuration. It is the primary source for configuration in the application.
+- `@EnableAutoConfiguration` : Is the annotation of Spring Boot that as discused above is what tell Spring Boot to automatically configure the project according to the dependencies that are add to the project.
+- `@ComponentScan` : Enables component scanning so that beans can be create by Spring framework.
+- `@SpringBootConfiguration` : It indicates that the class provides application configuration. It is the primary source for configuration in the application.
 
 ## Getting Started
 
@@ -29,7 +29,7 @@ Jackson is used by spring while we create a Rest Api. We see some useful short g
 
 ### Seralization Annotations
 
-* `@JsonGetter` : Marks a method as a getter method. Is an alternative to `@JsonProperty` for getters.
+- `@JsonGetter` : Marks a method as a getter method. Is an alternative to `@JsonProperty` for getters.
 
 ```java
 public class Student {
@@ -43,14 +43,14 @@ public class Student {
 }
 ```
 
-* `@JsonAnyGetter` : The @JsonAnyGetter annotation allows the flexibility of using a Map field as standard properties. Similar to `@JsonAnySetter`.
+- `@JsonAnyGetter` : The @JsonAnyGetter annotation allows the flexibility of using a Map field as standard properties. Similar to `@JsonAnySetter`.
 
 ```java
 //The Object definition :
 public class Student {
     public String name;
     private Map<String, String> studentDetails;
-   
+
     @JsonAnyGetter
     public Map<String, String> getStudentDetails() {
         return studentDetails;
@@ -59,7 +59,7 @@ public class Student {
 //All the key-value pairs in the map will be added to the Json String created.
 ```
 
-* `@JsonPropertyOrder` : Orders the json as specified.
+- `@JsonPropertyOrder` : Orders the json as specified.
 
 ```java
 @JsonPropertyOrder({ "name", "id" })
@@ -71,9 +71,9 @@ public class MyBean {
 
 `@JsonPropertyOrder(alphabetic=true)` could also be used to arrange alphabetically.
 
-* `@JsonRawValue` :  instruct Jackson to serialize a property exactly as is.
+- `@JsonRawValue` : instruct Jackson to serialize a property exactly as is.
 
-* `@JsonRootName` : Wraps entire json created into the root that we specify.
+- `@JsonRootName` : Wraps entire json created into the root that we specify.
 
 ```java
 @JsonRootName(value = "user")
@@ -85,21 +85,21 @@ public class UserWithRoot {
 
 ```json
 {
-    "User": {
-        "id": 1,
-        "name": "John"
-    }
+  "User": {
+    "id": 1,
+    "name": "John"
+  }
 }
 ```
 
 ### Deserialization Annotation
 
-* `@JsonCreator` : We can use the `@JsonCreator` annotation to tune the constructor/factory used in deserialization. It's very useful when we need to deserialize some JSON that doesn't exactly match the target entity we need to get.
+- `@JsonCreator` : We can use the `@JsonCreator` annotation to tune the constructor/factory used in deserialization. It's very useful when we need to deserialize some JSON that doesn't exactly match the target entity we need to get.
 
 ```json
 {
-    "id":1,
-    "name":"adwait"
+  "id": 1,
+  "name": "adwait"
 }
 ```
 
@@ -110,7 +110,7 @@ public class Student {
 
     @JsonCreator
     public Student(
-      @JsonProperty("id") int id, 
+      @JsonProperty("id") int id,
       @JsonProperty("name") String studentName) {
         this.id = id;
         this.studentName = studentName;
@@ -118,13 +118,13 @@ public class Student {
 }
 ```
 
-* `@JsonAnySetter` : On deserialization, the properties from JSON will simply be added to the map.
+- `@JsonAnySetter` : On deserialization, the properties from JSON will simply be added to the map.
 
 ```json
 {
-   "name" : "adwait",
-   "key1":"val1",
-   "key2":"val2"
+  "name": "adwait",
+  "key1": "val1",
+  "key2": "val2"
 }
 ```
 
@@ -140,13 +140,13 @@ public class Student {
 }
 ```
 
-* `@JsonSetter` : Marks the method as a setter method. Is similar to `@JsonGetter`.
+- `@JsonSetter` : Marks the method as a setter method. Is similar to `@JsonGetter`.
 
-* `@JsonAlias` : defines one or more alternative names for a property during deserialization. `@JsonAlias({ "fName", "f_name" })` Marked over property.
+- `@JsonAlias` : defines one or more alternative names for a property during deserialization. `@JsonAlias({ "fName", "f_name" })` Marked over property.
 
 ### Property Inclusion Annotations
 
-* `@JsonIgnoreProperties` : Is a class-level annotation that marks a property or a list of properties that Jackson will ignore.
+- `@JsonIgnoreProperties` : Is a class-level annotation that marks a property or a list of properties that Jackson will ignore.
 
 ```java
 @JsonIgnoreProperties({ "id" })
@@ -156,11 +156,11 @@ public class BeanWithIgnore {
 }
 ```
 
-* `@JsonIgnore` : Is used to mark a property to be ignored at the field level.
+- `@JsonIgnore` : Is used to mark a property to be ignored at the field level.
 
-* `@JsonIgnoreType` : Marks all properties of an annotated type to be ignored.
+- `@JsonIgnoreType` : Marks all properties of an annotated type to be ignored.
 
-* `@JsonInclude` : To exclude properties with empty/null/default values.
+- `@JsonInclude` : To exclude properties with empty/null/default values.
 
 ```java
 @JsonInclude(Include.NON_NULL)
@@ -170,9 +170,9 @@ public class MyBean {
 }
 ```
 
-* `@JsonFormat(shape = JsonFormat.Shape.STRING)` OR `@JsonFormat(shape = JsonFormat.Shape.STRING, pattern= "yyyy-MM-dd")`
+- `@JsonFormat(shape = JsonFormat.Shape.STRING)` OR `@JsonFormat(shape = JsonFormat.Shape.STRING, pattern= "yyyy-MM-dd")`
 
-* `@JsonProperty("date")` : Specify custom name for the property.
+- `@JsonProperty("date")` : Specify custom name for the property.
 
 ```java
 @JsonProperty("date")
@@ -187,9 +187,9 @@ private Calendar someDate;
 }
 ```
 
-* `@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)`
+- `@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)`
 
-* Or the above acan be achieved by `@JsonIgnore`
+- Or the above acan be achieved by `@JsonIgnore`
 
 ```java
 class User {
@@ -210,7 +210,7 @@ class User {
 }
 ```
 
-* `@JsonUnwrapped` : unwrapped/flattened when serialized/deserialized.
+- `@JsonUnwrapped` : unwrapped/flattened when serialized/deserialized.
 
 ```java
 public class UnwrappedUser {
@@ -228,18 +228,18 @@ public class UnwrappedUser {
 
 ```json
 {
-    "id":1,
-    "firstName":"John",
-    "lastName":"Doe"
+  "id": 1,
+  "firstName": "John",
+  "lastName": "Doe"
 }
 ```
 
 Some Rules for Serialization and Deseralization
 
-* Restricting seralizing and deseralizing : (Does not work : The getter and setters are important for some reason to start the project)
-* If getters and setters are not set for the properties of a class, only the properties with public access modifiers are seralized and deseralized.
-* If getters are set, only those properties will be seralized and deseralized, when all properties are private. Or the above rule will apply for all properties that have public access modifier.
-* If a property is private and has a setter it will be considered for deseralizing and not seralizing.
+- Restricting seralizing and deseralizing : (Does not work : The getter and setters are important for some reason to start the project)
+- If getters and setters are not set for the properties of a class, only the properties with public access modifiers are seralized and deseralized.
+- If getters are set, only those properties will be seralized and deseralized, when all properties are private. Or the above rule will apply for all properties that have public access modifier.
+- If a property is private and has a setter it will be considered for deseralizing and not seralizing.
 
 > For more : [Jackson-Annotations](https://www.baeldung.com/jackson-annotations)
 
@@ -410,36 +410,36 @@ To change between these environments we have to set the environment variable: `-
 
 We could either use multiple application.properties file or one yaml file to store properties for different profiles.
 
-* Using application.properties file.
+- Using application.properties file.
 
 To activate a given profile we could use :
 
 `--spring-profile-active=prod`
 
-* Use a single yaml file and add all properties to the file :
+- Use a single yaml file and add all properties to the file :
 
 ```yaml
 spring:
-   application:
-      name: demoservice
+  application:
+    name: demoservice
 server:
-   port: 8080
+  port: 8080
 
 ---
 spring:
-   profiles: dev
-   application:
-      name: demoservice
+  profiles: dev
+  application:
+    name: demoservice
 server:
-   port: 9090
+  port: 9090
 
 ---
 spring:
-   profiles: prod
-   application:
-      name: demoservice
+  profiles: prod
+  application:
+    name: demoservice
 server:
-   port: 4431
+  port: 4431
 ```
 
 The command to activate a given profile still remains the same :
@@ -454,9 +454,9 @@ For example, your web application is running on 8080 port and by using JavaScrip
 
 Two requirements are needed to handle this issue −
 
-* RESTful web services should support the Cross-Origin Resource Sharing.
+- RESTful web services should support the Cross-Origin Resource Sharing.
 
-* RESTful web service application should allow accessing the API(s) from the 8080 port.*
+- RESTful web service application should allow accessing the API(s) from the 8080 port.\*
 
 ### Global CORS configuration
 
@@ -468,13 +468,13 @@ import org.springframework.web.filter.CorsFilter;
 
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
- 
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and()
             //other config
     }
- 
+
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
       CorsConfiguration config = new CorsConfiguration();
@@ -493,9 +493,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 For more info and other more specific configuration of CORS :
 
 > [CORS with Spring](https://howtodoinjava.com/spring5/webmvc/spring-mvc-cors-configuration/#global-cors)
-.
+> .
 > [DOCUMENTATION](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/cors/CorsConfiguration.html#addAllowedMethod-java.lang.String-)
-.
+> .
 > [DOCS Example](https://docs.spring.io/spring-framework/docs/4.3.x/spring-framework-reference/html/cors.html)
 
 ## Swagger2
@@ -551,6 +551,7 @@ Dependency : Starting from Spring Boot 2.3 we need to explicitly add the depende
 ```
 
 For Gradle
+
 > implementation('org.springframework.boot:spring-boot-starter-validation')
 
 Spring Boot supports seamless integration with custom validators, the de-facto standard for performing validation is Hibernate Validator, the Bean Validation framework's reference implementation.
@@ -572,7 +573,7 @@ class Input {
 
   @Pattern(regexp = "^[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}$")
   private String ipAddress;
-  
+
   // ...
 }
 ```
@@ -587,7 +588,7 @@ class ValidateRequestBodyController {
   ResponseEntity<String> validateBody(@Valid @RequestBody Input input) {
     return ResponseEntity.ok("valid");
   }
-  
+
 }
 ```
 
@@ -611,7 +612,7 @@ class ValidateParametersController {
       @PathVariable("id") @Min(5) int id) {
     return ResponseEntity.ok("valid");
   }
-  
+
   @GetMapping("/validateRequestParameter")
   ResponseEntity<String> validateRequestParameter(
       @RequestParam("param") @Min(5) int param) {
@@ -665,9 +666,9 @@ public class Input {
 
   @Pattern(regexp = "^[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}$")
   private String ipAddress;
-  
+
   // ...
-  
+
 }
 ```
 
@@ -761,7 +762,7 @@ class InputWithCustomValidator {
 
   @IpAddress
   private String ipAddress;
-  
+
   // ...
 
 }
@@ -771,7 +772,7 @@ class InputWithCustomValidator {
 
 ## Exception Handling With Spring
 
-* Handling a particular Type of Exception - Controller Level :
+- Handling a particular Type of Exception - Controller Level :
 
 ```java
 private static final String NOT_FOUND_MESSAGE = "Flight not found for number";
@@ -788,7 +789,7 @@ public HashMap<String, String> handleIndexOutOfBoundsException(Exception e) {
 
 In this the `@ResponseStatus` Sets the response status to be displayed.
 
-* Global Exception Handler
+- Global Exception Handler
 
 ```java
 @RestControllerAdvice//The annotation signifies that the class be used as the global exception handler class.
@@ -807,7 +808,7 @@ public class ControllerExceptionHandler {
 }
 ```
 
-* Throw an Exception at any place :
+- Throw an Exception at any place :
 
 ```java
 @RestController
@@ -836,9 +837,9 @@ public class AirportController {
 }
 ```
 
-* When we have a global and a Controller level we can give prefernece to which handles the exception by giving `@Order(Ordered.HIGHEST_PRECEDENCE)` to the handler that we want to handle the exception.
+- When we have a global and a Controller level we can give prefernece to which handles the exception by giving `@Order(Ordered.HIGHEST_PRECEDENCE)` to the handler that we want to handle the exception.
 
-* Creating Custom Exceptions :
+- Creating Custom Exceptions :
 
 The exception class
 
@@ -857,14 +858,14 @@ public FlightInfo getFlightInfo(@PathVariable int id) {
 }
 ```
 
-* Conclusion
+- Conclusion
 
 Here you have learned different ways of handling exceptions. You can make it:
 
-* Globally with @RestControllerAdvice;
-* On controller level with @ExceptionHandler;
-* In the most flexible way by throwing ResponseStatusException at any place you want.
-* You can also set the order of handlers with the @Order annotation to control the system of them.
+- Globally with @RestControllerAdvice;
+- On controller level with @ExceptionHandler;
+- In the most flexible way by throwing ResponseStatusException at any place you want.
+- You can also set the order of handlers with the @Order annotation to control the system of them.
 
 ## Cross Origin Requests
 

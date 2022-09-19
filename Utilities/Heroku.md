@@ -1,6 +1,6 @@
 # Heroku
 
-* Create a new application
+- Create a new application
 
 `heroku create` : Create app with random name
 
@@ -8,7 +8,7 @@
 
 `heroku apps:rename` : Rename an application.
 
-* Deploy app to heroku.
+- Deploy app to heroku.
 
 `git push heroku master` : The application should be create and a git commit needs to be done before that as the last commit will be pushed to heroku.
 
@@ -34,26 +34,26 @@ After the application has been deployed we can open the application by using `he
 
 ## Fixing App not found
 
-* Check for the current url
-`git remote -v`
+- Check for the current url
+  `git remote -v`
 
-* remove remote url
-`git remote rm heroku`
+- remove remote url
+  `git remote rm heroku`
 
-* re-add the remote url
-`git remote add heroku git@heroku.com:boiling-inlet-6957.git`
+- re-add the remote url
+  `git remote add heroku git@heroku.com:boiling-inlet-6957.git`
 
 ## Dyno Management
 
-* List of dynos for an application : `heroku ps`
+- List of dynos for an application : `heroku ps`
 
-* Restart all dynos : `heroku ps:restart`
+- Restart all dynos : `heroku ps:restart`
 
-* Adding a name to the above will restart that dyno : `heroku ps:restart web`
+- Adding a name to the above will restart that dyno : `heroku ps:restart web`
 
-* View Logs : `heroku logs` or `heroku logs --tail`
+- View Logs : `heroku logs` or `heroku logs --tail`
 
-* Get help : `heroku ps --help`
+- Get help : `heroku ps --help`
 
 ## Using Enviroment Varaibles
 

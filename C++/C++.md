@@ -92,14 +92,14 @@ int main()
   //- For cross platfrom protability c99 introduced fixed width integers.
   std::int32_t number_32bit= 1254;
   //- Similarly we can have unit32_t which is unsigned int.
-  //- Other fixed width ints are : int8_t, int16_t, int64_t 
+  //- Other fixed width ints are : int8_t, int16_t, int64_t
   //and their respective unsigned values.
   //- Downside : The above fixed-width integers should be avoided,
   //as they may not be defined on all target architectures.
 
   //--- Fast and least integers
   std::int_fast32_t number_32bit_fast = 1268;
-  //- Similar for 8, 16, 32, 64 and also can similarly have int_least32_t. 
+  //- Similar for 8, 16, 32, 64 and also can similarly have int_least32_t.
   //- Similarly there are unsigned types that can be defined as uint_fast#_t.
   //- Use least for memory conservation and fast for performace
   //- 8 bit int in both above cases might behave as char in some systems.
@@ -143,9 +143,9 @@ cout << "Value of type integer_number : " << int_num1 << endl;
 
 ```cpp
 //Increment and decrement operators
-//- Prefix ++x operator are prefered for performance as they : 
+//- Prefix ++x operator are prefered for performance as they :
 //Increment x, then return x,
-//- where as x++ operator : 
+//- where as x++ operator :
 //copies x, then increment x, then return the copy
 int inc_x{2};
 int inc_y = ++inc_x; //value inc_y is 3
@@ -233,7 +233,7 @@ int i;
 cout << "Please enter a number to store in i : ";
 cin >> i; //value will be implicitly be casted to an int as i is int
 //clears the data in the stream.
-cin.clear(); 
+cin.clear();
 //We have to use the ignore method of the cin so that the all the data in the stream
 //clears and when we use the next cin or getline() the value is reset and we can enter
 //a new number.
@@ -365,7 +365,7 @@ int add(int &a, int* b) {
 
   //We add brackets around b so * is not considered as an operation.
   int c = a + (*b);
-  cout << " Pointer c(return value) in function add -> " << &c << endl; 
+  cout << " Pointer c(return value) in function add -> " << &c << endl;
   return c;
 }
 
@@ -393,7 +393,7 @@ using namespace std;
 //to the first element of the array.
 void print(int a[], int size) {
   cout << "Array pointer in print : " << a << endl; //0x22fe30
-  
+
   //arrays get downgraded to just pointer to first element of that array.
   //We have to dereference to get the value of a as it is a pointer.
   cout << "byte size of array a in function : " << sizeof(*a) << endl;
@@ -411,7 +411,7 @@ int main()
   cout << " Array pointer in main : " << &arr << endl; //0x22fe30
   cout << "byte size of array a in main : " << sizeof(arr) << endl;
   cout << "Number of elements in array : " << sizeof(arr)/sizeof(int) << endl;
-  print(arr, 5); 
+  print(arr, 5);
 }
 ```
 
@@ -425,9 +425,9 @@ C++ also provides a lot of inbuild function that can be used as helpers for achi
 //--- Character Functions
 char letterZ = 'z';
 char char5 = '5';
-std::cout 
-  << "Is z a letter or number : " 
-  << std::isalnum(letterZ) 
+std::cout
+  << "Is z a letter or number : "
+  << std::isalnum(letterZ)
   <<std::endl;
 //isalpha() isdigit() isspace();
 
@@ -480,7 +480,7 @@ void printArray(int a[], int size) {
 //-- Passed by value
 //A local copy of the array will be made for the function
 void printTemplatizedArray(array<int, 5> a) {
-  cout << "Templatized Array pointer in function : " << &a << endl; 
+  cout << "Templatized Array pointer in function : " << &a << endl;
   cout << "[ ";
   for(int i = 0; i < a.size(); i++) {
     cout << a[i] << ", ";
@@ -611,10 +611,10 @@ With `protected`, like `class Daughter: protected Mother;`, all `public` members
 
 When inheritance level is defined as public, the methods not inherited from parent are :
 
-* its constructors and its destructor
-* its assignment operator members (operator=)
-* its friends
-* its private members
+- its constructors and its destructor
+- its assignment operator members (operator=)
+- its friends
+- its private members
 
 #### Multiple Inheritance
 
@@ -730,13 +730,13 @@ main()
   * the copy of the spike object for the function is destroied,
   * and the destructor for that instance is called.
   * Finally before main goes out of scope destructor for spike
-  * instance is called and object is destroied from memory. 
+  * instance is called and object is destroied from memory.
   */
 
-  cout 
-    << spike.getName() 
-    << " age in human years is " 
-    << to_string(spikesAgeInHumanYears) 
+  cout
+    << spike.getName()
+    << " age in human years is "
+    << to_string(spikesAgeInHumanYears)
     << endl;
   cout << "Pointer in main 2 : " << &spike << endl;//0x22fd30
 }
@@ -767,7 +767,7 @@ private:
   string name;
 
 public:
-  Dog(string name) 
+  Dog(string name)
   {
     this->name = name;
   }
@@ -830,7 +830,7 @@ int main()
 }
 
 /*
-Result : 
+Result :
 
 Start
 Pointer to dog object1 before : Bruno
@@ -1012,7 +1012,7 @@ When we run our c++ program it gets assigned a process by our operating system, 
 
 Following are the segements that our program will divide the memory.
 
-* Code/Text :
+- Code/Text :
 
 This section holds our code as instructions that will be executed by the process assigned to our program by our operating system.
 
@@ -1020,17 +1020,17 @@ A function is divided into a set of contigious instructions.
 
 The instuctions are read only and are shared by the program.
 
-* Global/Static data :
+- Global/Static data :
 
 This segement holds the global and static data.
 
-* Stack :
+- Stack :
 
 Memory is assigned on the stack to the function variable when they come into scope and removed from stack when that function goes out of scope.
 
 So we can say that memory management in stack is automatic and we do not need to clean memory for variables that are stored in stack. Memory is reclaimed when function responisble for creating those variables goes out of scope.
 
-* Heap :
+- Heap :
 
 Heap is where dynamically created object are stored.
 
@@ -1125,7 +1125,7 @@ int num = 10;
 //copy of the original primitive or object is passed.
 void f(int i)
 {
-  std::cout << i << std::endl;  
+  std::cout << i << std::endl;
 }
 f(num);
 
@@ -1266,35 +1266,35 @@ There are fifference between c functions and c++ keywords in how they work.
 
 `new`
 
-* Calls constuctor.
-* is an Operator.
-* Returns exact data type.
-* on failure, throws bad_alloc exception.
-* Size is calcuated by compiler.
+- Calls constuctor.
+- is an Operator.
+- Returns exact data type.
+- on failure, throws bad_alloc exception.
+- Size is calcuated by compiler.
 
 `malloc()`, `calloc()` and `realloc()`
 
-* does not call constructors.
-* It is a function.
-* Returns void*.
-* On failure, returns NULL.
-* size is calculated manually.
+- does not call constructors.
+- It is a function.
+- Returns void\*.
+- On failure, returns NULL.
+- size is calculated manually.
 
 `delete()`
 
-* It is an operator.
-* It deallocates memory dynamically.
-* Used for null pointers or memory assigned by new operator.
-* calls desturctor after destoring allocated memory.
-* Faster.
+- It is an operator.
+- It deallocates memory dynamically.
+- Used for null pointers or memory assigned by new operator.
+- calls desturctor after destoring allocated memory.
+- Faster.
 
 `free()`
 
-* It is library function.
-* destories memory at runtime.
-* used with null pointers or memory allocated by using malloc().
-* Only frees momory from the heap.
-* comparatively slower.
+- It is library function.
+- destories memory at runtime.
+- used with null pointers or memory allocated by using malloc().
+- Only frees momory from the heap.
+- comparatively slower.
 
 ```cpp
 #include <iostream>
@@ -1303,7 +1303,7 @@ There are fifference between c functions and c++ keywords in how they work.
 
 using namespace std;
 
-class Box 
+class Box
 {
   int side;
 
@@ -1393,7 +1393,7 @@ int main()
     //Files are closed automatically at the end,
     //but we could be explicit as good practice.
     file.close();
-    
+
     return 0;
 }
 ```
@@ -1497,7 +1497,7 @@ functions: Functions_2.o
   g++ Functions_2.o -o functions
 
 Functions_2.o: Functions_2.cpp
-  g++ -c Functions_2.cpp 
+  g++ -c Functions_2.cpp
 
 clean:
   rm *.o functions a
