@@ -596,3 +596,15 @@ private static void printList(List<? extends Animal> animals) {
 List<Cat> cats = new ArrayList<>();
 printList(cats);
 ```
+
+## Reflections
+
+### Disadvantages of Reflection
+
+As reflection works at runtime, it cannot be optimized by the compiler at compile time. Which makes reflection code slower.
+
+When to use Reflection?
+
+Only use Reflection for the things that cannot be done without it. For anything that can be achieved in the normal java way, use the normal java way of doing it.
+
+Using normal java code without reflection keeps the code robust, less prone to errors that are hard to debug and allows for better optimization at compile time.

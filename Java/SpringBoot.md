@@ -887,3 +887,21 @@ For Angular we can solve it as show [here](https://medium.com/better-programming
 
 > Please note this is only for `ng serve`, you can't use proxy in `ng build`.
 > Note: the reason it's working via postman is postman doesn't send preflight requests while your browser does.
+
+## Repository
+
+There are repository interfaces that can be extended, which will allow spring boot to create a implementation of that repository for.
+
+When these interfaces are extended, they come with a lot of pre-implemented methods, that can then be directly used and do not need to be added to the methods of that repository.
+
+But if custom methods are needed, they can then be added to the interface, from which the framework will create an implementation.
+
+> Check the documentation for the repositories to get a full list of all methods that are implemented by extending the repostories. Ex [MongoRepository Documentation](https://docs.spring.io/spring-data/mongodb/docs/current/api/org/springframework/data/mongodb/repository/MongoRepository.html), here all the Superinterfaces extended can also be found.
+
+### MongoRepository
+
+Say a Mongodb repository was need to be created, in that case, an interface can be created that extends `MongoRepository`. In this interface methods that are needed can be written and they will be implemented by the framework.
+
+Most specialized repositorys like `Mongorepostory` already themselves extend `CrudRepository<T,ID>`, `PagingAndSortingRepository<T,ID>`, `QueryByExampleExecutor<T>`, `Repository<T,ID>` etc that provide implementation for different methods.
+
+> [MongoRepository Documentation.](https://docs.spring.io/spring-data/mongodb/docs/current/api/org/springframework/data/mongodb/repository/MongoRepository.html)
