@@ -384,7 +384,7 @@ function readTextFile(file) {
 }
 ```
 
-### [Response](https://developer.mozilla.org/en-US/docs/Web/API/Response)
+### Response
 
 Response has many **properties**, the important and often used are `Response.body` - is a `ReadableStream`, `Response.headers` - `Headers` object, `Response.ok` - Status of response whether it was sucessful (200-299), `Response.status` - gives response status code.
 
@@ -400,6 +400,8 @@ fetch("flowers.jpg")
     image.src = objectURL;
   });
 ```
+
+> [Response Complete reference on MDN.](https://developer.mozilla.org/en-US/docs/Web/API/Response).
 
 ## Working With HTMLElements
 
@@ -579,3 +581,29 @@ window.onmessage = function (e) {
   console.log(e.data); //message
 };
 ```
+
+### Shadow Dom
+
+Shadow Dom is an important part of the encapsulation mechanism in web development.The Shadow DOM API is an important part of providing a way to attach a hidden separate DOM to an element.
+
+Using shadow dom child elements can be created that are distict from the parent, the css from the parent is not applied to the children, also parent scripts cannot select elements in the shadow Elements.
+
+```html
+<body>
+  <div>Shadown Dom Example.</div>
+  <div id="container"></div>
+  <button onclick="fetchAllElementsOfType('div')">SelectAll divs</button>
+  <script>
+    const e = document.querySelector("#container");
+    const shadowRoot = e.attachShadow({mode: 'open'});
+    shadowRoot.innerHTML = '<div>Shadow Dom Inner Html.</div>';
+
+    function fetchAllElementsOfType(elementType) {
+      let elements = document.querySelectorAll(elementType);
+      console.log(elements);
+    }
+  </script>
+</body>
+```
+
+> [Complete In depth Documentation on shadow dom on MDN.](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM)

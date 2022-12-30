@@ -26,6 +26,7 @@ If we have an identity already added to the configuration we can check it by usi
 - `git push origin master` : push to the origin remote repo and its main/master branch.
 - `git push --set-upstream remoteName branchName` : push the current branch and set the remote as upstream use.
 - `git fetch` : fetch updated code from remote repositroy. It need to be used with `git branch, git checkout and git reset`.
+- `git push --all remoteName` - Push changes to origin for all branches.
 - `git merge branchName` : merge code with remote repo.
 - `git pull` : is a Git command used to update the local version of a repository from a remote
 - `git clone <repo-url> <local-directory>` : clone a remote repo to local directory and optionally change name.
@@ -51,7 +52,7 @@ Changes to Commits
 
 - `git reset <commit-ID>` Rollback to a previous commit but keep the changes in the working directory.
 - `git reset <commit-ID> --hard` : Rollback to previous commit and discard all changes.
-- `git revert <commit-ID> -m "reverting last commit"` : Undo a commit with a new commit.
+- `git revert <commit-ID> -m "reverting last commit"` : Undo a commit with a new commit. For details look in below topics.
 - `git commit --amend -m "better message"` : Update the message of previous commit
 - `git add <your-file>` then `git commit --amend --no-edit` to add a file that we forgot to add in the previous commit.
 - `git log --graph --oneline --decorate` to look at all the commits and branches in a nicer way.
@@ -113,6 +114,45 @@ Consider we don't want to track file for some commits. We can set that file to b
 `git update-index --assume-unchanged path/to/file`
 
 `git update-index --no-assume-unchanged path/to/file`
+
+### Revert to previous Commit
+
+The below method works if there are no merge between the commits. It is simple, but if there are merges in between commit then, follow the method given below.
+
+```console
+git revert --no-commit 71b0258..HEAD
+git commit
+```
+
+This will revert everthing back to the mentioned commit hash. Now commit will create a brand new Commit which is equivalent to the previous commit.
+
+`--no-commit` will let git revert all commit at once, otherwise there will be multiple commits created poluting the history.
+
+In this method no history is distroied.
+
+If `..HEAD` is removed, then changes made by only that specific commit are removed and all changes after that are kept.
+
+Following will work in all cases if there are or are not any merges in between commits.
+
+```console
+# Create a backup of master branch
+git branch backup_master
+
+# Point master to '56e05fce' and
+# make working directory the same with '56e05fce'
+git reset --hard 56e05fce
+
+# Point master back to 'backup_master' and
+# leave working directory the same with '56e05fce'.
+git reset --soft backup_master
+
+# Now working directory is the same '56e05fce' and
+# master points to the original revision. Then we create a commit.
+git commit -a -m "Revert to 56e05fce"
+
+# Delete unused branch
+git branch -d backup_master
+```
 
 ### Branching Strategies
 
