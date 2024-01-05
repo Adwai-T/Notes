@@ -1279,9 +1279,6 @@ For this we just nest `FormGroup` in the main `FromGroup` and put the properties
 We also need to add all the html element that we add to the from group in our script object to be put in a HTML element `<div formGroupName="userData">`. Here userData is the name of the group that we used in our script.
 
 - FromArray
-
-> TODO : Dynamically adding FormControl and FromArray Lecture 209
-
 - Creating Custom Validator
 
 ```ts
@@ -2063,9 +2060,7 @@ We can set up `"start": "ng serve --proxy-config proxy.conf.json"` in our packag
 
 > From : [stackoverflow](https://stackoverflow.com/questions/44110064/what-is-the-purpose-of-ng-eject).
 
-angular-cli is something magic, everything is done in a simple and automatic way.
-
-But sometimes, you may want to act on how the package is done, add a plugin or you are simply curious to see the Webpack configuration on which it is based.
+Sometimes you may want to act on how the package is done, add a plugin or you are simply curious to see the Webpack configuration on which it is based.
 
 When running ng eject, you generate a webpack.config.json file. Looking at the file package.json you will see that the commands to launch have slightly changed:
 
@@ -2149,3 +2144,15 @@ const sanitizer = new Sanitizer(); // Default sanitizer;
 document.getElementById("target").setHTML(unsanitized_string, sanitizer);
 // Result (as a string): "abc  def"
 ```
+
+## SEO in Angular
+
+Single Page Application Frameworks like Angular, React and Vue, as the name suggests have only one page `index.html`, getting DOM updates with javascript requests. Search engines thus have trouble understanding if they are on the home page or in some article.
+
+This issue is most commonly solved by using server side rendering. But it might not always be possible, especially for hobby projects.
+
+As search engines like google now support javascript, there are few options that become available for SEO.
+
+> Since May 2019 Google search engine supports Javascript.
+
+### Angular inbuilt tools for SEO
