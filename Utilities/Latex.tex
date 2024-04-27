@@ -1,0 +1,225 @@
+\documentclass{article}
+% This is a comment
+\usepackage{graphicx} % Required for inserting images
+\usepackage{amsmath, amsfonts, amssymb} %import multiple packages
+\usepackage{float} % to structure where the table appears on the page
+\usepackage{enumerate} % it is used to change how enumeration works in lists
+\usepackage{hyperref} %make links clickable
+\usepackage[margin=1in]{geometry} %use geometry package with parameter to make margins 1 inch for the output.
+
+\title{Latex Tutorial}
+\author{Adwait Sonawane}
+\date{April 2024}
+
+\begin{document}
+\tableofcontents %Create table of content based on sections. Might need 2 compiles to show.
+\maketitle
+
+\section{Sections}
+This is how sections are created.
+\subsection{First SubSections}
+\subsection*{Second Subsections} % Use * to suppress the number shown for sections
+    \subsubsection{Sub Sub Section I}
+    \subsubsection{Sub Sub Section II}
+
+\section{Returns in Latex}
+Hello this is the first line\\
+This is a soft return. This will not create a new paragraph, but this text will be on the second line\\
+We can also have return, without the return as above like below.
+
+Where this line is has a new line between. This is a hard return and this it will create a new paragraph.
+
+Create vertical space between lines\\[5pt]
+This will create 5 pt of space vertically between lines.
+
+\section{Formatting}
+
+To prevent indentation in the complete document the value of parindent can be set to 0px.\\
+2. To Create a page creak use backslash pagebreak.\\
+3. Following will be formatted \\ 
+\textbf{Bold Text}\\
+\textit{Italic}\\
+\textsc{All Small Caps}\\
+\texttt{https://adwait.in}\\
+4. The following 2 will need the hyperref package to be imported\\
+\url{https://adwait.in}\\
+\href{https://adwait.in}{My Website}
+
+\vspace{1cm}
+
+\begin{Large}Change the \begin{normalsize}font\end{normalsize} of the \begin{Huge}text\end{Huge} given in this sentence.\end{Large}
+
+\vspace{1cm}
+
+5. Similarly text can be made smaller or small.\\
+6. Text can be aligned center, flushleft or flushright
+
+\begin{flushright}This text is right aligned \end{flushright}
+
+\begin{center}
+What ever comes between will be centered. Similarly other formatting can be done with this notation.
+\end{center}
+
+
+\section{Math Equations}
+The equation $A(x)= x^2+4x+3$
+
+To keep equations on the same line use ${A(x) = 4x + 3}$, here curly brackets are used.
+
+To Make math equations in view or display mode use double dollar sign as given on this line $$A(x) = 2x+5$$
+
+\section{Brackets}
+
+1. The distributive property states that $a(b+c) = ab + ac$ for all $a, b, c \in \mathbb{R}$\\
+2. To show curly brackets use $\{1, 2, 3\}$\\
+3. To make it so that brackets/parenthesis encapsulate the complete equation, especially fractions use left and right before the brackets as shown below.
+$$x\left(  \frac{2x +  3y}{3y}  \right)$$
+4. Similar as above can be done for Square and curly brackets.
+5. For showing angle brackets use the following - 
+$$x\left\langle  \frac{2x +  3y}{3y}  \right \rangle$$
+6. To show absolute value symbol use pipe sign as done below -
+$$x\left |  \frac{2x +  3y}{3y}  \right |$$
+7. When only one side bracket is needed, a period can be used to not show the bracket on the side of concern as shown below. If not done in the way, the left and right are suppose to be used in pair and are required and will throw an error.
+$$\left. \frac{dy}{dx}\right|_{x=1}$$
+
+\section{Common Math Notations}
+1. Superscript $2x^3$\\
+2. For more than 1 character to be sent to exponent $2x^{34}$\\
+3. Subscript $2x_1$\\
+4. Sub of Sub and this can be done as many times as $x_{2_1}$\\
+5. Using ... by $a_0, a_1, a_2, \ldots , a_{100}$\\
+6. Greek Letters $\pi$, or $Pi$\\
+7. Or Like $\alpha$\\
+8. Trig Functions - $\sin \theta$\\
+9. Inverse Function - $\sin^{-1} x$\\
+10. Log Functions - $y = \log x$\\
+11. Base for log - $y = \log_5 x$\\
+12. Natural Log - $y = \ln 10$\\
+13. Square root - $\sqrt{23}$\\
+14. Cube or any root - $\sqrt[3]{23}$. What ever comes in the square brackets, it becomes the that root.\\
+15. Square root inside square root. $\sqrt{ 1 + \sqrt {10} }$\\
+16. Fraction - $\frac{2}{3}$\\
+17. To make fraction in display in math mode - $\displaystyle \frac{2}{3}$. This will make it bigger as compared to above.\\
+18. Fraction in display mode with package functions - $\dfrac{2}{3}$. Add the amsmath package to get this to work.\\
+19. Complex fractions  - $$\frac{20\sqrt{10x}}{x\sqrt{20x}}$$
+20. In Math mode spaces are ignored. To Add a space use backslash and comma. Also to add, text in the math mode used backslash text. 
+$$ab + ac\,\,\,\,\, \text{- eq$^n$ (1)}$$
+
+\section{Tables}
+
+1. c can be used for center aligned, r for right aligned and l for left aligned.\\
+2. To show lines between columns use the pipe symbol.\\
+3. Tabular can be used by itself to show a quick table, but does not get the same formatting option as when used with Table function.\\
+4. The caption can be placed either at the top of the table or at the end of the table. The numbering for the table is automatic when using caption similar to the numbering for section is automatic.
+5 use p for lon text p{4cm}
+
+\begin{center} %center the table or what ever comes between begin and end
+\begin{table}[H] %[H] is used to tell latex that the table should be where the code is.
+%If not used, latex would decide where the table can fit best and put it there.
+\def \arraystretch{1.5}
+\centering % center tabular inside the table
+\begin{tabular}{||c|cc||}
+
+    \hline \hline
+     $x$ &  y & z \\ \hline
+     a & $b$ & c \\ \hline 
+    e & f & g \\
+     \hline \hline
+     
+\end{tabular}
+\caption{This are all variables that are being used}
+\end{table}
+\end{center}
+
+\section{Arrays}
+
+1. With align even thing in between is automatically interpreted as math mode.
+
+\begin{align}
+    5x+3y = 20\\
+    3x+9y = 40
+\end{align}
+
+2. When using align with star, the number will not be given and also not considered for any further numbering in the align
+\begin{align*} 
+    5x+3y = 20\\
+    3x+9y = 40
+\end{align*}
+
+2. If there are more aligns used, the numbering will continue from the last.
+
+\begin{align}
+    4x+3y &= 10+30+20z\\
+    2x+9y+2z &= 30\\     %To align at the equal sign use &
+    &=20+30x
+\end{align}
+
+\section{Lists}
+
+\begin{enumerate}
+    \item apple
+    \item banana
+    \item watermelon
+\end{enumerate}
+
+\vspace{0.25cm}
+
+\begin{enumerate}[A.] % this needs to import a package enumerate
+    \item apple
+    \item banana
+    \item watermelon
+\end{enumerate}
+
+\vspace{0.25cm}
+
+\begin{enumerate}\setcounter{enumi}{4} % Make the list start from 5
+    \item apple
+    \item banana
+    \item watermelon
+\end{enumerate}
+
+\vspace{0.25cm}
+
+\begin{itemize}
+    \item apple
+    \item banana
+    \item watermelon
+    \begin{enumerate}
+        \item Red
+        \item Yellow
+        \item[] Yellow inside % square brackets to hide number and count it
+        \item Stripped Green
+        \item[6.] Other %Number manually, these can be any, and any format
+        \item other colors
+    \end{enumerate}
+\end{itemize}
+
+\section{Packages}
+
+1. They are used to add function that are not added in the base package and change the behaviour and formatting of latex document.\\
+2. Package like fullpage and geometry could be used to change paper size and margins of the page.
+
+\section{Macros}
+
+Macros can be used to create functions.
+
+\def\eq1{y=2x}
+
+Using the macro
+$a + b = \eq1$
+
+\section{Images}
+
+1. Save the images in the same folder that the .tex file is saved.\\
+2. Package graphicx needs to be imported to use images in tex.\\
+3.\\ %\includegraphics[scale=1]{imageFileNameWithoutExtension}
+4. %\includegraphics[width=0.5\textwidth]{imageFileNameWithoutExtension}
+This will make the above image scale to the textwidth.\\
+5. If more control is needed, add the image between begin{figure} and end{figure}.\\
+6. When  using a figure the a caption can be added.
+
+\section{Overleaf Tip}
+
+1. While sharing with collaborators is limited for free users, Link sharing can be used so any one with the link can edit or View only the document directly.
+
+\end{document}
