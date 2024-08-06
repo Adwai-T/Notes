@@ -229,3 +229,127 @@ Range("C5").Rows.Row //A1 is row 1 column 1 and so on are counted
 Range("C5").Comlumns.Column
 
 ```
+
+## Additional Notes
+
+```vb
+Objects 
+   Sheets, Tables, Charts, Rows, Columns
+   Rows("1:1").Insert
+   Range("A1").Value = "new Value"
+   Rows("1:1").Font.Bold = True
+   Range("A1").Select
+Range
+-- Select Cell C3 in VBA
+   Range("C3")
+   Range("B2").Range("B2")
+   Cells(3,3)
+   [C3]
+   Range("A1").Offset(2,2) 'Move rows and columns in that order
+   Range("B" & x) 'Where x is a variable
+   MyRange = "C3"
+   Range(myRange)
+   Range("A1").Clear
+--Set Range value
+   Dim rng As Range
+   Set rng = Cells(cellNumber, 2)
+Selection
+-- It refers to the Range that is selected
+   Selection.Value = 'New Value In Selected Cell"
+   Selection.Interior.Color = 65535
+   Selection.Font.Bold = TRUE
+   Selection.Copy , PasteSpecial, Paste 'Paste is only method of ActiveSheet
+   Selection.End(xlDown).Select 'xlUp etc
+   Selection.Address
+   Selection.CurrentRegion.Select 'Selects the current region of data
+Sheets And ActiveSheet
+   ActiveSheet.Name = "New Name"
+   Sheets(1).Name
+   Sheets("SheetName").Select
+WorkSheets
+   WorkSheets.Count
+Variables
+--Dim - Decalared in Memory
+
+   Dim aDate As Date
+   aDate = Range("A3").Value
+-- Variant - any data
+-- String
+-- Char
+-- Boolean
+-- Byte
+-- Date
+-- Object
+-- Range
+
+-- Multiple Variables
+   Dim Message, SuccessMessage, ErrorMessage As String
+
+For - Next Loop
+
+   Dim x As Integer
+   For x = 1 To 10
+      Cells(x, 1).Value = 100
+   Next x
+For - Each Loop
+   Dim x as WorkSheet
+   For Each x In WorkSheets
+      MsgBox "Found WorkSheet: " & x.Name
+   Next x
+Exit For
+-- In for directly use Exit For with some If statement
+
+Do While Loop
+   Dim x As Integer
+   x = 1
+   Do While x < 10
+      Cells(x, 1).Value = "Some Value"
+      x = x+1
+   Loop
+Do Until
+   Dim intRow As Integer
+   intRow = 1
+   Do Until IsEmpty(Cells(intRow, 1))
+      intRow = intRow+1
+   Loop
+Do Loop Until
+-- Similar to until, only executes atleast 1s
+   Do
+      'Some code
+   Loop Until
+If Then Else
+
+   Dim num As Integer
+   If num = 1 Then
+      'Do SOmething
+   ElseIf num = 2 Then
+      'Do Something
+   Else:
+      'Do SOmething
+   End If
+Switch Case
+   Dim num As Integer
+   Select Case num
+      Case 1
+         'Do Something
+      Case 2
+         'Do SOmething
+   End Select
+
+Call Other Macros, Subs
+
+   Call FindData
+   Call CopyPaste
+Find
+-- Find And Select
+
+   Dim FoundCellAddress As String
+   Range("b4").Select
+   FoundCellAddress = ActiveCell.Address
+Input
+   Dim strResponse As String
+   strResponse = InputBox("Please input A String")
+
+MsgBox
+   MsgBox("Please check the Message")
+```
