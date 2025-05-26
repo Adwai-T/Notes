@@ -12,11 +12,21 @@ Data in tables can be related to each other, that is why they are called as rela
 
 Taken together the collection of tables in a database is called as **Schema**.
 
-## Commands
+## Basic Queries
 
 ```sql
 /*Create a new database with name name_table*/
-CREATE DATABASE name_table;
+CREATE DATABASE database_name;
+
+/*IF NOT EXIST is used to first check if the database already exist or not*/
+CREATE DATABASE IF NOT EXISTS database_name;
+
+/*Same thing as above can be achieved by using SCHEMA instead of DATABASE*/
+CREATE SCHEMA IF NOT EXISTS database_name;
+
+/*Start using the database to run further scripts*/
+USE database_name;
+
 /*Create a new table in the database with name name_table and define its columns*/
 CREATE TABLE users(
     user_id int,
@@ -38,7 +48,7 @@ DROP TABLE user;
 DROP DATABASE name_table;
 ```
 
-## Interacting with DataBase
+### Interacting with DataBase
 
 ```sql
 /*Insert a record/row to the movies table*/
@@ -57,8 +67,6 @@ DELETE FROM movies WHERE title = 'Star Wars'
 SELECT COUNT(*) FROM movies
 /*Select by price range*/
 SELECT * FROM movies WHERE price >= 1 AND price <= 5;
-/*Use the number of rows that are given*/
-LIMIT 10;
 ```
 
 ```sql
@@ -77,7 +85,7 @@ SELECT DISTINCT column_name FROM table_name
 
 - In the above `INSERT` we specified an ID(movies_id), these are used as unique identifiers for that entry. Most database softwares will generate an ID automatically and will not have to provide an id manually.
 
-## Joins
+### Joins
 
 ```sql
 SELECT * FROM table1
@@ -93,7 +101,7 @@ JOIN type :
 
 Note : Not all database support all the four types of joins. For example MySQL does not support full join.
 
-## Views
+### Views
 
 When we create Views it Give permission to a view instead of the whole table and can hide sensitive data. A view also returns a table but without the sensitive data.
 
@@ -111,9 +119,36 @@ FROM people_on_mars
 ORDER BY last_name;
 ```
 
-## Create Index
+### Create Index
 
 ```sql
 CREATE INDEX person_first_name_idx
 ON person (fist_name);
+
 ```
+
+## Advanced Queries
+
+### DISTINCT
+
+```sql
+SELECT DISTINCT City FROM STATION WHERE Id % 2 = 0;
+```
+
+### FUNCTIONS
+
+#### COUNT
+
+```sql
+SELECT COUNT(CITY) - COUNT(DISTINCT CITY) AS Difference FROM STATION;
+```
+
+### Using Operations
+
+#### Mod Operator
+
+In MS SQL Server the mod of a number field can be taken with `%` where as in other databases it might be taken with a function like `MOD`.
+
+### WITH
+
+

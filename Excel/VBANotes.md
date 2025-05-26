@@ -353,3 +353,9 @@ Input
 MsgBox
    MsgBox("Please check the Message")
 ```
+
+## Tips for Working with VBA editor in excel
+
+- Create a module by right clicking on the Project side panel and Insert -> Module
+- Changing name of a module use View -> Properties Window. Then in the properties window, the module name could be changed
+
